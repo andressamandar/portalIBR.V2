@@ -1,0 +1,490 @@
+<main class="ui-kit-page">
+  <section class="ui-kit-container">
+
+    <header class="ui-kit-header">
+      <app-logo
+        variant="full"
+        size="medium">
+      </app-logo>
+
+      <div>
+        <span>Ambiente de desenvolvimento</span>
+        <h1>Portal IBR UI Kit</h1>
+        <p>
+          Página interna para validar os componentes visuais do sistema.
+        </p>
+      </div>
+    </header>
+
+    <!-- ===================== Selection Card ===================== -->
+
+    <section class="ui-kit-section">
+      <div class="ui-kit-section__header">
+        <h2>Selection Card</h2>
+        <p>Usado para escolhas de ministério, perfil e ações principais.</p>
+      </div>
+
+      <div class="ui-kit-grid">
+
+        <app-selection-card
+          icon="music_note"
+          title="Ministério de Louvor"
+          subtitle="Escalas, disponibilidades e repertórios"
+          (cardClick)="registrarClique('Louvor')">
+        </app-selection-card>
+
+        <app-selection-card
+          icon="photo_camera"
+          title="Ministério de Mídia"
+          subtitle="Escalas, tarefas e solicitações"
+          badge="Novo"
+          (cardClick)="registrarClique('Mídia')">
+        </app-selection-card>
+
+        <app-selection-card
+          icon="lock"
+          title="Opção indisponível"
+          subtitle="Exemplo de componente desabilitado"
+          [disabled]="true">
+        </app-selection-card>
+
+      </div>
+    </section>
+
+    <!-- ===================== Buttons ===================== -->
+
+    <section class="ui-kit-section">
+      <div class="ui-kit-section__header">
+        <h2>Portal Button</h2>
+        <p>Variações de botões reutilizáveis.</p>
+      </div>
+
+      <div class="button-showcase">
+
+        <app-portal-button
+          icon="save"
+          (buttonClick)="registrarClique('Salvar')">
+          Salvar
+        </app-portal-button>
+
+        <app-portal-button
+          icon="close"
+          variant="secondary"
+          (buttonClick)="registrarClique('Cancelar')">
+          Cancelar
+        </app-portal-button>
+
+        <app-portal-button
+          icon="delete"
+          variant="danger"
+          (buttonClick)="registrarClique('Excluir')">
+          Excluir
+        </app-portal-button>
+
+        <app-portal-button
+            icon="edit"
+            variant="outline"
+            (buttonClick)="registrarClique('Editar')">
+            Editar
+        </app-portal-button>
+
+        <app-portal-button
+          icon="download"
+          variant="text"
+          (buttonClick)="registrarClique('Download')">
+          Baixar PDF
+        </app-portal-button>
+
+       <app-portal-button
+            [loading]="true"
+            loadingText="Salvando">
+            Salvar
+        </app-portal-button>
+
+        <app-portal-button
+          [disabled]="true">
+          Desabilitado
+        </app-portal-button>
+
+      </div>
+    </section>
+
+    <!-- ===================== Portal Input ===================== -->
+
+    <section class="ui-kit-section">
+
+      <div class="ui-kit-section__header">
+        <span class="ui-kit-section__category">
+          Forms
+        </span>
+
+        <h2>Portal Input</h2>
+
+        <p>
+          Campos reutilizáveis para login, cadastros, buscas e formulários.
+        </p>
+      </div>
+
+      <div class="input-showcase">
+
+        <app-portal-input
+          label="Nome"
+          placeholder="Digite o nome completo"
+          icon="person"
+          hint="Informe o nome do integrante"
+          [required]="true">
+        </app-portal-input>
+
+        <app-portal-input
+          label="E-mail"
+          placeholder="nome@exemplo.com"
+          type="email"
+          icon="email"
+          autocomplete="email">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Senha"
+          placeholder="Digite sua senha"
+          type="password"
+          icon="lock"
+          autocomplete="current-password"
+          [required]="true">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Pesquisar"
+          placeholder="Pesquisar integrante"
+          icon="search"
+          suffixIcon="close">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Carregando"
+          placeholder="Buscando informações"
+          icon="cloud_download"
+          [loading]="true">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Campo com erro"
+          icon="warning"
+          errorMessage="Revise as informações preenchidas"
+          [(ngModel)]="campoComErro">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Somente leitura"
+          icon="church"
+          [readonly]="true"
+          [(ngModel)]="campoSomenteLeitura">
+        </app-portal-input>
+
+        <app-portal-input
+          label="Campo desabilitado"
+          icon="block"
+          [disabled]="true"
+          [(ngModel)]="campoDesabilitado">
+        </app-portal-input>
+
+      </div>
+
+    </section>
+
+    <!-- ================= Portal Autocomplete ================= -->
+
+    <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+        <span class="ui-kit-section__category">
+        Forms
+        </span>
+
+        <h2>Portal Autocomplete</h2>
+
+        <p>
+        Campo reutilizável para pesquisa e seleção de registros.
+        </p>
+    </div>
+
+    <div class="input-showcase">
+
+        <app-portal-autocomplete
+        label="Integrante"
+        placeholder="Pesquise um integrante"
+        icon="person_search"
+        hint="Exemplo de seleção simples"
+        [options]="integrantes"
+        optionLabel="nome"
+        optionValue="id"
+        [(ngModel)]="integranteSelecionado">
+        </app-portal-autocomplete>
+
+        <app-portal-autocomplete
+        label="Funções"
+        placeholder="Selecione uma ou mais funções"
+        icon="assignment_ind"
+        hint="Exemplo de seleção múltipla"
+        [options]="funcoes"
+        optionLabel="nome"
+        optionValue="id"
+        [multiple]="true"
+        [(ngModel)]="funcoesSelecionadas">
+        </app-portal-autocomplete>
+
+        <app-portal-autocomplete
+        label="Busca assíncrona"
+        placeholder="Digite o nome do integrante"
+        icon="cloud_download"
+        hint="A busca é simulada com atraso de 700ms"
+        [options]="integrantesAssincronos"
+        optionLabel="nome"
+        optionValue="id"
+        [async]="true"
+        [loading]="carregandoIntegrantes"
+        (search)="buscarIntegrantes($event)"
+        [(ngModel)]="integranteAssincronoSelecionado">
+        </app-portal-autocomplete>
+
+        <app-portal-autocomplete
+        label="Carregando"
+        placeholder="Buscando opções"
+        icon="sync"
+        [options]="[]"
+        [loading]="true">
+        </app-portal-autocomplete>
+
+        <app-portal-autocomplete
+        label="Desabilitado"
+        placeholder="Campo indisponível"
+        icon="block"
+        [options]="integrantes"
+        [disabled]="true"
+        [(ngModel)]="autocompleteDesabilitado">
+        </app-portal-autocomplete>
+
+    </div>
+
+    </section>
+
+    <!-- ===================== Portal Select ===================== -->
+
+    <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+        <span class="ui-kit-section__category">
+        Forms
+        </span>
+
+        <h2>Portal Select</h2>
+
+        <p>
+        Campo reutilizável para seleção de uma ou mais opções.
+        </p>
+    </div>
+
+    <div class="input-showcase">
+
+        <app-portal-select
+        label="Integrante"
+        placeholder="Selecione um integrante"
+        icon="person"
+        hint="Exemplo de seleção simples"
+        [options]="integrantes"
+        optionLabel="nome"
+        optionValue="id"
+        [(ngModel)]="integranteSelectSelecionado">
+        </app-portal-select>
+
+        <app-portal-select
+        label="Funções"
+        placeholder="Selecione uma ou mais funções"
+        icon="assignment_ind"
+        hint="Exemplo de seleção múltipla"
+        [options]="funcoes"
+        optionLabel="nome"
+        optionValue="id"
+        [multiple]="true"
+        [(ngModel)]="funcoesSelectSelecionadas">
+        </app-portal-select>
+
+        <app-portal-select
+        label="Campo obrigatório"
+        placeholder="Selecione uma opção"
+        icon="check_circle"
+        [options]="integrantes"
+        optionLabel="nome"
+        optionValue="id"
+        [required]="true">
+        </app-portal-select>
+
+        <app-portal-select
+        label="Nenhuma opção"
+        placeholder="Sem opções disponíveis"
+        icon="inbox"
+        [options]="[]">
+        </app-portal-select>
+
+        <app-portal-select
+        label="Desabilitado"
+        placeholder="Campo indisponível"
+        icon="block"
+        [options]="integrantes"
+        optionLabel="nome"
+        optionValue="id"
+        [disabled]="true"
+        [(ngModel)]="selectDesabilitado">
+        </app-portal-select>
+
+    </div>
+
+    </section>
+
+    <!-- ===================== Snackbar ===================== -->
+
+  <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+      <span class="ui-kit-section__category">
+        Feedback
+      </span>
+
+      <h2>Snackbar</h2>
+
+      <p>
+        Mensagens rápidas de retorno para ações do sistema.
+      </p>
+    </div>
+
+    <div class="button-showcase">
+
+      <app-portal-button
+        icon="check_circle"
+        (buttonClick)="mostrarSucesso()">
+        Sucesso
+      </app-portal-button>
+
+      <app-portal-button
+        icon="error"
+        variant="danger"
+        (buttonClick)="mostrarErro()">
+        Erro
+      </app-portal-button>
+
+      <app-portal-button
+        icon="warning"
+        variant="secondary"
+        (buttonClick)="mostrarAviso()">
+        Aviso
+      </app-portal-button>
+
+      <app-portal-button
+        icon="info"
+        variant="outline"
+        (buttonClick)="mostrarInformacao()">
+        Informação
+      </app-portal-button>
+
+    </div>
+
+  </section>
+
+  <!-- ===================== Portal Dialog ===================== -->
+
+  <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+      <span class="ui-kit-section__category">
+        Feedback
+      </span>
+
+      <h2>Portal Dialog</h2>
+
+      <p>
+        Janela reutilizável para confirmações, exclusões e informações.
+      </p>
+    </div>
+
+    <div class="button-showcase">
+
+      <app-portal-button
+        icon="help"
+        (buttonClick)="abrirDialogConfirmacao()">
+        Confirmação
+      </app-portal-button>
+
+      <app-portal-button
+        icon="delete"
+        variant="danger"
+        (buttonClick)="abrirDialogExclusao()">
+        Exclusão
+      </app-portal-button>
+
+      <app-portal-button
+        icon="info"
+        variant="outline"
+        (buttonClick)="abrirDialogInformacao()">
+        Informação
+      </app-portal-button>
+
+    </div>
+
+  </section>
+
+    <!-- ===================== Portal Loading ===================== -->
+
+  <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+      <span class="ui-kit-section__category">
+        Feedback
+      </span>
+
+      <h2>Portal Loading</h2>
+
+      <p>
+        Indicador reutilizável para carregamento de páginas e informações.
+      </p>
+    </div>
+
+    <app-portal-loading
+      message="Carregando informações...">
+    </app-portal-loading>
+
+  </section>
+
+  <!-- ===================== Portal Empty State ===================== -->
+
+  <section class="ui-kit-section">
+
+    <div class="ui-kit-section__header">
+      <span class="ui-kit-section__category">
+        Feedback
+      </span>
+
+      <h2>Portal Empty State</h2>
+
+      <p>
+        Estado reutilizável para listas e pesquisas sem registros.
+      </p>
+    </div>
+
+    <app-portal-empty-state
+      icon="event_busy"
+      title="Nenhuma escala encontrada"
+      message="Ainda não existem escalas cadastradas para este período.">
+    </app-portal-empty-state>
+
+    <app-portal-empty-state
+      icon="group_off"
+      title="Nenhum integrante cadastrado"
+      message="Cadastre o primeiro integrante para começar."
+      actionText="Cadastrar integrante"
+      actionIcon="person_add"
+      (actionClick)="executarAcaoEmptyState()">
+    </app-portal-empty-state>
+
+  </section>
+
+  </section>
+</main>

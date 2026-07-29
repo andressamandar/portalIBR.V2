@@ -1,0 +1,70 @@
+@use '../../../../theme/variables' as variables;
+
+.header {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 28px;
+  border-bottom: 1px solid variables.$border;
+  background: variables.$surface;
+}
+
+.header__title {
+  color: variables.$primary-dark;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: variables.$radius-medium;
+  background: transparent;
+  color: variables.$text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(17, 90, 138, 0.08);
+  }
+}
+
+.header__avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: variables.$primary;
+  color: variables.$surface;
+  font-weight: 700;
+}
+
+.header__profile-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  small {
+    color: variables.$text-secondary;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 10px 16px;
+  }
+
+  .header__profile-text {
+    display: none;
+  }
+}

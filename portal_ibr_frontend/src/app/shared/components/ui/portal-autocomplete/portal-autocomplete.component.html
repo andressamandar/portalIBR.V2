@@ -1,0 +1,112 @@
+<mat-form-field
+  class="portal-autocomplete"
+  appearance="outline"
+  subscriptSizing="dynamic"
+>
+  <mat-label>
+    {{ label }}
+
+    @if (required) {
+      <span class="portal-autocomplete__required">
+        *
+      </span>
+    }
+  </mat-label>
+
+  @if (icon) {
+    <mat-icon matPrefix>
+      {{ icon }}
+    </mat-icon>
+  }
+
+  <input
+    matInput
+    type="text"
+    [value]="searchText"
+    [placeholder]="placeholder"
+    [required]="required"
+    [readonly]="readonly"
+    [disabled]="isDisabled"
+    [matAutocomplete]="autocompletePanel"
+    [matAutocompleteDisabled]="readonly || isDisabled"
+    autocomplete="off"
+    (input)="handleSearch($any($event.target).value)"
+    (blur)="handleBlur()"
+  />
+
+  @if (loading) {
+    <mat-spinner
+      matSuffix
+      diameter="20"
+      class="portal-autocomplete__spinner"
+    >
+    </mat-spinner>
+  }
+
+  <mat-autocomplete
+    #autocompletePanel="matAutocomplete"
+    [displayWith]="displayOption"
+    (optionSelected)="
+      handleOptionSelected($event.option.value)
+    "
+  >
+    @if (loading) {
+      <mat-option disabled>
+        Carregando...
+      </mat-option>
+    } @else if (filteredOptions.length === 0) {
+      <mat-option disabled>
+        Nenhum resultado encontrado
+      </mat-option>
+    } @else {
+      @for (
+        option of filteredOptions;
+        track option[optionValue]
+      ) {
+        <mat-option [value]="option">
+          @if (multiple) {
+            <mat-checkbox
+              class="portal-autocomplete__checkbox"
+              [checked]="isSelected(option)"
+              tabindex="-1"
+            >
+              {{ option[optionLabel] }}
+            </mat-checkbox>
+          } @else {
+            <span>
+              {{ option[optionLabel] }}
+            </span>
+          }
+        </mat-option>
+      }
+    }
+  </mat-autocomplete>
+
+  @if (errorMessage) {
+    <mat-error>
+      {{ errorMessage }}
+    </mat-error>
+  } @else if (hint) {
+    <mat-hint>
+      {{ hint }}
+    </mat-hint>
+  }
+</mat-form-field>
+
+@if (multiple && selectedOptions.length > 0) {
+  <div class="portal-autocomplete__selected">
+    <span class="portal-autocomplete__selected-label">
+      Selecionados:
+    </span>
+
+    @for (
+      option of selectedOptions;
+      track option[optionValue];
+      let last = $last
+    ) {
+      <span>
+        {{ option[optionLabel] }}@if (!last) {, }
+      </span>
+    }
+  </div>
+}

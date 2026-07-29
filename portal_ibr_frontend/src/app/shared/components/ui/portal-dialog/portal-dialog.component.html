@@ -1,0 +1,42 @@
+<div
+  class="portal-dialog"
+  [class.portal-dialog--danger]="dialogType === 'danger'"
+  [class.portal-dialog--info]="dialogType === 'info'"
+>
+  <div class="portal-dialog__icon">
+    <mat-icon>
+      {{ icon }}
+    </mat-icon>
+  </div>
+
+  <div class="portal-dialog__content">
+    <h2 mat-dialog-title class="portal-dialog__title">
+      {{ data.title }}
+    </h2>
+
+    <mat-dialog-content class="portal-dialog__message">
+      {{ data.message }}
+    </mat-dialog-content>
+  </div>
+
+  <mat-dialog-actions
+    class="portal-dialog__actions"
+    align="end"
+  >
+    @if (showCancel) {
+      <app-portal-button
+        variant="secondary"
+        (buttonClick)="cancel()"
+      >
+        {{ cancelText }}
+      </app-portal-button>
+    }
+
+    <app-portal-button
+      [variant]="dialogType === 'danger' ? 'danger' : 'primary'"
+      (buttonClick)="confirm()"
+    >
+      {{ confirmText }}
+    </app-portal-button>
+  </mat-dialog-actions>
+</div>

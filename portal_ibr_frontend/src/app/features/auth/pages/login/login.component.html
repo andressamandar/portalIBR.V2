@@ -1,0 +1,80 @@
+<main class="login-page">
+  <section class="login-container">
+
+    <app-portal-button
+      type="button"
+      variant="text"
+      icon="arrow_back"
+      (buttonClick)="voltar()"
+    >
+      Voltar
+    </app-portal-button>
+
+    <div class="login-card">
+
+      <header class="login-header">
+        <app-logo
+          variant="full"
+          size="medium">
+        </app-logo>
+
+        <div class="login-header__text">
+          <span class="login-header__ministry">
+            {{ nomeMinisterio }}
+          </span>
+
+          <h1>{{ tituloPerfil }}</h1>
+
+          <p>
+            {{ descricaoPerfil }}
+          </p>
+        </div>
+      </header>
+
+      <form
+        class="login-form"
+        (ngSubmit)="entrar()"
+      >
+        @if (ehIntegrante) {
+          <app-portal-autocomplete
+            name="integrante"
+            label="Integrante"
+            placeholder="Selecione seu nome"
+            icon="person"
+            [options]="integrantes"
+            optionLabel="nome"
+            optionValue="id"
+            [required]="true"
+            [loading]="carregandoIntegrantes"
+            errorMessage=""
+            [(ngModel)]="integranteSelecionado">
+          </app-portal-autocomplete>
+        }
+
+        <app-portal-input
+          name="senha"
+          label="Senha"
+          placeholder="Digite sua senha"
+          type="password"
+          icon="lock"
+          autocomplete="current-password"
+          [required]="true"
+          [(ngModel)]="senha">
+        </app-portal-input>
+
+        <app-portal-button
+          type="submit"
+          icon="login"
+          [fullWidth]="true"
+          [disabled]="!formularioValido"
+          [loading]="enviando"
+          loadingText="Entrando"
+        >
+          Entrar
+        </app-portal-button>
+      </form>
+
+    </div>
+
+  </section>
+</main>

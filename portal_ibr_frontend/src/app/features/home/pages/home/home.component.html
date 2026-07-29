@@ -1,0 +1,46 @@
+<main class="home-page">
+  <section class="hero">
+
+    <div class="brand">
+
+      <div class="brand__logo">
+        <app-logo
+          variant="full"
+          size="large">
+        </app-logo>
+      </div>
+
+      <div class="brand__text">
+        <span class="brand__church">
+          Igreja Batista Redenção
+        </span>
+
+        <h1>Portal IBR</h1>
+
+        <p>
+          Escolha o ministério que deseja acessar.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="ministries">
+
+      <app-selection-card
+        icon="music_note"
+        title="Ministério de Louvor"
+        subtitle="Escalas, disponibilidades e repertórios"
+        (cardClick)="selecionarMinisterio('Louvor')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="photo_camera"
+        title="Ministério de Mídia"
+        subtitle="Escalas, tarefas e solicitações"
+        (cardClick)="selecionarMinisterio('Midia')">
+      </app-selection-card>
+
+    </div>
+
+  </section>
+</main>

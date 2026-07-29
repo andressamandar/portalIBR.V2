@@ -1,0 +1,88 @@
+@use '../../../../../theme/variables' as variables;
+
+.portal-button {
+  min-height: 44px;
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border: 1px solid transparent;
+  border-radius: variables.$radius-small;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition:
+    background-color variables.$transition,
+    border-color variables.$transition,
+    color variables.$transition,
+    transform variables.$transition,
+    box-shadow variables.$transition;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(17, 90, 138, 0.25);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.portal-button--primary {
+  background: variables.$primary;
+  color: variables.$surface;
+  box-shadow: variables.$shadow-small;
+
+  &:hover:not(:disabled) {
+    background: variables.$primary-light;
+    box-shadow: variables.$shadow-medium;
+  }
+}
+
+.portal-button--secondary {
+  border-color: variables.$border;
+  background: variables.$surface;
+  color: variables.$primary-dark;
+
+  &:hover:not(:disabled) {
+    border-color: variables.$primary-light;
+    background: rgba(17, 90, 138, 0.06);
+  }
+}
+
+.portal-button--danger {
+  background: variables.$danger;
+  color: variables.$surface;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
+}
+
+.portal-button--text {
+  background: transparent;
+  color: variables.$primary;
+
+  &:hover:not(:disabled) {
+    background: rgba(17, 90, 138, 0.08);
+  }
+}
+
+.portal-button--full-width {
+  width: 100%;
+}

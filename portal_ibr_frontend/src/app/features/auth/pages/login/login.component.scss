@@ -1,0 +1,101 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+}
+
+.login-page {
+  min-height: 100vh;
+  padding: variables.$space-6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: variables.$background;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 520px;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+}
+
+.login-card {
+  padding: variables.$space-7;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-7;
+
+  border-radius: variables.$radius-large;
+  background: variables.$surface;
+  box-shadow: variables.$shadow-medium;
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: variables.$space-5;
+
+  text-align: center;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: variables.$space-2;
+  }
+
+  &__ministry {
+    color: variables.$primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xxl;
+    font-weight: variables.$font-weight-bold;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    max-width: 390px;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-5;
+}
+
+@media (max-width: 600px) {
+  .login-page {
+    padding: variables.$space-4;
+  }
+
+  .login-card {
+    padding: variables.$space-5;
+  }
+
+  .login-header {
+    h1 {
+      font-size: variables.$font-size-xl;
+    }
+  }
+}

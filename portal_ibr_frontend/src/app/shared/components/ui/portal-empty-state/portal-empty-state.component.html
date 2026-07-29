@@ -1,0 +1,30 @@
+<div
+  class="portal-empty-state"
+  role="status"
+>
+  <div class="portal-empty-state__icon">
+    <mat-icon>
+      {{ icon }}
+    </mat-icon>
+  </div>
+
+  <h3 class="portal-empty-state__title">
+    {{ title }}
+  </h3>
+
+  @if (message) {
+    <p class="portal-empty-state__message">
+      {{ message }}
+    </p>
+  }
+
+  @if (actionText) {
+    <app-portal-button
+      [icon]="actionIcon"
+      variant="primary"
+      (buttonClick)="handleAction()"
+    >
+      {{ actionText }}
+    </app-portal-button>
+  }
+</div>

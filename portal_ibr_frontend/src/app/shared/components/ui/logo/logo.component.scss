@@ -1,0 +1,35 @@
+.logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.logo--small {
+  height: 46px;
+}
+
+.logo--medium {
+  height: 84px;
+}
+
+.logo--large {
+  height: 150px;
+}
+
+.logo--symbol {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  object-position: top;
+}
+
+@media (max-width: 600px) {
+  .logo--large {
+    height: 120px;
+  }
+
+  .logo--medium {
+    height: 72px;
+  }
+}

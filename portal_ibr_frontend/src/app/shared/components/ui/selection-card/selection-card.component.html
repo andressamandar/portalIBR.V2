@@ -1,0 +1,31 @@
+<button
+  type="button"
+  class="selection-card"
+  [class.selection-card--disabled]="disabled"
+  [disabled]="disabled"
+  (click)="handleClick()"
+>
+  <span class="selection-card__icon">
+    <mat-icon>{{ icon }}</mat-icon>
+  </span>
+
+  <span class="selection-card__content">
+    <span class="selection-card__heading">
+      <strong>{{ title }}</strong>
+
+      @if (badge) {
+        <span class="selection-card__badge">
+          {{ badge }}
+        </span>
+      }
+    </span>
+
+    @if (subtitle) {
+      <small>{{ subtitle }}</small>
+    }
+  </span>
+
+  <mat-icon class="selection-card__arrow">
+    arrow_forward
+  </mat-icon>
+</button>

@@ -1,0 +1,37 @@
+@use '../../../../../theme/variables' as variables;
+
+.page-header {
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 4px 0 8px;
+    color: variables.$primary-dark;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.1;
+  }
+
+  p {
+    max-width: 680px;
+    margin: 0;
+    color: variables.$text-secondary;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+}
+
+.page-header--center {
+  text-align: center;
+
+  p {
+    margin-inline: auto;
+  }
+}
+
+.page-header__eyebrow {
+  display: block;
+  color: variables.$primary;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,142 @@
+// =====================================
+// CORES DA MARCA
+// =====================================
+
+$primary: #115a8a;
+$primary-light: #2d7faf;
+$primary-dark: #0b4266;
+
+$primary-hover: #0f507b;
+$primary-active: #0c4568;
+$primary-soft: #eaf4fa;
+
+
+// =====================================
+// FUNDOS
+// =====================================
+
+$background: #f4f7fa;
+$surface: #ffffff;
+$surface-secondary: #f8fafc;
+
+
+// =====================================
+// TEXTOS
+// =====================================
+
+$text-primary: #1f2937;
+$text-secondary: #667085;
+$text-disabled: #98a2b3;
+$text-white: #ffffff;
+
+
+// =====================================
+// CORES DE STATUS
+// =====================================
+
+$success: #2e7d32;
+$success-soft: #eaf5eb;
+
+$warning: #ed8b00;
+$warning-soft: #fff4e0;
+
+$danger: #c62828;
+$danger-hover: #a92020;
+$danger-soft: #fdecec;
+
+$info: #0288d1;
+$info-soft: #e6f4fb;
+
+
+// =====================================
+// BORDAS
+// =====================================
+
+$border: #d9e1e8;
+$border-light: #e8edf2;
+$border-focus: $primary;
+$border-disabled: #e4e7ec;
+
+
+// =====================================
+// ESPAÇAMENTOS
+// =====================================
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-7: 32px;
+$space-8: 40px;
+$space-9: 48px;
+$space-10: 64px;
+
+
+// =====================================
+// BORDAS ARREDONDADAS
+// =====================================
+
+$radius-small: 8px;
+$radius-medium: 14px;
+$radius-large: 22px;
+$radius-pill: 999px;
+
+
+// =====================================
+// SOMBRAS
+// =====================================
+
+$shadow-small:
+  0 4px 14px rgba(17, 90, 138, 0.08);
+
+$shadow-medium:
+  0 10px 30px rgba(17, 90, 138, 0.14);
+
+$shadow-large:
+  0 18px 44px rgba(17, 90, 138, 0.18);
+
+$shadow-focus:
+  0 0 0 3px rgba(17, 90, 138, 0.14);
+
+
+// =====================================
+// TIPOGRAFIA
+// =====================================
+
+$font-family:
+  'Inter',
+  'Roboto',
+  Arial,
+  sans-serif;
+
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.5rem;
+$font-size-xxl: 2rem;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+
+// =====================================
+// TAMANHOS DE COMPONENTES
+// =====================================
+
+$control-height-small: 36px;
+$control-height-medium: 44px;
+$control-height-large: 52px;
+
+
+// =====================================
+// TRANSIÇÕES
+// =====================================
+
+$transition: 180ms ease;
+$transition-fast: 120ms ease;
+$transition-slow: 260ms ease;

@@ -1,0 +1,80 @@
+@use '../../../../theme/variables' as variables;
+
+.sidebar {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  background:
+    linear-gradient(
+      180deg,
+      variables.$primary-dark 0%,
+      #082f49 100%
+    );
+  color: variables.$surface;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 26px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+  strong,
+  small {
+    display: block;
+  }
+
+  small {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.68);
+  }
+}
+
+.sidebar__logo {
+  width: 76px;
+  min-width: 76px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  border-radius: variables.$radius-medium;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar__navigation {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 24px;
+}
+
+.sidebar__item {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 14px;
+  border-radius: variables.$radius-medium;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: variables.$surface;
+  }
+}
+
+.sidebar__item--active {
+  background: rgba(255, 255, 255, 0.16);
+  color: variables.$surface;
+}
+
+.sidebar__footer {
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}

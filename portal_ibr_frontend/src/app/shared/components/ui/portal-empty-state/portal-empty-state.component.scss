@@ -1,0 +1,58 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.portal-empty-state {
+  min-height: 220px;
+  padding: variables.$space-6;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: variables.$space-3;
+
+  text-align: center;
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: variables.$radius-large;
+    background: variables.$primary-soft;
+    color: variables.$primary;
+
+    mat-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+    }
+  }
+
+  &__title {
+    margin: variables.$space-1 0 0;
+
+    color: variables.$text-primary;
+    font-family: variables.$font-family;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-bold;
+    line-height: 1.4;
+  }
+
+  &__message {
+    max-width: 480px;
+    margin: 0 0 variables.$space-2;
+
+    color: variables.$text-secondary;
+    font-family: variables.$font-family;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+}

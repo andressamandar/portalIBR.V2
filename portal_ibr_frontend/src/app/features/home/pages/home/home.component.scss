@@ -1,0 +1,107 @@
+@use '../../../../../theme/variables' as variables;
+
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: variables.$background;
+}
+
+.hero {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.brand__logo {
+  flex-shrink: 0;
+  padding: 20px;
+  border-radius: variables.$radius-large;
+  background: variables.$primary-dark;
+  box-shadow: variables.$shadow-medium;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brand__church {
+  color: variables.$primary;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand__text h1 {
+  margin: 0;
+  color: variables.$primary-dark;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+}
+
+.brand__text p {
+  margin: 0;
+  max-width: 520px;
+  color: variables.$text-secondary;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.ministries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+
+  .brand {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .brand__text {
+    align-items: center;
+  }
+
+  .brand__text p {
+    max-width: 100%;
+  }
+
+  .ministries {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .home-page {
+    padding: 24px 16px;
+  }
+
+  .hero {
+    gap: 32px;
+  }
+
+  .brand {
+    gap: 20px;
+  }
+
+  .brand__logo {
+    padding: 16px;
+  }
+
+}

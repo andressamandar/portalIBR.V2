@@ -1,0 +1,36 @@
+<button
+  class="portal-button"
+  [type]="type"
+  [class.portal-button--primary]="variant === 'primary'"
+  [class.portal-button--secondary]="variant === 'secondary'"
+  [class.portal-button--outline]="variant === 'outline'"
+  [class.portal-button--danger]="variant === 'danger'"
+  [class.portal-button--text]="variant === 'text'"
+  [class.portal-button--full-width]="fullWidth"
+  [class.portal-button--loading]="loading"
+  [disabled]="isDisabled"
+  [attr.aria-label]="ariaLabel || null"
+  [attr.aria-busy]="loading"
+  (click)="handleClick()"
+>
+  @if (loading) {
+    <mat-spinner
+      diameter="18"
+      class="portal-button__spinner">
+    </mat-spinner>
+
+    <span class="portal-button__loading-text">
+      {{ loadingText }}
+    </span>
+  } @else {
+    @if (icon) {
+      <mat-icon class="portal-button__icon">
+        {{ icon }}
+      </mat-icon>
+    }
+
+    <span class="portal-button__label">
+      <ng-content></ng-content>
+    </span>
+  }
+</button>

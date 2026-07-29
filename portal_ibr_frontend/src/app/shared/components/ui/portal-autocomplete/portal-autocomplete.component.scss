@@ -1,0 +1,84 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.portal-autocomplete {
+  width: 100%;
+
+  &__required {
+    color: variables.$danger;
+  }
+
+  &__spinner {
+    margin-right: variables.$space-2;
+  }
+
+  &__checkbox {
+    width: 100%;
+    pointer-events: none;
+  }
+
+  &__selected {
+    display: flex;
+    flex-wrap: wrap;
+    gap: variables.$space-1;
+
+    margin-top: variables.$space-2;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+
+  &__selected-label {
+    color: variables.$text-primary;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+:host ::ng-deep {
+  .mat-mdc-form-field {
+    font-family: variables.$font-family;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    background: variables.$surface;
+    border-radius: variables.$radius-medium;
+  }
+
+  .mat-mdc-form-field-icon-prefix {
+    padding-right: variables.$space-3;
+    color: variables.$text-secondary;
+  }
+
+  .mat-mdc-form-field-icon-suffix {
+    display: flex;
+    align-items: center;
+  }
+
+  .mat-mdc-form-field.mat-focused {
+    .mat-mdc-form-field-icon-prefix {
+      color: variables.$primary;
+    }
+  }
+
+  .mdc-text-field--disabled {
+    background: variables.$background;
+  }
+
+  .portal-autocomplete__checkbox {
+    .mdc-label {
+      width: 100%;
+      color: variables.$text-primary;
+    }
+
+    .mdc-checkbox__native-control:enabled:checked
+      ~ .mdc-checkbox__background {
+      border-color: variables.$primary;
+      background-color: variables.$primary;
+    }
+  }
+}

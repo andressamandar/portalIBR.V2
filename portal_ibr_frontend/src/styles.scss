@@ -1,0 +1,77 @@
+@use './theme/reset';
+@use './theme/typography';
+@use './theme/variables' as variables;
+
+
+body {
+  background: variables.$background;
+}
+
+// =====================================
+// PORTAL SNACKBAR
+// =====================================
+
+.mat-mdc-snack-bar-container.portal-snackbar {
+  margin: variables.$space-4;
+
+  .mdc-snackbar__surface {
+    min-width: 320px;
+    border-radius: variables.$radius-medium;
+    box-shadow: variables.$shadow-medium;
+  }
+
+  .mat-mdc-snack-bar-label {
+    font-family: variables.$font-family;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-medium;
+  }
+
+  .mat-mdc-snack-bar-action {
+    font-family: variables.$font-family;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+.mat-mdc-snack-bar-container.portal-snackbar--success {
+  .mdc-snackbar__surface {
+    background: variables.$success;
+  }
+
+  .mat-mdc-snack-bar-label,
+  .mat-mdc-snack-bar-action {
+    color: variables.$text-white;
+  }
+}
+
+.mat-mdc-snack-bar-container.portal-snackbar--error {
+  .mdc-snackbar__surface {
+    background: variables.$danger;
+  }
+
+  .mat-mdc-snack-bar-label,
+  .mat-mdc-snack-bar-action {
+    color: variables.$text-white;
+  }
+}
+
+.mat-mdc-snack-bar-container.portal-snackbar--warning {
+  .mdc-snackbar__surface {
+    background: variables.$warning;
+  }
+
+  .mat-mdc-snack-bar-label,
+  .mat-mdc-snack-bar-action {
+    color: variables.$text-primary;
+  }
+}
+
+.mat-mdc-snack-bar-container.portal-snackbar--info {
+  .mdc-snackbar__surface {
+    background: variables.$info;
+  }
+
+  .mat-mdc-snack-bar-label,
+  .mat-mdc-snack-bar-action {
+    color: variables.$text-white;
+  }
+}

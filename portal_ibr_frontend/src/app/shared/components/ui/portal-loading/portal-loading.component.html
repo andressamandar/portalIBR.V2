@@ -1,0 +1,16 @@
+<div
+  class="portal-loading"
+  role="status"
+  aria-live="polite"
+>
+  <mat-spinner
+    diameter="44"
+    class="portal-loading__spinner">
+  </mat-spinner>
+
+  @if (message) {
+    <p class="portal-loading__message">
+      {{ message }}
+    </p>
+  }
+</div>

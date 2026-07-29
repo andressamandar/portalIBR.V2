@@ -1,0 +1,55 @@
+<main class="access-page">
+  <section class="access-container">
+
+    <button
+      type="button"
+      class="access-back"
+      (click)="voltar()"
+    >
+      ← Voltar
+    </button>
+
+    <header class="access-header">
+      <app-logo
+        variant="full"
+        size="medium">
+      </app-logo>
+
+      <div class="access-header__text">
+        <span>Ministério de Mídia</span>
+
+        <h1>Como deseja acessar?</h1>
+
+        <p>
+          Selecione o tipo de acesso para continuar.
+        </p>
+      </div>
+    </header>
+
+    <div class="access-options">
+
+      <app-selection-card
+        icon="admin_panel_settings"
+        title="Liderança"
+        subtitle="Gerencie integrantes, escalas, tarefas e solicitações"
+        (cardClick)="selecionarAcesso('lideranca')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="person"
+        title="Integrante"
+        subtitle="Informe sua disponibilidade, consulte escalas e acompanhe tarefas"
+        (cardClick)="selecionarAcesso('integrante')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="design_services"
+        title="Solicitações"
+        subtitle="Solicite artes e acompanhe o andamento dos pedidos"
+        (cardClick)="selecionarAcesso('solicitacoes')">
+      </app-selection-card>
+
+    </div>
+
+  </section>
+</main>

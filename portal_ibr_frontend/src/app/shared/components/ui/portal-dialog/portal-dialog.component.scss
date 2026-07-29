@@ -1,0 +1,109 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+}
+
+.portal-dialog {
+  width: 420px;
+  max-width: 100%;
+  padding: variables.$space-6;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: variables.$space-4;
+
+  color: variables.$text-primary;
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: variables.$radius-medium;
+    background: variables.$primary-soft;
+    color: variables.$primary;
+
+    mat-icon {
+      width: 28px;
+      height: 28px;
+      font-size: 28px;
+    }
+  }
+
+  &__content {
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+    padding: 0;
+
+    color: variables.$text-primary;
+    font-family: variables.$font-family;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-bold;
+    line-height: 1.3;
+  }
+
+  &__message {
+    margin-top: variables.$space-2;
+    padding: 0;
+
+    color: variables.$text-secondary;
+    font-family: variables.$font-family;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+
+  &__actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: variables.$space-3;
+
+    min-height: auto;
+    margin-top: variables.$space-3;
+    padding: 0;
+  }
+
+  &--danger {
+    .portal-dialog__icon {
+      background: variables.$danger-soft;
+      color: variables.$danger;
+    }
+  }
+
+  &--info {
+    .portal-dialog__icon {
+      background: variables.$info-soft;
+      color: variables.$info;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .portal-dialog {
+    width: 100%;
+    padding: variables.$space-5;
+
+    grid-template-columns: 1fr;
+
+    &__icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    &__actions {
+      flex-direction: column-reverse;
+
+      app-portal-button {
+        width: 100%;
+      }
+    }
+  }
+}

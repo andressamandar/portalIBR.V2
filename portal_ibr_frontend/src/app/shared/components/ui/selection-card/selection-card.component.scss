@@ -1,0 +1,112 @@
+@use '../../../../../theme/variables' as variables;
+
+.selection-card {
+  width: 100%;
+  min-height: 150px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid variables.$border;
+  border-radius: variables.$radius-large;
+  background: variables.$surface;
+  color: variables.$text-primary;
+  box-shadow: variables.$shadow-small;
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    transform variables.$transition,
+    border-color variables.$transition,
+    box-shadow variables.$transition;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-4px);
+    border-color: variables.$primary-light;
+    box-shadow: variables.$shadow-medium;
+
+    .selection-card__arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(17, 90, 138, 0.25);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.selection-card--disabled {
+  opacity: 0.55;
+}
+
+.selection-card__icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: variables.$radius-medium;
+  background: rgba(17, 90, 138, 0.1);
+  color: variables.$primary;
+
+  mat-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+  }
+}
+
+.selection-card__content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  small {
+    color: variables.$text-secondary;
+    line-height: 1.45;
+  }
+}
+
+.selection-card__heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  strong {
+    color: variables.$primary-dark;
+    font-size: 1.2rem;
+  }
+}
+
+.selection-card__badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(17, 90, 138, 0.1);
+  color: variables.$primary;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.selection-card__arrow {
+  color: variables.$primary;
+  transition: transform variables.$transition;
+}
+
+@media (max-width: 500px) {
+  .selection-card {
+    min-height: 130px;
+    padding: 20px;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .selection-card__arrow {
+    display: none;
+  }
+}
