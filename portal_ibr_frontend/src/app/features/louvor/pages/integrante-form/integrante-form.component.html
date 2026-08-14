@@ -1,0 +1,71 @@
+<main class="integrante-form-page">
+  <section class="integrante-form-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="cancelar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="integrante-form-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Cadastrar Integrante</h1>
+
+      <p>
+        Informe o nome e selecione as funções que o integrante pode exercer.
+      </p>
+    </header>
+
+    <form
+      class="integrante-form-card"
+      (ngSubmit)="salvar()"
+    >
+      <app-portal-input
+        name="nome"
+        label="Nome"
+        placeholder="Digite o nome do integrante"
+        icon="person"
+        [required]="true"
+        [(ngModel)]="nome">
+      </app-portal-input>
+
+      <app-portal-select
+        name="funcoes"
+        label="Funções"
+        placeholder="Selecione uma ou mais funções"
+        icon="assignment_ind"
+        [options]="funcoes"
+        optionLabel="nome"
+        optionValue="id"
+        [multiple]="true"
+        [required]="true"
+        [(ngModel)]="funcoesSelecionadas">
+      </app-portal-select>
+
+      <div class="integrante-form-actions">
+
+        <app-portal-button
+          type="button"
+          variant="secondary"
+          (buttonClick)="cancelar()">
+          Cancelar
+        </app-portal-button>
+
+        <app-portal-button
+          type="submit"
+          icon="save"
+          [disabled]="!formularioValido"
+          [loading]="salvando"
+          loadingText="Salvando">
+          Salvar
+        </app-portal-button>
+
+      </div>
+    </form>
+
+  </section>
+</main>

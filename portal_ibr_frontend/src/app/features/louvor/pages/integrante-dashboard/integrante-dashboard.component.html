@@ -1,0 +1,77 @@
+<main class="dashboard-page">
+  <section class="dashboard-container">
+
+    <header class="dashboard-header">
+
+      <div class="dashboard-header__brand">
+        <app-logo
+          variant="full"
+          size="medium">
+        </app-logo>
+
+        <div class="dashboard-header__text">
+          <span>Ministério de Louvor</span>
+
+          <h1>Área do Integrante</h1>
+
+          <p>
+            Bem-vindo(a), {{ usuario?.nome }}.
+          </p>
+        </div>
+      </div>
+
+      <app-portal-button
+        variant="text"
+        icon="logout"
+        (buttonClick)="sair()">
+        Sair
+      </app-portal-button>
+
+    </header>
+
+    <section class="dashboard-content">
+
+      <div class="dashboard-content__header">
+        <h2>O que deseja acessar?</h2>
+
+        <p>
+          Selecione uma das opções abaixo para continuar.
+        </p>
+      </div>
+
+      <div class="dashboard-options">
+
+        <app-selection-card
+          icon="event_available"
+          title="Disponibilidade"
+          subtitle="Informe os dias em que você está disponível"
+          (cardClick)="selecionarOpcao('disponibilidade')">
+        </app-selection-card>
+
+        <app-selection-card
+          icon="music_note"
+          title="Louvores"
+          subtitle="Consulte os louvores das próximas escalas"
+          (cardClick)="selecionarOpcao('louvores')">
+        </app-selection-card>
+
+        <app-selection-card
+          icon="person_pin"
+          title="Minha Escala"
+          subtitle="Veja suas próximas escalas e funções"
+          (cardClick)="selecionarOpcao('minha-escala')">
+        </app-selection-card>
+
+        <app-selection-card
+          icon="calendar_month"
+          title="Escala Completa"
+          subtitle="Consulte a escala completa do ministério"
+          (cardClick)="selecionarOpcao('escala-completa')">
+        </app-selection-card>
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
