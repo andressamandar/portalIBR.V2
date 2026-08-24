@@ -1,5 +1,5 @@
-<main class="integrante-form-page">
-  <section class="integrante-form-container">
+<main class="data-form-page">
+  <section class="data-form-container">
 
     <div>
       <app-portal-button
@@ -10,18 +10,18 @@
       </app-portal-button>
     </div>
 
-    <header class="integrante-form-header">
+    <header class="data-form-header">
       <span>Ministério de Louvor</span>
 
       <h1>
-        {{ modoEdicao ? 'Editar Integrante' : 'Cadastrar Integrante' }}
+        {{ modoEdicao ? 'Editar Data' : 'Cadastrar Data' }}
       </h1>
 
       <p>
         @if (modoEdicao) {
-          Altere o nome ou as funções que o integrante pode exercer.
+          Altere a data ou as informações do culto ou evento.
         } @else {
-          Informe o nome e selecione as funções que o integrante pode exercer.
+          Informe a data e o tipo do culto ou evento.
         }
       </p>
     </header>
@@ -29,38 +29,49 @@
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando integrante...">
+        message="Carregando data...">
       </app-portal-loading>
 
     } @else {
 
       <form
-        class="integrante-form-card"
+        class="data-form-card"
         (ngSubmit)="salvar()"
       >
+
         <app-portal-input
-          name="nome"
-          label="Nome"
-          placeholder="Digite o nome do integrante"
-          icon="person"
+          name="dataCulto"
+          label="Data"
+          type="date"
+          icon="calendar_month"
           [required]="true"
-          [(ngModel)]="nome">
+          [(ngModel)]="dataCulto">
         </app-portal-input>
 
         <app-portal-select
-          name="funcoes"
-          label="Funções"
-          placeholder="Selecione uma ou mais funções"
-          icon="assignment_ind"
-          [options]="funcoes"
+          name="tipo"
+          label="Tipo"
+          placeholder="Selecione o tipo"
+          icon="event"
+          [options]="tipos"
           optionLabel="nome"
           optionValue="id"
-          [multiple]="true"
           [required]="true"
-          [(ngModel)]="funcoesSelecionadas">
+          [(ngModel)]="tipoSelecionado">
         </app-portal-select>
 
-        <div class="integrante-form-actions">
+        @if (ehOutroTipo) {
+          <app-portal-input
+            name="nomeEvento"
+            label="Nome do Evento"
+            placeholder="Digite o nome do evento"
+            icon="edit"
+            [required]="true"
+            [(ngModel)]="nomeEvento">
+          </app-portal-input>
+        }
+
+        <div class="data-form-actions">
 
           <app-portal-button
             type="button"
@@ -79,6 +90,7 @@
           </app-portal-button>
 
         </div>
+
       </form>
 
     }

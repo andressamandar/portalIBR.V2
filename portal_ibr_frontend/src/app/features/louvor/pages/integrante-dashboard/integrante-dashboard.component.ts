@@ -26,18 +26,20 @@ export class IntegranteDashboardComponent {
   readonly usuario: AuthUsuario | null =
     this.authService.obterUsuario();
 
-  selecionarOpcao(
-    opcao:
-      | 'disponibilidade'
-      | 'louvores'
-      | 'minha-escala'
-      | 'escala-completa'
-  ): void {
-    console.log(
-      'Opção selecionada:',
-      opcao
-    );
-  }
+ selecionarOpcao(
+      opcao:
+        | 'disponibilidade'
+        | 'louvores'
+        | 'minha-escala'
+        | 'escala-completa'
+    ): void {
+
+      if (opcao === 'disponibilidade') {
+        void this.router.navigate([
+          '/louvor/integrante/disponibilidade'
+        ]);
+      }
+    }
 
   sair(): void {
     this.authService.logout();

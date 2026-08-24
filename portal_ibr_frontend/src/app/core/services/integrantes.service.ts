@@ -19,6 +19,11 @@ export interface IntegrantesLoginResponse {
   message?: string;
 }
 
+export interface DesativarIntegranteResponse {
+  success: boolean;
+  message?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -82,6 +87,14 @@ export class IntegrantesService {
     return this.http.put<EditarIntegranteResponse>(
       `${this.apiUrl}/${id}`,
       dados
+    );
+  }
+
+  desativar(
+    id: string
+  ): Observable<DesativarIntegranteResponse> {
+    return this.http.delete<DesativarIntegranteResponse>(
+      `${this.apiUrl}/${id}`
     );
   }
 

@@ -1,0 +1,63 @@
+<main class="escala-page">
+  <section class="escala-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="escala-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Escala</h1>
+
+      <p>
+        Gerencie datas, escalas, disponibilidades e downloads.
+      </p>
+    </header>
+
+    <div class="escala-options">
+
+      <app-selection-card
+        icon="event"
+        title="Gerenciar Datas"
+        subtitle="Cadastre, edite e gerencie as datas dos cultos"
+        (cardClick)="selecionarOpcao('gerenciar-datas')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="edit_calendar"
+        title="Criar Escala"
+        subtitle="Monte e edite as escalas das datas cadastradas"
+        (cardClick)="selecionarOpcao('criar-escala')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="fact_check"
+        title="Visualizar Preenchimento"
+        subtitle="Veja quem já informou a disponibilidade"
+        (cardClick)="selecionarOpcao('preenchimento')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="event_available"
+        title="Visualizar Disponibilidades"
+        subtitle="Consulte a disponibilidade dos integrantes por data"
+        (cardClick)="selecionarOpcao('disponibilidades')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="download"
+        title="Download da Escala"
+        subtitle="Visualize e exporte a escala completa em PDF"
+        (cardClick)="selecionarOpcao('download')">
+      </app-selection-card>
+
+    </div>
+
+  </section>
+</main>

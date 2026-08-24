@@ -43,12 +43,13 @@ export class PortalInputComponent implements ControlValueAccessor {
   @Input() hint = '';
   @Input() errorMessage = '';
 
-  @Input() type:
-    | 'text'
-    | 'password'
-    | 'email'
-    | 'number'
-    | 'tel' = 'text';
+ @Input() type:
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'tel'
+  | 'date' = 'text';
 
   @Input() icon = '';
   @Input() suffixIcon = '';
@@ -127,5 +128,19 @@ export class PortalInputComponent implements ControlValueAccessor {
     }
 
     this.suffixClick.emit();
+  }
+
+  handleClick(
+    input: HTMLInputElement
+  ): void {
+    if (
+      this.type !== 'date' ||
+      this.isDisabled ||
+      this.readonly
+    ) {
+      return;
+    }
+
+    input.showPicker();
   }
 }

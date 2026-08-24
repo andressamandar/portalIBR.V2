@@ -1,0 +1,132 @@
+<main class="datas-page">
+  <section class="datas-container">
+
+    <header class="datas-header">
+
+      <div>
+        <app-portal-button
+          variant="text"
+          icon="arrow_back"
+          (buttonClick)="voltar()">
+          Voltar
+        </app-portal-button>
+      </div>
+
+      <div class="datas-header__content">
+
+        <div>
+          <span>Ministério de Louvor</span>
+
+          <h1>Gerenciar Datas</h1>
+
+          <p>
+            Cadastre e gerencie as datas dos cultos e eventos.
+          </p>
+        </div>
+
+        <app-portal-button
+            icon="add"
+            (buttonClick)="novaData()">
+            Nova Data
+        </app-portal-button>
+
+      </div>
+
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando datas...">
+      </app-portal-loading>
+
+    } @else if (datas.length === 0) {
+
+        <app-portal-empty-state
+            icon="event_busy"
+            title="Nenhuma data cadastrada"
+            message="Ainda não existem datas ativas cadastradas para o Ministério de Louvor."
+            actionText="Cadastrar data"
+            actionIcon="add"
+            (actionClick)="novaData()">
+        </app-portal-empty-state>
+
+    } @else {
+
+      <section class="datas-list">
+
+        @for (
+          item of datas;
+          track item._id
+        ) {
+
+          <article class="data-card">
+
+            <div class="data-card__content">
+
+              <div class="data-card__date">
+                <div class="data-card__icon">
+                  <span>
+                    {{ formatarData(item.data) }}
+                  </span>
+                </div>
+
+                <div>
+                  <h2>
+                    @if (item.tipo === 'Outros') {
+                      {{ item.nome_evento }}
+                    } @else {
+                      {{ item.tipo }}
+                    }
+                  </h2>
+
+                  <p>
+                    {{ formatarData(item.data) }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="data-card__status">
+
+                @if (item.escala_criada) {
+                  <span class="data-card__badge data-card__badge--success">
+                    Escala criada
+                  </span>
+                } @else {
+                  <span class="data-card__badge">
+                    Sem escala
+                  </span>
+                }
+
+              </div>
+
+            </div>
+
+            <div class="data-card__actions">
+
+                <app-portal-button
+                    variant="outline"
+                    icon="edit"
+                    (buttonClick)="editarData(item._id)">
+                    Editar
+                </app-portal-button>
+
+                <app-portal-button
+                    variant="danger"
+                    icon="delete"
+                    (buttonClick)="removerData(item)">
+                    Remover
+                </app-portal-button>
+
+            </div>
+
+          </article>
+
+        }
+
+      </section>
+
+    }
+
+  </section>
+</main>

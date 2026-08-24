@@ -28,7 +28,15 @@ export class LiderancaDashboardComponent {
 
   selecionarOpcao(
     opcao: 'escala' | 'louvores' | 'integrantes'
-  ): void {
+    ): void {
+    if (opcao === 'escala') {
+      void this.router.navigate([
+        '/louvor/lideranca/escala'
+      ]);
+
+      return;
+    }
+
     if (opcao === 'integrantes') {
       void this.router.navigate([
         '/louvor/lideranca/integrantes'

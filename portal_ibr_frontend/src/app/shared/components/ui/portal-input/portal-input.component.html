@@ -18,6 +18,7 @@
   }
 
   <input
+    #inputElement
     matInput
     [type]="inputType"
     [value]="value"
@@ -29,6 +30,7 @@
     [attr.maxlength]="maxlength"
     [attr.minlength]="minlength"
     (input)="handleInput($any($event.target).value)"
+    (click)="handleClick(inputElement)"
     (blur)="handleBlur()"
   />
 

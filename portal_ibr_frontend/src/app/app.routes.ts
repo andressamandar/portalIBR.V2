@@ -3,19 +3,14 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('./features/home/pages/home/home.component')
-        .then(component => component.HomeComponent)
-  },
+  
+  {path: '',loadComponent: () =>import('./features/home/pages/home/home.component').then(component => component.HomeComponent)},
 
   // =====================================
   // MINISTÉRIO DE LOUVOR
   // =====================================
 
-  {
-    path: 'louvor',
+  {path: 'louvor',
     loadComponent: () =>
       import('./features/louvor/pages/louvor-access/louvor-access.component')
         .then(component => component.LouvorAccessComponent)
@@ -72,46 +67,116 @@ export const routes: Routes = [
   },
 
   {
-  path: 'louvor/lideranca/integrantes',
-  canActivate: [authGuard],
-  data: {
-    perfis: ['lideranca_louvor']
+    path: 'louvor/lideranca/integrantes',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/integrantes/integrantes.component'
+      ).then(
+        component => component.IntegrantesComponent
+      )
   },
-  loadComponent: () =>
-    import(
-      './features/louvor/pages/integrantes/integrantes.component'
-    ).then(
-      component => component.IntegrantesComponent
-    )
-},
 
-{
-  path: 'louvor/lideranca/integrantes/novo',
-  canActivate: [authGuard],
-  data: {
-    perfis: ['lideranca_louvor']
+  {
+    path: 'louvor/lideranca/integrantes/novo',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/integrante-form/integrante-form.component'
+      ).then(
+        component => component.IntegranteFormComponent
+      )
   },
-  loadComponent: () =>
-    import(
-      './features/louvor/pages/integrante-form/integrante-form.component'
-    ).then(
-      component => component.IntegranteFormComponent
-    )
-},
 
-{
-  path: 'louvor/lideranca/integrantes/:id/editar',
-  canActivate: [authGuard],
-  data: {
-    perfis: ['lideranca_louvor']
+  {
+    path: 'louvor/lideranca/integrantes/:id/editar',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/integrante-form/integrante-form.component'
+      ).then(
+        component => component.IntegranteFormComponent
+      )
   },
-  loadComponent: () =>
-    import(
-      './features/louvor/pages/integrante-form/integrante-form.component'
-    ).then(
-      component => component.IntegranteFormComponent
-    )
-},
+
+  {
+    path: 'louvor/lideranca/escala',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/escala/escala.component'
+      ).then(
+        component => component.EscalaComponent
+      )
+  },
+
+  {
+    path: 'louvor/lideranca/escala/datas',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/gerenciar-datas/gerenciar-datas.component'
+      ).then(
+        component => component.GerenciarDatasComponent
+      )
+  },
+
+  {
+    path: 'louvor/lideranca/escala/datas/nova',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/data-form/data-form.component'
+      ).then(
+        component => component.DataFormComponent
+      )
+  },
+
+  {
+    path: 'louvor/lideranca/escala/datas/:id/editar',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/data-form/data-form.component'
+      ).then(
+        component => component.DataFormComponent
+      )
+  },
+
+  {
+    path: 'louvor/lideranca/escala/criar',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/criar-escala/criar-escala.component'
+      ).then(
+        component => component.CriarEscalaComponent
+      )
+  },
 
   // =====================================
   // MINISTÉRIO DE MÍDIA
@@ -147,32 +212,46 @@ export const routes: Routes = [
   },
 
   {
-  path: 'midia/lideranca',
-  canActivate: [authGuard],
-  data: {
-    perfis: ['lideranca_midia']
+    path: 'midia/lideranca',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/lideranca-dashboard/lideranca-dashboard.component'
+      ).then(
+        component => component.LiderancaDashboardComponent
+      )
   },
-  loadComponent: () =>
-    import(
-      './features/midia/pages/lideranca-dashboard/lideranca-dashboard.component'
-    ).then(
-      component => component.LiderancaDashboardComponent
-    )
-},
 
-{
-  path: 'midia/integrante',
-  canActivate: [authGuard],
-  data: {
-    perfis: ['integrante_midia']
+  {
+    path: 'midia/integrante',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['integrante_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/integrante-dashboard/integrante-dashboard.component'
+      ).then(
+        component => component.IntegranteDashboardComponent
+      )
   },
-  loadComponent: () =>
-    import(
-      './features/midia/pages/integrante-dashboard/integrante-dashboard.component'
-    ).then(
-      component => component.IntegranteDashboardComponent
-    )
-},
+
+  {
+    path: 'louvor/integrante/disponibilidade',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['integrante_louvor']
+    },
+    loadComponent: () =>
+      import(
+        './features/louvor/pages/disponibilidade/disponibilidade.component'
+      ).then(
+        component => component.DisponibilidadeComponent
+      )
+  },
 
   // =====================================
   // DESENVOLVIMENTO

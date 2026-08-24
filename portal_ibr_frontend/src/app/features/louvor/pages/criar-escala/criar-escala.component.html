@@ -1,0 +1,190 @@
+<main class="criar-escala-page">
+  <section class="criar-escala-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="criar-escala-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Criar Escala</h1>
+
+      <p>
+        Selecione uma data para montar ou editar a escala.
+      </p>
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando dados da escala...">
+      </app-portal-loading>
+
+    } @else {
+
+      <section class="criar-escala-card">
+
+        <app-portal-select
+          name="data"
+          label="Data"
+          placeholder="Selecione uma data"
+          icon="event"
+          [options]="datasOpcoes"
+          optionLabel="nome"
+          optionValue="id"
+          [required]="true"
+          [(ngModel)]="dataSelecionada"
+          (ngModelChange)="selecionarData()">
+        </app-portal-select>
+
+        @if (carregandoData) {
+
+          <app-portal-loading
+            message="Carregando disponibilidade...">
+          </app-portal-loading>
+
+        } @else if (dataSelecionada) {
+
+          <div class="data-resumo">
+
+            @if (escalaExistente) {
+
+              <div
+                class="status-escala status-existente">
+
+                <span class="material-icons">
+                  edit_calendar
+                </span>
+
+                <div>
+                  <strong>
+                    Esta data já possui uma escala
+                  </strong>
+
+                  <p>
+                    Você está editando a escala existente.
+                  </p>
+                </div>
+
+              </div>
+
+            } @else {
+
+              <div
+                class="status-escala status-nova">
+
+                <span class="material-icons">
+                  add_task
+                </span>
+
+                <div>
+                  <strong>
+                    Nova escala
+                  </strong>
+
+                  <p>
+                    Ainda não existe uma escala para esta data.
+                  </p>
+                </div>
+
+              </div>
+
+            }
+
+            <div class="disponibilidade-resumo">
+
+              <strong>
+                Integrantes disponíveis:
+                {{ integrantesDisponiveisCompletos.length }}
+              </strong>
+
+              @if (
+                integrantesDisponiveisCompletos.length === 0
+              ) {
+
+                <p>
+                  Nenhum integrante informou disponibilidade
+                  para esta data.
+                </p>
+
+              } @else {
+
+                <p>
+                  Selecione abaixo os integrantes
+                  para cada função.
+                </p>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <section class="funcoes-section">
+
+            <div class="funcoes-header">
+              <h2>Montar Escala</h2>
+
+              <p>
+                Selecione um ou mais integrantes
+                para cada função.
+              </p>
+            </div>
+
+
+            <div class="funcoes-grid">
+
+              @for (
+                funcao of funcoesEscala;
+                track funcao;
+                let indice = $index
+              ) {
+
+                <div class="funcao-item">
+
+                  <app-portal-select
+                    [name]="'funcao-' + indice"
+                    [label]="funcao"
+                    placeholder="Selecione"
+                    icon="person"
+                    [options]="obterOpcoesPorFuncao(funcao)"
+                    optionLabel="nome"
+                    optionValue="id"
+                    [multiple]="true"
+                    [(ngModel)]="selecoesPorFuncao[funcao]">
+                  </app-portal-select>
+
+                  @if (
+                    obterOpcoesPorFuncao(funcao).length === 0
+                  ) {
+
+                    <span class="sem-disponiveis">
+                      Nenhum integrante disponível
+                      para esta função.
+                    </span>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+        }
+
+      </section>
+
+    }
+
+  </section>
+</main>
