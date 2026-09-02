@@ -1,0 +1,109 @@
+<main class="louvor-form-page">
+  <section class="louvor-form-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="cancelar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="louvor-form-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>
+        {{ modoEdicao ? 'Editar Louvor' : 'Novo Louvor' }}
+      </h1>
+
+      <p>
+        @if (modoEdicao) {
+          Altere as informações do louvor cadastrado.
+        } @else {
+          Cadastre um novo louvor para utilizar nas escalas.
+        }
+      </p>
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando louvor...">
+      </app-portal-loading>
+
+    } @else {
+
+      <form
+        class="louvor-form-card"
+        (ngSubmit)="salvar()">
+
+        <app-portal-input
+          name="louvor"
+          label="Nome do Louvor"
+          placeholder="Digite o nome do louvor"
+          icon="music_note"
+          [required]="true"
+          [(ngModel)]="louvor">
+        </app-portal-input>
+
+        <app-portal-input
+          name="tom"
+          label="Tom"
+          placeholder="Ex.: G, A, Bb, C#m"
+          icon="music_note"
+          [(ngModel)]="tom">
+        </app-portal-input>
+
+        <app-portal-select
+            name="categoria"
+            label="Categoria"
+            placeholder="Selecione a categoria"
+            icon="category"
+            [options]="categorias"
+            optionLabel="nome"
+            optionValue="id"
+            [required]="true"
+            [(ngModel)]="categoriaSelecionada">
+        </app-portal-select>
+
+        <app-portal-input
+          name="link"
+          label="Link"
+          placeholder="https://..."
+          icon="link"
+          [(ngModel)]="link">
+        </app-portal-input>
+
+        <div class="louvor-form-actions">
+
+          <app-portal-button
+            type="button"
+            variant="secondary"
+            (buttonClick)="cancelar()">
+            Cancelar
+          </app-portal-button>
+
+          <app-portal-button
+            type="submit"
+            icon="save"
+            [disabled]="!formularioValido"
+            [loading]="salvando"
+            loadingText="Salvando">
+
+            {{
+              modoEdicao
+                ? 'Salvar Alterações'
+                : 'Cadastrar Louvor'
+            }}
+
+          </app-portal-button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </section>
+</main>

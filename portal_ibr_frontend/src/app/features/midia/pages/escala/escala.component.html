@@ -1,0 +1,95 @@
+<main class="escala-page">
+  <section class="escala-container">
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="escala-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Escala
+      </h1>
+
+      <p>
+        Gerencie as datas, escalas e disponibilidades
+        dos integrantes do Ministério de Mídia.
+      </p>
+
+    </header>
+
+
+    <section class="escala-content">
+
+      <div class="escala-content__header">
+
+        <h2>
+          O que deseja gerenciar?
+        </h2>
+
+        <p>
+          Selecione uma das opções abaixo para continuar.
+        </p>
+
+      </div>
+
+
+      <div class="escala-options">
+
+        <app-selection-card
+          icon="event"
+          title="Gerenciar Datas"
+          subtitle="Cadastre e gerencie as datas disponíveis para as escalas"
+          (cardClick)="selecionarOpcao('datas')">
+        </app-selection-card>
+
+
+        <app-selection-card
+          icon="edit_calendar"
+          title="Criar Escala"
+          subtitle="Crie ou edite as escalas do Ministério de Mídia"
+          (cardClick)="selecionarOpcao('criar')">
+        </app-selection-card>
+
+
+        <app-selection-card
+          icon="fact_check"
+          title="Visualizar Preenchimento"
+          subtitle="Veja quais integrantes preencheram suas disponibilidades"
+          (cardClick)="selecionarOpcao('preenchimento')">
+        </app-selection-card>
+
+
+        <app-selection-card
+          icon="event_available"
+          title="Visualizar Disponibilidades"
+          subtitle="Consulte quem está disponível ou indisponível em cada data"
+          (cardClick)="selecionarOpcao('disponibilidades')">
+        </app-selection-card>
+
+
+        <app-selection-card
+          icon="download"
+          title="Download da Escala"
+          subtitle="Visualize e baixe a escala completa do Ministério de Mídia"
+          (cardClick)="selecionarOpcao('download')">
+        </app-selection-card>
+
+      </div>
+
+    </section>
+
+  </section>
+</main>

@@ -42,6 +42,14 @@ export class LiderancaDashboardComponent {
         '/louvor/lideranca/integrantes'
       ]);
     }
+
+    if (opcao === 'louvores') {
+      void this.router.navigate([
+        '/louvor/lideranca/louvores'
+      ]);
+    }
+
+
   }
 
   sair(): void {

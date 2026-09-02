@@ -158,7 +158,8 @@
                     optionLabel="nome"
                     optionValue="id"
                     [multiple]="true"
-                    [(ngModel)]="selecoesPorFuncao[funcao]">
+                    [(ngModel)]="selecoesPorFuncao[funcao]"
+                    (ngModelChange)="verificarDuplicidade(funcao)">
                   </app-portal-select>
 
                   @if (
@@ -175,6 +176,88 @@
                 </div>
 
               }
+
+            </div>
+
+            @if (temAlgumaSelecao) {
+
+              <section class="preview-section">
+
+                <div class="preview-header">
+                  <span class="material-icons">
+                    visibility
+                  </span>
+
+                  <div>
+                    <h2>Pré-visualização da Escala</h2>
+
+                    <p>
+                      Confira como a escala ficará antes de salvar.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="preview-lista">
+
+                  @for (
+                    funcao of funcoesEscala;
+                    track funcao
+                  ) {
+
+                    @if (
+                      obterSelecionadosPorFuncao(funcao).length > 0
+                    ) {
+
+                      <div class="preview-item">
+
+                        <strong>
+                          {{ funcao }}
+                        </strong>
+
+                        <div class="preview-integrantes">
+
+                          @for (
+                            integrante of obterSelecionadosPorFuncao(funcao);
+                            track integrante.id
+                          ) {
+
+                            <span>
+                              {{ integrante.nome }}
+                            </span>
+
+                          }
+
+                        </div>
+
+                      </div>
+
+                    }
+
+                  }
+
+                </div>
+
+              </section>
+
+            }
+
+
+            <div class="escala-actions">
+
+              <app-portal-button
+                icon="save"
+                [disabled]="!temAlgumaSelecao"
+                [loading]="salvandoEscala"
+                loadingText="Salvando"
+                (buttonClick)="salvarEscala()">
+
+                {{
+                  escalaExistente
+                    ? 'Salvar Alterações'
+                    : 'Salvar Escala'
+                }}
+
+              </app-portal-button>
 
             </div>
 

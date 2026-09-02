@@ -58,3 +58,15 @@ class DisponibilidadesRepository:
         return db.disponibilidades.find({
             "ministerio": ministerio
         })
+        
+    @staticmethod
+    def listar_datas_abertas(
+        ministerio
+    ):
+        return list(
+            db.datas_escala.find({
+                "ministerio": ministerio,
+                "ativo": True,
+                "escala_criada": False
+            })
+        )

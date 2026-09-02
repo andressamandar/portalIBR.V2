@@ -1,11 +1,11 @@
 from flask import Blueprint, request, jsonify
-
 from database.mongo import db
-
 from services.disponibilidades_service import (
     buscar_disponibilidade_integrante_service,
+    listar_disponibilidades_service,
     listar_disponiveis_por_data_service,
-    salvar_disponibilidade_service
+    salvar_disponibilidade_service,
+    listar_disponibilidades_limitadas_service,
 )
 
 
@@ -49,6 +49,18 @@ def listar_datas_disponiveis():
         "success": True,
         "data": datas
     })
+    
+@disponibilidades_bp.route(
+        "",
+        methods=["GET"]
+    )
+def listar_disponibilidades():
+
+    return listar_disponibilidades_service(
+        ministerio=request.args.get(
+            "ministerio"
+        )
+    )
 
 
 @disponibilidades_bp.route(
@@ -144,37 +156,8 @@ def visualizar_preenchimento():
 )
 def disponibilidades_limitadas():
 
-    ministerio = request.args.get(
-        "ministerio"
+    return listar_disponibilidades_limitadas_service(
+        ministerio=request.args.get(
+            "ministerio"
+        )
     )
-
-    resultado = []
-
-    docs = db.disponibilidades.find({
-        "ministerio": ministerio
-    })
-
-    for doc in docs:
-
-        disponiveis = [
-            d["data"]
-            for d in doc.get(
-                "disponibilidades",
-                []
-            )
-            if d.get("disponivel")
-        ]
-
-        if len(disponiveis) <= 1:
-
-            resultado.append({
-                "nome": doc.get(
-                    "integrante_nome"
-                ),
-                "datas": disponiveis
-            })
-
-    return jsonify({
-        "success": True,
-        "data": resultado
-    })

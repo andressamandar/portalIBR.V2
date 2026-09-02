@@ -181,3 +181,111 @@ def listar_disponiveis_por_data_service(
         )
 
         return error(str(e), 500)
+    
+    
+def listar_disponibilidades_service(
+        ministerio
+    ):
+    try:
+        if not ministerio:
+            return error(
+                "Ministério é obrigatório.",
+                400
+            )
+
+        documentos = list(
+            DisponibilidadesRepository
+            .listar_por_ministerio(
+                ministerio
+            )
+        )
+
+        disponibilidades = [
+            _serialize_disponibilidade(
+                documento
+            )
+            for documento in documentos
+        ]
+
+        return success(
+            data=disponibilidades,
+            total=len(disponibilidades)
+        )
+
+    except Exception as e:
+        logger.exception(
+            "Erro ao listar disponibilidades"
+        )
+
+        return error(str(e), 500)
+    
+    
+def listar_disponibilidades_limitadas_service(
+    ministerio):
+    try:
+        if not ministerio:
+            return error(
+                "Ministério é obrigatório.",
+                400
+            )
+
+        datas_abertas = (
+            DisponibilidadesRepository
+            .listar_datas_abertas(
+                ministerio
+            )
+        )
+
+        ids_datas_abertas = {
+            str(data["_id"])
+            for data in datas_abertas
+        }
+
+        documentos = list(
+            DisponibilidadesRepository
+            .listar_por_ministerio(
+                ministerio
+            )
+        )
+
+        resultado = []
+
+        for documento in documentos:
+
+            datas_disponiveis = [
+                item.get("data")
+                for item in documento.get(
+                    "disponibilidades",
+                    []
+                )
+                if (
+                    item.get("data_id")
+                    in ids_datas_abertas
+                    and item.get("disponivel")
+                    is True
+                )
+            ]
+
+            if len(datas_disponiveis) <= 1:
+                resultado.append({
+                    "nome": documento.get(
+                        "integrante_nome"
+                    ),
+                    "datas":
+                        datas_disponiveis
+                })
+
+        return success(
+            data=resultado,
+            total=len(resultado)
+        )
+
+    except Exception as e:
+        logger.exception(
+            "Erro ao listar disponibilidades limitadas"
+        )
+
+        return error(
+            str(e),
+            500
+        )

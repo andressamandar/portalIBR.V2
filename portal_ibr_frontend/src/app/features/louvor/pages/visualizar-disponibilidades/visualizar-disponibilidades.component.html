@@ -1,0 +1,244 @@
+<main class="disponibilidades-page">
+  <section class="disponibilidades-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="disponibilidades-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Visualizar Disponibilidades</h1>
+
+      <p>
+        Consulte a disponibilidade dos integrantes
+        em cada data aberta.
+      </p>
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando disponibilidades...">
+      </app-portal-loading>
+
+    } @else if (
+      linhas.length === 0 ||
+      datas.length === 0
+    ) {
+
+      <app-portal-empty-state
+        icon="event_busy"
+        title="Nenhuma disponibilidade para exibir"
+        message="Não há integrantes ou datas abertas no momento.">
+      </app-portal-empty-state>
+
+    } @else {
+
+      @if (
+        disponibilidadesLimitadas.length > 0
+      ) {
+
+        <section class="alerta-limitadas">
+
+          <div class="alerta-limitadas-header">
+            <span class="material-icons">
+              warning
+            </span>
+
+            <div>
+              <strong>
+                Disponibilidade limitada
+              </strong>
+
+              <p>
+                Alguns integrantes possuem
+                disponibilidade em poucas datas.
+              </p>
+            </div>
+          </div>
+
+          <div class="limitadas-lista">
+
+            @for (
+              item of disponibilidadesLimitadas;
+              track item.nome
+            ) {
+
+              <div class="limitada-item">
+                <strong>
+                  {{ item.nome }}
+                </strong>
+
+                @if (item.datas.length === 0) {
+                  <span>
+                    Nenhuma data disponível
+                  </span>
+                } @else {
+                  <span>
+                    Disponível em
+                    {{ item.datas.length }}
+                    data(s)
+                  </span>
+                }
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+      <section class="tabela-card">
+
+        <div class="tabela-header">
+          <div>
+            <h2>Disponibilidade por Data</h2>
+
+            <p>
+              Verde = disponível,
+              vermelho = indisponível,
+              cinza = não preencheu.
+            </p>
+          </div>
+        </div>
+
+        <div class="tabela-wrapper">
+
+          <table class="disponibilidades-tabela">
+
+            <thead>
+              <tr>
+
+                <th class="coluna-integrante">
+                  Integrante
+                </th>
+
+                @for (
+                  data of datas;
+                  track data.id
+                ) {
+
+                  <th>
+                    <div class="data-cabecalho">
+                      <strong>
+                        {{ formatarData(data.data) }}
+                      </strong>
+
+                      <span>
+                        {{ data.descricao }}
+                      </span>
+                    </div>
+                  </th>
+
+                }
+
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (
+                linha of linhas;
+                track linha.integranteId
+              ) {
+
+                <tr>
+
+                  <td class="coluna-integrante">
+                    <strong>
+                      {{ linha.nome }}
+                    </strong>
+                  </td>
+
+                  @for (
+                    data of datas;
+                    track data.id
+                  ) {
+
+                    <td>
+
+                      @if (
+                        obterDisponibilidade(
+                          linha,
+                          data.id
+                        ) === true
+                      ) {
+
+                        <div
+                          class="status-disponibilidade disponivel">
+
+                          <span class="material-icons">
+                            check_circle
+                          </span>
+
+                          <span>
+                            Disponível
+                          </span>
+
+                        </div>
+
+                      } @else if (
+                        obterDisponibilidade(
+                          linha,
+                          data.id
+                        ) === false
+                      ) {
+
+                        <div
+                          class="status-disponibilidade indisponivel">
+
+                          <span class="material-icons">
+                            cancel
+                          </span>
+
+                          <span>
+                            Indisponível
+                          </span>
+
+                        </div>
+
+                      } @else {
+
+                        <div
+                          class="status-disponibilidade nao-preencheu">
+
+                          <span class="material-icons">
+                            remove_circle_outline
+                          </span>
+
+                          <span>
+                            Não preencheu
+                          </span>
+
+                        </div>
+
+                      }
+
+                    </td>
+
+                  }
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    }
+
+  </section>
+</main>

@@ -1,0 +1,125 @@
+<main class="download-escala-page">
+  <section class="download-escala-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="download-escala-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Download da Escala</h1>
+
+      <p>
+        Visualize as escalas criadas antes de gerar o arquivo em PDF.
+      </p>
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando escalas...">
+      </app-portal-loading>
+
+    } @else if (escalas.length === 0) {
+
+      <app-portal-empty-state
+        icon="event_busy"
+        title="Nenhuma escala criada"
+        message="Ainda não existem escalas do Ministério de Louvor para exibir.">
+      </app-portal-empty-state>
+
+    } @else {
+
+      <section class="escalas-lista">
+
+        @for (
+          escala of escalas;
+          track escala._id
+        ) {
+
+          <article class="escala-card">
+
+            <header class="escala-card-header">
+
+              <div class="escala-data">
+
+                <span class="material-icons">
+                  event
+                </span>
+
+                <div>
+                  <strong>
+                    {{ formatarData(escala.data) }}
+                  </strong>
+
+                  <span>
+                    Escala do Ministério de Louvor
+                  </span>
+                </div>
+
+              </div>
+
+            </header>
+
+            <div class="escala-funcoes">
+
+              @for (
+                funcao of obterFuncoesPreenchidas(escala);
+                track funcao
+              ) {
+
+                <div class="funcao-item">
+
+                  <strong class="funcao-nome">
+                    {{ funcao }}
+                  </strong>
+
+                  <div class="funcao-integrantes">
+
+                    @for (
+                      integrante of escala.funcoes[funcao];
+                      track integrante.id
+                    ) {
+
+                      <span class="integrante-tag">
+                        {{ integrante.nome }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </article>
+
+        }
+
+      </section>
+
+      <div class="download-actions">
+
+        <app-portal-button
+            icon="picture_as_pdf"
+            [loading]="gerandoPdf"
+            loadingText="Gerando PDF"
+            (buttonClick)="baixarPdf()">
+            Baixar Escala em PDF
+        </app-portal-button>
+
+      </div>
+
+    }
+
+  </section>
+</main>

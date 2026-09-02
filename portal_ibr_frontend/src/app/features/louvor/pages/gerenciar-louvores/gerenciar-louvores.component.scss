@@ -1,0 +1,224 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+}
+
+.gerenciar-louvores-page {
+  min-height: 100vh;
+  padding: variables.$space-6;
+  background: variables.$background;
+}
+
+.gerenciar-louvores-container {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-6;
+}
+
+.gerenciar-louvores-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: variables.$space-4;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-2;
+  }
+
+  span {
+    color: variables.$primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xxl;
+    font-weight: variables.$font-weight-bold;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+}
+
+.louvores-lista {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-3;
+}
+
+.louvor-card {
+  padding: variables.$space-4;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: variables.$space-4;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+}
+
+.louvor-info {
+  display: flex;
+  align-items: center;
+  gap: variables.$space-4;
+
+  min-width: 0;
+}
+
+.louvor-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: variables.$radius-medium;
+  background: variables.$primary-soft;
+
+  color: variables.$primary;
+
+  .material-icons {
+    font-size: 26px;
+  }
+}
+
+.louvor-dados {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  min-width: 0;
+
+  > strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-md;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+.louvor-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: variables.$space-3;
+
+  span,
+  a {
+    font-size: variables.$font-size-sm;
+  }
+
+  span {
+    color: variables.$text-secondary;
+  }
+
+  a {
+    color: variables.$primary;
+    font-weight: variables.$font-weight-medium;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.louvor-actions {
+  display: flex;
+  align-items: center;
+  gap: variables.$space-2;
+
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .gerenciar-louvores-page {
+    padding: variables.$space-4;
+  }
+
+  .gerenciar-louvores-container {
+    gap: variables.$space-5;
+  }
+
+  .gerenciar-louvores-header {
+    align-items: stretch;
+    flex-direction: column;
+
+    app-portal-button {
+      width: 100%;
+    }
+
+    h1 {
+      font-size: variables.$font-size-xl;
+    }
+  }
+
+  .louvor-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .louvor-actions {
+    width: 100%;
+
+    app-portal-button {
+      flex: 1;
+    }
+  }
+}
+
+/* CATEGORIAS LADO A LADO */
+.categorias-louvores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+
+/* CADA CATEGORIA */
+.categoria-louvores {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* LISTA INTERNA */
+.categoria-louvores .louvores-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+
+  .categorias-louvores {
+    grid-template-columns: 1fr;
+  }
+
+}

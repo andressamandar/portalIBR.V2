@@ -73,8 +73,15 @@
                   </h2>
 
                   <span>
-                    {{ integrante.funcoes.length }}
-                    {{ integrante.funcoes.length === 1 ? 'função' : 'funções' }}
+
+                    {{ obterFuncoesLouvor(integrante).length }}
+
+                    {{
+                      obterFuncoesLouvor(integrante).length === 1
+                        ? 'função'
+                        : 'funções'
+                    }}
+
                   </span>
                 </div>
               </div>
@@ -82,9 +89,9 @@
               <div class="integrante-card__functions">
 
                 @for (
-                  funcao of integrante.funcoes;
+                  funcao of obterFuncoesLouvor(integrante);
                   track funcao
-                ) {
+                )  {
                   <span class="integrante-card__function">
                     {{ funcao }}
                   </span>

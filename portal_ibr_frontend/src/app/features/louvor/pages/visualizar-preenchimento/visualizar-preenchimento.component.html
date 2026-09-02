@@ -1,0 +1,169 @@
+<main class="preenchimento-page">
+  <section class="preenchimento-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="preenchimento-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Visualizar Preenchimento</h1>
+
+      <p>
+        Acompanhe quais integrantes já informaram
+        a disponibilidade.
+      </p>
+    </header>
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando preenchimento...">
+      </app-portal-loading>
+
+    } @else if (integrantes.length === 0) {
+
+      <app-portal-empty-state
+        icon="group_off"
+        title="Nenhum integrante encontrado"
+        message="Não há integrantes ativos no Ministério de Louvor.">
+      </app-portal-empty-state>
+
+    } @else {
+
+      <section class="resumo-section">
+
+        <div class="resumo-card resumo-preenchido">
+          <span class="material-icons">
+            check_circle
+          </span>
+
+          <div>
+            <strong>
+              {{ totalPreencheram }}
+            </strong>
+
+            <span>
+              Preencheram
+            </span>
+          </div>
+        </div>
+
+        <div class="resumo-card resumo-pendente">
+          <span class="material-icons">
+            cancel
+          </span>
+
+          <div>
+            <strong>
+              {{ totalPendentes }}
+            </strong>
+
+            <span>
+              Pendentes
+            </span>
+          </div>
+        </div>
+
+        <div class="resumo-card">
+          <span class="material-icons">
+            groups
+          </span>
+
+          <div>
+            <strong>
+              {{ integrantes.length }}
+            </strong>
+
+            <span>
+              Total de integrantes
+            </span>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="preenchimento-card">
+
+        <div class="preenchimento-card-header">
+
+          <div>
+            <h2>Integrantes</h2>
+
+            <p>
+              Confira quem já enviou a disponibilidade.
+            </p>
+          </div>
+
+          <app-portal-button
+            variant="secondary"
+            icon="content_copy"
+            (buttonClick)="copiarLista()">
+            Copiar Lista
+          </app-portal-button>
+
+        </div>
+
+        <div class="integrantes-lista">
+
+          @for (
+            integrante of integrantes;
+            track integrante.nome
+          ) {
+
+            <div
+              class="integrante-item"
+              [class.preenchido]="integrante.preencheu"
+              [class.pendente]="!integrante.preencheu"
+            >
+
+              <div class="integrante-info">
+
+                <div class="integrante-avatar">
+                  {{ integrante.nome.charAt(0).toUpperCase() }}
+                </div>
+
+                <strong>
+                  {{ integrante.nome }}
+                </strong>
+
+              </div>
+
+              <div class="integrante-status">
+
+                <span class="material-icons">
+                  {{
+                    integrante.preencheu
+                      ? 'check_circle'
+                      : 'cancel'
+                  }}
+                </span>
+
+                <strong>
+                  {{
+                    integrante.preencheu
+                      ? 'Preencheu'
+                      : 'Pendente'
+                  }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </section>
+</main>

@@ -1,0 +1,401 @@
+<main class="gerenciar-louvores-page">
+  <section class="gerenciar-louvores-container">
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="gerenciar-louvores-header">
+
+      <div>
+
+        <span>
+          Ministério de Louvor
+        </span>
+
+        <h1>
+          Gerenciar Louvores
+        </h1>
+
+        <p>
+          Cadastre, edite e remova os louvores utilizados
+          nas escalas.
+        </p>
+
+      </div>
+
+
+      <app-portal-button
+        icon="add"
+        (buttonClick)="novoLouvor()">
+        Novo Louvor
+      </app-portal-button>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando louvores...">
+      </app-portal-loading>
+
+    } @else if (louvores.length === 0) {
+
+      <app-portal-empty-state
+        icon="library_music"
+        title="Nenhum louvor cadastrado"
+        message="Cadastre o primeiro louvor para começar."
+        actionText="Cadastrar Louvor"
+        (actionClick)="novoLouvor()">
+      </app-portal-empty-state>
+
+    } @else {
+
+
+      <!-- PESQUISA -->
+      <section class="louvores-pesquisa">
+
+        <app-portal-input
+          name="pesquisa"
+          label="Pesquisar Louvor"
+          placeholder="Digite o nome do louvor"
+          icon="search"
+          [(ngModel)]="pesquisa">
+        </app-portal-input>
+
+      </section>
+
+
+      @if (!possuiResultadoPesquisa) {
+
+        <section class="pesquisa-vazia">
+
+          <span class="material-icons">
+            search_off
+          </span>
+
+          <div>
+
+            <strong>
+              Nenhum louvor encontrado
+            </strong>
+
+            <p>
+              Não encontramos nenhum louvor
+              com o nome pesquisado.
+            </p>
+
+          </div>
+
+        </section>
+
+      } @else {
+
+
+        <!-- CATEGORIAS LADO A LADO -->
+        <section class="categorias-louvores">
+
+
+          <!-- AGITADOS -->
+          <section class="categoria-louvores">
+
+            <header class="categoria-louvores-header">
+
+              <div>
+
+                <span class="material-icons">
+                  music_note
+                </span>
+
+                <div>
+
+                  <h2>
+                    Louvores Agitados
+                  </h2>
+
+                  <p>
+                    {{ louvoresAgitados.length }}
+                    louvor(es)
+                  </p>
+
+                </div>
+
+              </div>
+
+            </header>
+
+
+            @if (louvoresAgitados.length === 0) {
+
+              <div class="categoria-vazia">
+
+                <span class="material-icons">
+                  music_off
+                </span>
+
+                <p>
+                  Nenhum louvor agitado encontrado.
+                </p>
+
+              </div>
+
+            } @else {
+
+              <div class="louvores-lista">
+
+                @for (
+                  louvor of louvoresAgitados;
+                  track louvor._id
+                ) {
+
+                  <article class="louvor-card">
+
+                    <div class="louvor-info">
+
+                      <div class="louvor-icon">
+
+                        <span class="material-icons">
+                          music_note
+                        </span>
+
+                      </div>
+
+
+                      <div class="louvor-dados">
+
+                        <strong>
+                          {{ louvor.louvor }}
+                        </strong>
+
+
+                        <div class="louvor-meta">
+
+                          @if (louvor.tom) {
+
+                            <span>
+                              Tom: {{ louvor.tom }}
+                            </span>
+
+                          }
+
+
+                          @if (louvor.link) {
+
+                            <a
+                              [href]="louvor.link"
+                              target="_blank"
+                              rel="noopener noreferrer">
+                              Abrir link
+                            </a>
+
+                          }
+
+
+                          @if (
+                            !louvor.tom &&
+                            !louvor.link
+                          ) {
+
+                            <span>
+                              Sem tom ou link cadastrados
+                            </span>
+
+                          }
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="louvor-actions">
+
+                      <app-portal-button
+                        variant="outline"
+                        icon="edit"
+                        (buttonClick)="editarLouvor(louvor._id)">
+                        Editar
+                      </app-portal-button>
+
+
+                      <app-portal-button
+                        variant="danger"
+                        icon="delete"
+                        (buttonClick)="excluirLouvor(louvor)">
+                        Excluir
+                      </app-portal-button>
+
+                    </div>
+
+                  </article>
+
+                }
+
+              </div>
+
+            }
+
+          </section>
+
+
+          <!-- CALMOS -->
+          <section class="categoria-louvores">
+
+            <header class="categoria-louvores-header">
+
+              <div>
+
+                <span class="material-icons">
+                  music_note
+                </span>
+
+                <div>
+
+                  <h2>
+                    Louvores Calmos
+                  </h2>
+
+                  <p>
+                    {{ louvoresCalmos.length }}
+                    louvor(es)
+                  </p>
+
+                </div>
+
+              </div>
+
+            </header>
+
+
+            @if (louvoresCalmos.length === 0) {
+
+              <div class="categoria-vazia">
+
+                <span class="material-icons">
+                  music_off
+                </span>
+
+                <p>
+                  Nenhum louvor calmo encontrado.
+                </p>
+
+              </div>
+
+            } @else {
+
+              <div class="louvores-lista">
+
+                @for (
+                  louvor of louvoresCalmos;
+                  track louvor._id
+                ) {
+
+                  <article class="louvor-card">
+
+                    <div class="louvor-info">
+
+                      <div class="louvor-icon">
+
+                        <span class="material-icons">
+                          music_note
+                        </span>
+
+                      </div>
+
+
+                      <div class="louvor-dados">
+
+                        <strong>
+                          {{ louvor.louvor }}
+                        </strong>
+
+
+                        <div class="louvor-meta">
+
+                          @if (louvor.tom) {
+
+                            <span>
+                              Tom: {{ louvor.tom }}
+                            </span>
+
+                          }
+
+
+                          @if (louvor.link) {
+
+                            <a
+                              [href]="louvor.link"
+                              target="_blank"
+                              rel="noopener noreferrer">
+                              Abrir link
+                            </a>
+
+                          }
+
+
+                          @if (
+                            !louvor.tom &&
+                            !louvor.link
+                          ) {
+
+                            <span>
+                              Sem tom ou link cadastrados
+                            </span>
+
+                          }
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="louvor-actions">
+
+                      <app-portal-button
+                        variant="outline"
+                        icon="edit"
+                        (buttonClick)="editarLouvor(louvor._id)">
+                        Editar
+                      </app-portal-button>
+
+
+                      <app-portal-button
+                        variant="danger"
+                        icon="delete"
+                        (buttonClick)="excluirLouvor(louvor)">
+                        Excluir
+                      </app-portal-button>
+
+                    </div>
+
+                  </article>
+
+                }
+
+              </div>
+
+            }
+
+          </section>
+
+
+        </section>
+
+      }
+
+    }
+
+  </section>
+</main>

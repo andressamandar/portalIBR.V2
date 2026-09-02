@@ -108,6 +108,13 @@ export interface SalvarDisponibilidadeRequest {
   disponibilidades: DisponibilidadeItem[];
 }
 
+export interface DisponibilidadesResponse {
+  success: boolean;
+  data: DisponibilidadeIntegrante[];
+  total: number;
+  message?: string;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -191,6 +198,19 @@ export class DisponibilidadesService {
 
     return this.http.get<DisponibilidadesLimitadasResponse>(
       `${this.apiUrl}/limitadas`,
+      { params }
+    );
+  }
+
+  listar(
+    ministerio: MinisterioDisponibilidade
+    ): Observable<DisponibilidadesResponse> {
+
+    const params = new HttpParams()
+      .set('ministerio', ministerio);
+
+    return this.http.get<DisponibilidadesResponse>(
+      this.apiUrl,
       { params }
     );
   }

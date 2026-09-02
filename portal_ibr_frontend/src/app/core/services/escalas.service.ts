@@ -4,6 +4,8 @@ import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 
 
+
+
 export type MinisterioEscala =
   | 'Louvor'
   | 'Midia';

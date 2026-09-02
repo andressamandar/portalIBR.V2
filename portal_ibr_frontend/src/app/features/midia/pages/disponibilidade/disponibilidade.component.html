@@ -1,0 +1,189 @@
+<main class="disponibilidade-page">
+  <section class="disponibilidade-container">
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="disponibilidade-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Disponibilidade
+      </h1>
+
+      <p>
+        Informe em quais datas você está disponível para servir.
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando datas...">
+      </app-portal-loading>
+
+    } @else if (datas.length === 0) {
+
+      <app-portal-empty-state
+        icon="event_busy"
+        title="Nenhuma data disponível"
+        message="Não há datas abertas para preenchimento no momento.">
+      </app-portal-empty-state>
+
+    } @else {
+
+      <section class="disponibilidade-card">
+
+
+        <div class="disponibilidade-aviso">
+
+          <span class="material-icons">
+            info
+          </span>
+
+          <p>
+            Todas as datas começam marcadas como disponíveis.
+            Desmarque apenas as datas em que você não poderá servir.
+          </p>
+
+        </div>
+
+
+        <div class="disponibilidade-aviso disponibilidade-aviso--louvor">
+
+          <span class="material-icons">
+            block
+          </span>
+
+          <p>
+            Se você já estiver escalado no Ministério de Louvor,
+            a mesma data ficará bloqueada automaticamente na Mídia.
+          </p>
+
+        </div>
+
+
+        <div class="datas-lista">
+
+          @for (
+            item of datas;
+            track item.data_id
+          ) {
+
+            <button
+              type="button"
+              class="data-item"
+              [class.data-disponivel]="
+                item.disponivel &&
+                !item.bloqueadaPorLouvor
+              "
+              [class.data-indisponivel]="
+                !item.disponivel &&
+                !item.bloqueadaPorLouvor
+              "
+              [class.data-bloqueada]="
+                item.bloqueadaPorLouvor
+              "
+              [disabled]="item.bloqueadaPorLouvor"
+              (click)="alternarDisponibilidade(item)">
+
+
+              <div class="data-info">
+
+                <strong>
+                  {{ formatarData(item.data) }}
+                </strong>
+
+                <span>
+                  {{ descricaoData(item) }}
+                </span>
+
+
+                @if (item.bloqueadaPorLouvor) {
+
+                  <span class="conflito-louvor">
+                    Você já está escalado no Louvor nesta data.
+                  </span>
+
+                }
+
+              </div>
+
+
+              <div class="data-status">
+
+                @if (item.bloqueadaPorLouvor) {
+
+                  <span class="material-icons">
+                    block
+                  </span>
+
+                  <strong>
+                    Bloqueada
+                  </strong>
+
+                } @else {
+
+                  <span class="material-icons">
+
+                    {{
+                      item.disponivel
+                        ? 'check_circle'
+                        : 'cancel'
+                    }}
+
+                  </span>
+
+                  <strong>
+
+                    {{
+                      item.disponivel
+                        ? 'Disponível'
+                        : 'Indisponível'
+                    }}
+
+                  </strong>
+
+                }
+
+              </div>
+
+            </button>
+
+          }
+
+        </div>
+
+
+        <div class="disponibilidade-actions">
+
+          <app-portal-button
+            icon="save"
+            [loading]="salvando"
+            loadingText="Salvando"
+            (buttonClick)="salvar()">
+            Salvar Disponibilidade
+          </app-portal-button>
+
+        </div>
+
+      </section>
+
+    }
+
+  </section>
+</main>

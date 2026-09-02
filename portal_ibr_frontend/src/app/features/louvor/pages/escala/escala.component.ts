@@ -25,7 +25,7 @@ export class EscalaComponent {
       | 'preenchimento'
       | 'disponibilidades'
       | 'download'
-  ): void {
+    ): void {
 
     if (opcao === 'gerenciar-datas') {
       void this.router.navigate([
@@ -38,6 +38,25 @@ export class EscalaComponent {
         '/louvor/lideranca/escala/criar'
       ]);
     }
+
+    if (opcao === 'preenchimento') {
+      void this.router.navigate([
+        '/louvor/lideranca/escala/preenchimento'
+      ]);
+    }
+
+    if (opcao === 'disponibilidades') {
+      void this.router.navigate([
+        '/louvor/lideranca/escala/disponibilidades'
+      ]);
+    }
+
+    if (opcao === 'download') {
+      void this.router.navigate([
+        '/louvor/lideranca/escala/download'
+      ]);
+    }
+
   }
 
   voltar(): void {

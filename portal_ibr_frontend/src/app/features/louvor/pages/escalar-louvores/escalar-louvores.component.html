@@ -1,0 +1,807 @@
+<main class="escalar-louvores-page">
+  <section class="escalar-louvores-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+
+    <header class="escalar-louvores-header">
+
+      <span>
+        Ministério de Louvor
+      </span>
+
+      <h1>
+        Escalar Louvores
+      </h1>
+
+      <p>
+        Selecione uma data com escala criada
+        para organizar os louvores do culto.
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando louvores...">
+      </app-portal-loading>
+
+    } @else {
+
+      <section class="escalar-louvores-card">
+
+        <app-portal-select
+          name="data"
+          label="Data da Escala"
+          placeholder="Selecione uma data"
+          icon="event"
+          [options]="datasOpcoes"
+          optionLabel="nome"
+          optionValue="id"
+          [required]="true"
+          [(ngModel)]="dataSelecionada"
+          (ngModelChange)="selecionarData()">
+        </app-portal-select>
+
+
+        @if (datasOpcoes.length === 0) {
+
+          <div class="mensagem-vazia">
+
+            <span class="material-icons">
+              event_busy
+            </span>
+
+            <div>
+
+              <strong>
+                Nenhuma escala disponível
+              </strong>
+
+              <p>
+                Crie uma escala antes de selecionar
+                os louvores do culto.
+              </p>
+
+            </div>
+
+          </div>
+
+        }
+
+
+        @if (carregandoData) {
+
+          <app-portal-loading
+            message="Carregando dados da escala...">
+          </app-portal-loading>
+
+        } @else if (dataSelecionada) {
+
+
+          <!-- STATUS DOS LOUVORES -->
+          @if (louvoresEscalaExistentes) {
+
+            <div class="status-data status-existente">
+
+              <span class="material-icons">
+                queue_music
+              </span>
+
+              <div>
+
+                <strong>
+                  Esta data já possui louvores escalados
+                </strong>
+
+                <p>
+                  Os louvores definidos para esta data
+                  estão carregados abaixo.
+                </p>
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="status-data status-novo">
+
+              <span class="material-icons">
+                library_add
+              </span>
+
+              <div>
+
+                <strong>
+                  Nenhum louvor escalado ainda
+                </strong>
+
+                <p>
+                  Ainda não existem louvores definidos
+                  para esta data.
+                </p>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          <!-- PRÉ-VISUALIZAÇÃO DA ESCALA -->
+          @if (
+            escalaSelecionada &&
+            (
+              ehLiderancaLouvor ||
+              podeEditarLouvores
+            )
+          ) {
+
+            <section class="preview-escala">
+
+              <div class="preview-escala-header">
+
+                <span class="material-icons">
+                  groups
+                </span>
+
+                <div>
+
+                  <h2>
+                    Escala da Data
+                  </h2>
+
+                  <p>
+                    Confira quem está escalado
+                    para esta data.
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              @if (funcoesEscalaPreview.length === 0) {
+
+                <div class="preview-escala-vazia">
+                  Nenhuma função preenchida nesta escala.
+                </div>
+
+              } @else {
+
+                <div class="preview-escala-lista">
+
+                  @for (
+                    funcao of funcoesEscalaPreview;
+                    track funcao.nome
+                  ) {
+
+                    <div class="preview-escala-item">
+
+                      <strong>
+                        {{ funcao.nome }}
+                      </strong>
+
+                      <span>
+                        {{ funcao.integrantes.join(', ') }}
+                      </span>
+
+                    </div>
+
+                  }
+
+                </div>
+
+              }
+
+            </section>
+
+          }
+
+
+          <!-- PERMISSÃO DO INTEGRANTE -->
+          @if (ehIntegranteLouvor) {
+
+            @if (podeEditarLouvores) {
+
+              <div class="status-data status-ministro">
+
+                <span class="material-icons">
+                  edit_note
+                </span>
+
+                <div>
+
+                  <strong>
+                    Você está escalado em Ministração
+                  </strong>
+
+                  <p>
+                    Você pode selecionar, alterar os tons
+                    e salvar os louvores desta data.
+                  </p>
+
+                </div>
+
+              </div>
+
+            } @else {
+
+              <div class="status-data status-visualizacao">
+
+                <span class="material-icons">
+                  visibility
+                </span>
+
+                <div>
+
+                  <strong>
+                    Somente visualização
+                  </strong>
+
+                  <p>
+                    Confira abaixo os louvores
+                    escalados para esta data.
+                  </p>
+
+                </div>
+
+              </div>
+
+            }
+
+          }
+
+
+          <!-- LOUVORES DA DATA -->
+          @if (totalSelecionados > 0) {
+
+            <section class="louvores-selecionados">
+
+              <div class="selecionados-header">
+
+                <div>
+
+                  <span class="material-icons">
+                    playlist_add_check
+                  </span>
+
+                  <div>
+
+                    <h2>
+                      @if (podeEditarLouvores) {
+                        Louvores Selecionados
+                      } @else {
+                        Louvores da Data
+                      }
+                    </h2>
+
+                    <p>
+                      {{ totalSelecionados }}
+                      louvor(es)
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="selecionados-lista">
+
+                @for (
+                  item of louvoresSelecionados;
+                  track item.louvor._id;
+                  let indice = $index
+                ) {
+
+                  <div class="selecionado-item">
+
+                    <div class="selecionado-ordem">
+                      {{ indice + 1 }}
+                    </div>
+
+
+                    <div class="selecionado-info">
+
+                      <strong>
+                        {{ item.louvor.louvor }}
+                      </strong>
+
+
+                      <div class="selecionado-meta">
+
+                        <!-- CATEGORIA -->
+                        <span>
+                          Categoria:
+                          {{ item.louvor.categoria }}
+                        </span>
+
+
+                        <!-- EDIÇÃO -->
+                        @if (podeEditarLouvores) {
+
+                          @if (item.louvor.tom) {
+
+                            <span>
+                              Tom cadastrado:
+                              {{ item.louvor.tom }}
+                            </span>
+
+                          }
+
+                        } @else {
+
+                          <!-- VISUALIZAÇÃO DO INTEGRANTE -->
+                          <span>
+                            Tom:
+                            {{ item.tom || '-' }}
+                          </span>
+
+                        }
+
+                      </div>
+
+
+                      <!-- VÍDEO -->
+                      @if (
+                        obterVideoEmbed(
+                          item.louvor._id
+                        )
+                      ) {
+
+                        <div class="selecionado-video">
+
+                          <iframe
+                            [src]="obterVideoEmbed(
+                              item.louvor._id
+                            )"
+                            [title]="item.louvor.louvor"
+                            allow="
+                              accelerometer;
+                              autoplay;
+                              clipboard-write;
+                              encrypted-media;
+                              gyroscope;
+                              picture-in-picture
+                            "
+                            allowfullscreen>
+                          </iframe>
+
+                        </div>
+
+                      }
+
+                    </div>
+
+
+                    <!-- CAMPO DE TOM SOMENTE PARA QUEM EDITA -->
+                    @if (podeEditarLouvores) {
+
+                      <div class="selecionado-tom">
+
+                        <app-portal-input
+                          [name]="
+                            'tom-' +
+                            item.louvor._id
+                          "
+                          label="Tom"
+                          placeholder="Ex.: G, A, Bb"
+                          icon="music_note"
+                          [ngModel]="
+                            obterTomSelecionado(
+                              item.louvor._id
+                            )
+                          "
+                          (ngModelChange)="
+                            alterarTom(
+                              item.louvor._id,
+                              $event
+                            )
+                          ">
+                        </app-portal-input>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+            </section>
+
+          }
+
+
+          <!-- CATÁLOGO COMPLETO SOMENTE PARA EDIÇÃO -->
+          @if (podeEditarLouvores) {
+
+            <section class="categorias-louvores">
+
+
+              <!-- AGITADOS -->
+              <div class="categoria-section">
+
+                <div class="categoria-header">
+
+                  <div>
+
+                    <span class="material-icons">
+                      music_note
+                    </span>
+                    <div>
+
+                      <h2>
+                        Louvores Agitados
+                      </h2>
+
+                      <p>
+                        {{ louvoresAgitados.length }}
+                        louvor(es) cadastrado(s)
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="categoria-pesquisa">
+
+                  <app-portal-input
+                    name="pesquisaAgitados"
+                    label="Pesquisar"
+                    placeholder="Digite o nome do louvor"
+                    icon="search"
+                    [(ngModel)]="pesquisaAgitados">
+                  </app-portal-input>
+
+                </div>
+
+
+                @if (
+                  louvoresAgitadosFiltrados.length === 0
+                ) {
+
+                  <div class="categoria-vazia">
+
+                    @if (pesquisaAgitados) {
+
+                      Nenhum louvor agitado encontrado.
+
+                    } @else {
+
+                      Nenhum louvor agitado cadastrado.
+
+                    }
+
+                  </div>
+
+                } @else {
+
+                  <div class="louvores-lista">
+
+                    @for (
+                      louvor of louvoresAgitadosFiltrados;
+                      track louvor._id
+                    ) {
+
+                      <div
+                        class="louvor-item"
+                        [class.selecionado]="
+                          estaSelecionado(
+                            louvor._id
+                          )
+                        "
+                        role="button"
+                        tabindex="0"
+                        (click)="
+                          alternarLouvor(
+                            louvor
+                          )
+                        "
+                        (keydown.enter)="
+                          alternarLouvor(
+                            louvor
+                          )
+                        "
+                      >
+
+                        <div class="louvor-info">
+
+                          <strong>
+                            {{ louvor.louvor }}
+                          </strong>
+
+
+                          <div class="louvor-meta">
+
+                            @if (louvor.tom) {
+
+                              <span>
+                                Tom:
+                                {{ louvor.tom }}
+                              </span>
+
+                            }
+
+
+                            @if (louvor.link) {
+
+                              <a
+                                [href]="louvor.link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                (click)="
+                                  $event.stopPropagation()
+                                ">
+                                Abrir link
+                              </a>
+
+                            }
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="louvor-selecao">
+
+                          <span class="material-icons">
+
+                            {{
+                              estaSelecionado(
+                                louvor._id
+                              )
+                                ? 'check_circle'
+                                : 'radio_button_unchecked'
+                            }}
+
+                          </span>
+
+                          <span>
+
+                            {{
+                              estaSelecionado(
+                                louvor._id
+                              )
+                                ? 'Selecionado'
+                                : 'Selecionar'
+                            }}
+
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- CALMOS -->
+              <div class="categoria-section">
+
+                <div class="categoria-header">
+
+                  <div>
+
+                   <span class="material-icons">
+                      music_note
+                    </span>
+
+                    <div>
+
+                      <h2>
+                        Louvores Calmos
+                      </h2>
+
+                      <p>
+                        {{ louvoresCalmos.length }}
+                        louvor(es) cadastrado(s)
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="categoria-pesquisa">
+
+                  <app-portal-input
+                    name="pesquisaCalmos"
+                    label="Pesquisar"
+                    placeholder="Digite o nome do louvor"
+                    icon="search"
+                    [(ngModel)]="pesquisaCalmos">
+                  </app-portal-input>
+
+                </div>
+
+
+                @if (
+                  louvoresCalmosFiltrados.length === 0
+                ) {
+
+                  <div class="categoria-vazia">
+
+                    @if (pesquisaCalmos) {
+
+                      Nenhum louvor calmo encontrado.
+
+                    } @else {
+
+                      Nenhum louvor calmo cadastrado.
+
+                    }
+
+                  </div>
+
+                } @else {
+
+                  <div class="louvores-lista">
+
+                    @for (
+                      louvor of louvoresCalmosFiltrados;
+                      track louvor._id
+                    ) {
+
+                      <div
+                        class="louvor-item"
+                        [class.selecionado]="
+                          estaSelecionado(
+                            louvor._id
+                          )
+                        "
+                        role="button"
+                        tabindex="0"
+                        (click)="
+                          alternarLouvor(
+                            louvor
+                          )
+                        "
+                        (keydown.enter)="
+                          alternarLouvor(
+                            louvor
+                          )
+                        "
+                      >
+
+                        <div class="louvor-info">
+
+                          <strong>
+                            {{ louvor.louvor }}
+                          </strong>
+
+
+                          <div class="louvor-meta">
+
+                            @if (louvor.tom) {
+
+                              <span>
+                                Tom:
+                                {{ louvor.tom }}
+                              </span>
+
+                            }
+
+
+                            @if (louvor.link) {
+
+                              <a
+                                [href]="louvor.link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                (click)="
+                                  $event.stopPropagation()
+                                ">
+                                Abrir link
+                              </a>
+
+                            }
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="louvor-selecao">
+
+                          <span class="material-icons">
+
+                            {{
+                              estaSelecionado(
+                                louvor._id
+                              )
+                                ? 'check_circle'
+                                : 'radio_button_unchecked'
+                            }}
+
+                          </span>
+
+                          <span>
+
+                            {{
+                              estaSelecionado(
+                                louvor._id
+                              )
+                                ? 'Selecionado'
+                                : 'Selecionar'
+                            }}
+
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+            </section>
+
+          }
+
+
+          <!-- SALVAR SOMENTE PARA QUEM PODE EDITAR -->
+          @if (podeEditarLouvores) {
+
+            <div class="acoes-louvores">
+
+              <app-portal-button
+                variant="primary"
+                icon="save"
+                [disabled]="salvando"
+                (buttonClick)="salvarLouvores()">
+
+                @if (salvando) {
+
+                  Salvando...
+
+                } @else {
+
+                  Salvar Louvores
+
+                }
+
+              </app-portal-button>
+
+            </div>
+
+          }
+
+        }
+
+      </section>
+
+    }
+
+  </section>
+</main>

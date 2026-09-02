@@ -5,7 +5,8 @@ from routes.disponibilidades import disponibilidades_bp
 from routes.escalas import escalas_bp
 from routes.usuarios import usuarios_bp
 from routes.integrantes import integrantes_bp
-
+from routes.louvores import louvores_bp
+from routes.louvores_escala import louvores_escala_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +16,8 @@ app.register_blueprint(datas_bp)
 app.register_blueprint(disponibilidades_bp)
 app.register_blueprint(escalas_bp)
 app.register_blueprint(usuarios_bp)
-
+app.register_blueprint(louvores_bp)
+app.register_blueprint(louvores_escala_bp)
 
 @app.route("/")
 def home():

@@ -1,0 +1,330 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+}
+
+.criar-escala-page {
+  min-height: 100vh;
+  padding: variables.$space-6;
+
+  background: variables.$background;
+}
+
+.criar-escala-container {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-6;
+}
+
+.criar-escala-header {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  span {
+    color: variables.$primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xxl;
+    font-weight: variables.$font-weight-bold;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+}
+
+.criar-escala-card {
+  padding: variables.$space-6;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-6;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+}
+
+.data-resumo {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+}
+
+.status-escala {
+  padding: variables.$space-4;
+
+  display: flex;
+  align-items: flex-start;
+  gap: variables.$space-3;
+
+  border-radius: variables.$radius-medium;
+
+  .material-icons {
+    flex-shrink: 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-1;
+  }
+
+  strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-md;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.status-nova {
+  border: 1px solid variables.$border;
+  background: variables.$primary-soft;
+
+  .material-icons {
+    color: variables.$primary;
+  }
+}
+
+.status-existente {
+  border: 1px solid variables.$border;
+  background: variables.$warning-soft;
+
+  .material-icons {
+    color: variables.$warning;
+  }
+}
+
+.disponibilidade-resumo {
+  padding: variables.$space-4;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-medium;
+  background: variables.$surface-secondary;
+
+  strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-md;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.funcoes-section {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-5;
+}
+
+.funcoes-header {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  h2 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.funcoes-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: variables.$space-4;
+}
+
+.funcao-item {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+}
+
+.sem-disponiveis {
+  color: variables.$text-secondary;
+  font-size: variables.$font-size-xs;
+  line-height: 1.4;
+}
+
+.preview-section {
+  padding: variables.$space-5;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+  background: variables.$surface-secondary;
+}
+
+.preview-header {
+  display: flex;
+  align-items: flex-start;
+  gap: variables.$space-3;
+
+  .material-icons {
+    color: variables.$primary;
+    flex-shrink: 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-1;
+  }
+
+  h2 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.preview-lista {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-3;
+}
+
+.preview-item {
+  padding: variables.$space-4;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-medium;
+  background: variables.$surface;
+
+  strong {
+    color: variables.$primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+.preview-integrantes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$space-2;
+
+  span {
+    padding:
+      variables.$space-2
+      variables.$space-3;
+
+    border-radius: variables.$radius-pill;
+    background: variables.$primary-soft;
+
+    color: variables.$primary-dark;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-medium;
+  }
+}
+
+.escala-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  padding-top: variables.$space-2;
+}
+
+@media (max-width: 800px) {
+  .funcoes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .criar-escala-page {
+    padding: variables.$space-4;
+  }
+
+  .criar-escala-container {
+    gap: variables.$space-5;
+  }
+
+  .criar-escala-header {
+    h1 {
+      font-size: variables.$font-size-xl;
+    }
+  }
+
+  .criar-escala-card {
+    padding: variables.$space-4;
+  }
+
+  .preview-section {
+    padding: variables.$space-4;
+  }
+
+  .escala-actions {
+    app-portal-button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,239 @@
+<main class="minha-escala-page">
+  <section class="minha-escala-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="minha-escala-header">
+
+      <span>
+        Ministério de Louvor
+      </span>
+
+      <h1>
+        Minha Escala
+      </h1>
+
+      <p>
+        Confira suas próximas escalas,
+        funções e louvores.
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando sua escala...">
+      </app-portal-loading>
+
+    } @else {
+
+      @if (escalas.length === 0) {
+
+        <section class="minha-escala-vazia">
+
+          <span class="material-icons">
+            event_busy
+          </span>
+
+          <div>
+
+            <strong>
+              Nenhuma escala encontrada
+            </strong>
+
+            <p>
+              Você não possui próximas escalas
+              no Ministério de Louvor.
+            </p>
+
+          </div>
+
+        </section>
+
+      } @else {
+
+        <div class="minha-escala-acoes">
+
+          <app-portal-button
+            variant="primary"
+            icon="download"
+            [disabled]="gerandoPdf"
+            (buttonClick)="baixarPdf()">
+
+            @if (gerandoPdf) {
+              Gerando PDF...
+            } @else {
+              Baixar Minha Escala
+            }
+
+          </app-portal-button>
+
+        </div>
+
+
+        <section class="minha-escala-lista">
+
+          @for (
+            item of escalas;
+            track item.escala._id
+          ) {
+
+            <article class="escala-card">
+
+              <div class="escala-card-header">
+
+                <div class="escala-data">
+
+                  <span class="material-icons">
+                    event
+                  </span>
+
+                  <div>
+
+                    <strong>
+                      {{ formatarData(item.escala.data) }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="escala-conteudo">
+
+                <!-- FUNÇÕES -->
+                <section class="escala-bloco">
+
+                  <div class="escala-bloco-header">
+
+                    <span class="material-icons">
+                      person_pin
+                    </span>
+
+                    <h2>
+                      Minha Função
+                    </h2>
+
+                  </div>
+
+
+                  <div class="funcoes-lista">
+
+                    @for (
+                      funcao of item.funcoes;
+                      track funcao
+                    ) {
+
+                      <span class="funcao-badge">
+                        {{ funcao }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </section>
+
+
+                <!-- LOUVORES -->
+                <section class="escala-bloco">
+
+                  <div class="escala-bloco-header">
+
+                    <span class="material-icons">
+                      music_note
+                    </span>
+
+                    <h2>
+                      Louvores
+                    </h2>
+
+                  </div>
+
+
+                  @if (item.louvores.length === 0) {
+
+                    <div class="louvores-vazio">
+
+                      Nenhum louvor escalado para esta data
+                      até o momento.
+
+                    </div>
+
+                  } @else {
+
+                    <div class="louvores-lista">
+
+                      @for (
+                        louvor of item.louvores;
+                        track louvor.louvor_id;
+                        let indice = $index
+                      ) {
+
+                        <div class="louvor-item">
+
+                          <div class="louvor-ordem">
+                            {{ indice + 1 }}
+                          </div>
+
+                          <div class="louvor-info">
+
+                            <strong>
+                              {{ louvor.louvor }}
+                            </strong>
+
+                            <div class="louvor-meta">
+
+                              @if (louvor.categoria) {
+
+                                <span>
+                                  Categoria:
+                                  {{ louvor.categoria }}
+                                </span>
+
+                              }
+
+                              <span>
+                                Tom:
+                                {{ louvor.tom || '-' }}
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      }
+
+                    </div>
+
+                  }
+
+                </section>
+
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+      }
+
+    }
+
+  </section>
+</main>

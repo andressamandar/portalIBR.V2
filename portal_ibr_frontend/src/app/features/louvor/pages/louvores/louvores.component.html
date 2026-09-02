@@ -1,0 +1,43 @@
+<main class="louvores-page">
+  <section class="louvores-container">
+
+    <div>
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+    </div>
+
+    <header class="louvores-header">
+      <span>Ministério de Louvor</span>
+
+      <h1>Louvores</h1>
+
+      <p>
+        Gerencie os louvores cadastrados e organize
+        os louvores de cada escala.
+      </p>
+    </header>
+
+    <div class="louvores-options">
+
+      <app-selection-card
+        icon="library_music"
+        title="Gerenciar Louvores"
+        subtitle="Cadastre, edite e remova louvores"
+        (cardClick)="selecionarOpcao('gerenciar')">
+      </app-selection-card>
+
+      <app-selection-card
+        icon="queue_music"
+        title="Escalar Louvores"
+        subtitle="Escolha os louvores de cada data escalada"
+        (cardClick)="selecionarOpcao('escalar')">
+      </app-selection-card>
+
+    </div>
+
+  </section>
+</main>

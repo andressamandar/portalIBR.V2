@@ -65,6 +65,37 @@ export class IntegrantesComponent implements OnInit {
       });
   }
 
+  readonly funcoesLouvor: string[] = [
+  'Ministração',
+  'Sonoplastia',
+  'Bateria',
+  'Teclado',
+  'Violão',
+  'Tenor',
+  'Barítono',
+  'Contralto',
+  'Soprano',
+  '2ª Voz',
+  'Baixo',
+  'Guitarra',
+  'Projeção',
+  'Cajon'
+];
+
+
+  obterFuncoesLouvor(
+    integrante: Integrante
+    ): string[] {
+
+    return integrante.funcoes.filter(
+      funcao =>
+        this.funcoesLouvor.includes(
+          funcao
+        )
+    );
+
+  }
+
   voltar(): void {
     void this.router.navigate([
       '/louvor/lideranca'
