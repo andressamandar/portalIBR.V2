@@ -57,6 +57,7 @@ PERMISSOES = {
 
         "gerenciar_integrantes",
 
+        "visualizar_tarefas",
         "gerenciar_tarefas",
         "gerenciar_solicitacoes",
 
@@ -70,15 +71,17 @@ PERMISSOES = {
 
     "integrante_midia": [
 
-        "preencher_disponibilidade",
+    "preencher_disponibilidade",
 
-        "visualizar_tarefas",
+    "visualizar_tarefas",
+    "assumir_tarefa",
+    "concluir_tarefa",
 
-        "visualizar_minha_escala",
-        "visualizar_escala_completa",
+    "visualizar_minha_escala",
+    "visualizar_escala_completa",
 
-        "baixar_minha_escala",
-        "baixar_escala_completa"
+    "baixar_minha_escala",
+    "baixar_escala_completa"
 
     ]
 

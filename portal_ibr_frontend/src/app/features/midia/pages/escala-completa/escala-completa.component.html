@@ -1,0 +1,279 @@
+<main class="escala-completa-page">
+  <section class="escala-completa-container">
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+        Voltar
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="escala-completa-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Escala Completa
+      </h1>
+
+      <p>
+        Consulte a escala mensal completa
+        do Ministério de Mídia.
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando escala completa...">
+      </app-portal-loading>
+
+    } @else {
+
+      <section class="escala-completa-filtros">
+
+        <div class="escala-completa-mes">
+
+          <app-portal-select
+            name="mes"
+            label="Mês"
+            placeholder="Selecione um mês"
+            icon="calendar_month"
+            [options]="mesesOpcoes"
+            optionLabel="nome"
+            optionValue="id"
+            [(ngModel)]="mesSelecionado">
+          </app-portal-select>
+
+        </div>
+
+
+        @if (
+          mesSelecionado &&
+          datasMesSelecionado.length > 0
+        ) {
+
+          <div class="escala-completa-acoes">
+
+            <app-portal-button
+              variant="primary"
+              icon="download"
+              [disabled]="gerandoPdf"
+              (buttonClick)="baixarPdf()">
+
+              @if (gerandoPdf) {
+
+                Gerando PDF...
+
+              } @else {
+
+                Baixar Escala do Mês
+
+              }
+
+            </app-portal-button>
+
+          </div>
+
+        }
+
+      </section>
+
+
+      @if (mesSelecionado) {
+
+        <section class="mes-selecionado-header">
+
+          <div>
+
+            <span class="material-icons">
+              calendar_month
+            </span>
+
+            <div>
+
+              <h2>
+                {{
+                  formatarMes(
+                    mesSelecionado.id
+                  )
+                }}
+              </h2>
+
+              <p>
+                Escala completa do mês selecionado.
+              </p>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        @if (
+          datasMesSelecionado.length === 0
+        ) {
+
+          <section class="escala-completa-vazia">
+
+            <span class="material-icons">
+              event_busy
+            </span>
+
+            <div>
+
+              <strong>
+                Nenhuma escala encontrada
+              </strong>
+
+              <p>
+                Não existem escalas cadastradas para
+                {{
+                  formatarMes(
+                    mesSelecionado.id
+                  )
+                }}.
+              </p>
+
+            </div>
+
+          </section>
+
+        } @else {
+
+          <section class="tabela-escala-card">
+
+            <div class="tabela-escala-header">
+
+              <div>
+
+                <span class="material-icons">
+                  groups
+                </span>
+
+                <div>
+
+                  <h2>
+                    Escala do Mês
+                  </h2>
+
+                  <p>
+                    Cada coluna representa uma data
+                    e cada linha um integrante.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="tabela-escala-wrapper">
+
+              <table class="tabela-escala">
+
+                <thead>
+
+                  <tr>
+
+                    <th class="coluna-integrante">
+                      Integrante
+                    </th>
+
+
+                    @for (
+                      data of datasMesSelecionado;
+                      track data.id
+                    ) {
+
+                      <th>
+                        {{ data.label }}
+                      </th>
+
+                    }
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  @for (
+                    linha of linhasTabela;
+                    track linha.integrante
+                  ) {
+
+                    <tr>
+
+                      <th
+                        scope="row"
+                        class="coluna-integrante">
+
+                        {{ linha.integrante }}
+
+                      </th>
+
+
+                      @for (
+                        data of datasMesSelecionado;
+                        track data.id
+                      ) {
+
+                        <td>
+
+                          {{
+                            linha.funcoesPorData[
+                              data.id
+                            ]
+                          }}
+
+                        </td>
+
+                      }
+
+                    </tr>
+
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+
+            <div class="tabela-legenda">
+
+              <span class="material-icons">
+                info
+              </span>
+
+              <p>
+                O símbolo “—” indica que o integrante
+                não está escalado naquela data.
+              </p>
+
+            </div>
+
+          </section>
+
+        }
+
+      }
+
+    }
+
+  </section>
+</main>

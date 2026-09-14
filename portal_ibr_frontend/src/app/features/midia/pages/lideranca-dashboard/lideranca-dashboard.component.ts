@@ -77,10 +77,9 @@ export class LiderancaDashboardComponent {
 
 
       case 'tarefas':
-
-        console.log(
-          'Tarefas'
-        );
+        void this.router.navigate([
+          '/midia/lideranca/tarefas'
+        ]);
 
         break;
 

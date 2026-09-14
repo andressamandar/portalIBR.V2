@@ -631,11 +631,123 @@ export const routes: Routes = [
       import(
         './features/midia/pages/visualizar-preenchimento/visualizar-preenchimento.component'
       ).then(
+
+
         component => component.VisualizarPreenchimentoComponent
       )
   },
 
+  {
+    path: 'midia/lideranca/escala/disponibilidades',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/visualizar-disponibilidades/visualizar-disponibilidades.component'
+      ).then(
+        component => component.VisualizarDisponibilidadesComponent
+      )
+  },
 
+  {
+    path: 'midia/lideranca/escala/download',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/download-escala/download-escala.component'
+      ).then(
+        component => component.DownloadEscalaComponent
+      )
+  },
+
+  {
+    path: 'midia/lideranca/tarefas',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/tarefas/tarefas.component'
+      ).then(
+        component => component.TarefasComponent
+      )
+  },
+
+  {
+    path: 'midia/lideranca/tarefas/nova',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/tarefa-form/tarefa-form.component'
+      ).then(
+        component => component.TarefaFormComponent
+      )
+  },
+
+  {
+    path: 'midia/lideranca/tarefas/:id/editar',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['lideranca_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/tarefa-form/tarefa-form.component'
+      ).then(
+        component => component.TarefaFormComponent
+      )
+  },
+
+  {
+    path: 'midia/integrante/tarefas',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['integrante_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/tarefas-integrante/tarefas-integrante.component'
+      ).then(
+        component => component.TarefasIntegranteComponent
+      )
+  },
+
+  {
+    path: 'midia/integrante/minha-escala',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['integrante_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/minha-escala/minha-escala.component'
+      ).then(
+        component => component.MinhaEscalaComponent
+      )
+  },
+
+  {
+    path: 'midia/integrante/escala-completa',
+    canActivate: [authGuard],
+    data: {
+      perfis: ['integrante_midia']
+    },
+    loadComponent: () =>
+      import(
+        './features/midia/pages/escala-completa/escala-completa.component'
+      ).then(
+        component => component.EscalaCompletaComponent
+      )
+  },
   // =====================================
   // DESENVOLVIMENTO
   // =====================================
@@ -649,6 +761,8 @@ export const routes: Routes = [
         component => component.UiKitComponent
       )
   },
+
+
 
 
   // =====================================

@@ -1,0 +1,457 @@
+<main class="tarefas-page">
+  <section class="tarefas-container">
+
+    <header class="tarefas-header">
+
+      <div>
+
+        <app-portal-button
+          variant="text"
+          icon="arrow_back"
+          (buttonClick)="voltar()">
+          Voltar
+        </app-portal-button>
+
+      </div>
+
+
+      <div class="tarefas-header__content">
+
+        <div>
+
+          <span>
+            Ministério de Mídia
+          </span>
+
+          <h1>
+            Tarefas
+          </h1>
+
+          <p>
+            Visualize as solicitações,
+            assuma uma tarefa disponível
+            e acompanhe o andamento.
+          </p>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando tarefas...">
+      </app-portal-loading>
+
+    } @else if (tarefas.length === 0) {
+
+      <app-portal-empty-state
+        icon="task_alt"
+        title="Nenhuma tarefa disponível"
+        message="Ainda não existem tarefas cadastradas para a equipe de Mídia.">
+      </app-portal-empty-state>
+
+    } @else {
+
+      <section class="kanban">
+
+
+        <!-- A FAZER -->
+
+        <div class="kanban-coluna">
+
+          <header class="kanban-coluna__header">
+
+            <div>
+
+              <span
+                class="status-indicador a-fazer">
+              </span>
+
+              <h2>
+                A Fazer
+              </h2>
+
+            </div>
+
+            <span class="quantidade">
+              {{ tarefasAFazer.length }}
+            </span>
+
+          </header>
+
+
+          <div class="kanban-coluna__tarefas">
+
+            @for (
+              tarefa of tarefasAFazer;
+              track tarefa._id
+            ) {
+
+              <ng-container
+                *ngTemplateOutlet="
+                  tarefaCard;
+                  context: {
+                    $implicit: tarefa
+                  }
+                ">
+              </ng-container>
+
+            } @empty {
+
+              <div class="coluna-vazia">
+                Nenhuma tarefa disponível.
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- FAZENDO -->
+
+        <div class="kanban-coluna">
+
+          <header class="kanban-coluna__header">
+
+            <div>
+
+              <span
+                class="status-indicador fazendo">
+              </span>
+
+              <h2>
+                Fazendo
+              </h2>
+
+            </div>
+
+            <span class="quantidade">
+              {{ tarefasFazendo.length }}
+            </span>
+
+          </header>
+
+
+          <div class="kanban-coluna__tarefas">
+
+            @for (
+              tarefa of tarefasFazendo;
+              track tarefa._id
+            ) {
+
+              <ng-container
+                *ngTemplateOutlet="
+                  tarefaCard;
+                  context: {
+                    $implicit: tarefa
+                  }
+                ">
+              </ng-container>
+
+            } @empty {
+
+              <div class="coluna-vazia">
+                Nenhuma tarefa em andamento.
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- CONCLUÍDO -->
+
+        <div class="kanban-coluna">
+
+          <header class="kanban-coluna__header">
+
+            <div>
+
+              <span
+                class="status-indicador concluido">
+              </span>
+
+              <h2>
+                Concluído
+              </h2>
+
+            </div>
+
+            <span class="quantidade">
+              {{ tarefasConcluidas.length }}
+            </span>
+
+          </header>
+
+
+          <div class="kanban-coluna__tarefas">
+
+            @for (
+              tarefa of tarefasConcluidas;
+              track tarefa._id
+            ) {
+
+              <ng-container
+                *ngTemplateOutlet="
+                  tarefaCard;
+                  context: {
+                    $implicit: tarefa
+                  }
+                ">
+              </ng-container>
+
+            } @empty {
+
+              <div class="coluna-vazia">
+                Nenhuma tarefa concluída.
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+    }
+
+  </section>
+</main>
+
+
+<ng-template
+  #tarefaCard
+  let-tarefa>
+
+  <article
+    class="tarefa-card"
+    [class.minha-tarefa]="ehResponsavel(tarefa)">
+
+
+    <div class="tarefa-card__topo">
+
+      <span class="ministerio-tag">
+        {{ tarefa.ministerio }}
+      </span>
+
+
+      @if (ehResponsavel(tarefa)) {
+
+        <span class="minha-tarefa-tag">
+
+          <span class="material-icons">
+            person
+          </span>
+
+          Minha tarefa
+
+        </span>
+
+      }
+
+    </div>
+
+
+    <div class="tarefa-card__descricao">
+
+      <strong>
+        Descrição
+      </strong>
+
+      <p>
+        {{ tarefa.descricao }}
+      </p>
+
+    </div>
+
+
+    <div class="tarefa-card__informacoes">
+
+      <div>
+
+        <span class="material-icons">
+          person_outline
+        </span>
+
+        <div>
+
+          <small>
+            Solicitante
+          </small>
+
+          <strong>
+            {{ tarefa.solicitante }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <span class="material-icons">
+          aspect_ratio
+        </span>
+
+        <div>
+
+          <small>
+            Formatos
+          </small>
+
+          <strong>
+            {{
+              formatarFormatos(
+                tarefa.formatos_solicitados
+              )
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <span class="material-icons">
+          event
+        </span>
+
+        <div>
+
+          <small>
+            Evento
+          </small>
+
+          <strong>
+            {{
+              formatarData(
+                tarefa.data_evento
+              )
+            }}
+            às
+            {{ tarefa.horario_evento }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <span class="material-icons">
+          schedule
+        </span>
+
+        <div>
+
+          <small>
+            Prazo de entrega
+          </small>
+
+          <strong>
+            {{
+              formatarData(
+                tarefa.data_entrega
+              )
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    @if (tarefa.sugestao_arte) {
+
+      <div class="tarefa-card__sugestao">
+
+        <strong>
+          Sugestão para a arte
+        </strong>
+
+        <p>
+          {{ tarefa.sugestao_arte }}
+        </p>
+
+      </div>
+
+    }
+
+
+    @if (tarefa.responsavel_nome) {
+
+      <div class="responsavel">
+
+        <span class="material-icons">
+          account_circle
+        </span>
+
+        <span>
+
+          Responsável:
+
+          <strong>
+            {{ tarefa.responsavel_nome }}
+          </strong>
+
+        </span>
+
+      </div>
+
+    }
+
+
+    @if (tarefa.status === 'A Fazer') {
+
+      <div class="tarefa-card__acao">
+
+        <app-portal-button
+          icon="assignment_ind"
+          [loading]="estaExecutandoAcao(tarefa)"
+          loadingText="Assumindo"
+          (buttonClick)="assumirTarefa(tarefa)">
+          Assumir Tarefa
+        </app-portal-button>
+
+      </div>
+
+    }
+
+
+    @if (
+      tarefa.status === 'Fazendo' &&
+      ehResponsavel(tarefa)
+    ) {
+
+      <div class="tarefa-card__acao">
+
+        <app-portal-button
+          icon="check_circle"
+          [loading]="estaExecutandoAcao(tarefa)"
+          loadingText="Concluindo"
+          (buttonClick)="concluirTarefa(tarefa)">
+          Concluir Tarefa
+        </app-portal-button>
+
+      </div>
+
+    }
+
+  </article>
+
+</ng-template>

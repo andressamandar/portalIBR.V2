@@ -1,0 +1,294 @@
+<main class="tarefa-form-page">
+  <section class="tarefa-form-container">
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="cancelar()">
+        Voltar
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="tarefa-form-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        {{
+          modoEdicao
+            ? 'Editar Tarefa'
+            : 'Nova Tarefa'
+        }}
+      </h1>
+
+      <p>
+
+        @if (modoEdicao) {
+
+          Altere as informações
+          da solicitação.
+
+        } @else {
+
+          Preencha as informações
+          da nova solicitação.
+
+        }
+
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando tarefa...">
+      </app-portal-loading>
+
+    } @else {
+
+      <form
+        class="tarefa-form-card"
+        (ngSubmit)="salvar()">
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              info
+            </span>
+
+            <div>
+
+              <h2>
+                Informações da Solicitação
+              </h2>
+
+              <p>
+                Informe quem está solicitando
+                e para qual ministério.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="ministerio"
+              label="Qual ministério?"
+              placeholder="Digite o ministério"
+              icon="church"
+              [required]="true"
+              [(ngModel)]="ministerio">
+            </app-portal-input>
+
+
+            <app-portal-input
+              name="solicitante"
+              label="Solicitante"
+              placeholder="Digite o nome do solicitante"
+              icon="person"
+              [required]="true"
+              [(ngModel)]="solicitante">
+            </app-portal-input>
+
+          </div>
+
+
+            <app-portal-select
+                name="formatosSolicitados"
+                label="Formatos solicitados"
+                placeholder="Selecione um ou mais formatos"
+                icon="aspect_ratio"
+                [options]="formatos"
+                optionLabel="nome"
+                optionValue="id"
+                [multiple]="true"
+                [required]="true"
+                [(ngModel)]="formatosSelecionados">
+            </app-portal-select>
+
+        </section>
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              description
+            </span>
+
+            <div>
+
+              <h2>
+                Detalhes da Arte
+              </h2>
+
+              <p>
+                Descreva o que precisa ser produzido.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="descricao">
+              Descrição
+              <span>*</span>
+            </label>
+
+            <textarea
+              id="descricao"
+              name="descricao"
+              rows="5"
+              placeholder="Descreva a solicitação"
+              required
+              [(ngModel)]="descricao">
+            </textarea>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="sugestaoArte">
+              Sugestão para a arte
+            </label>
+
+            <textarea
+              id="sugestaoArte"
+              name="sugestaoArte"
+              rows="4"
+              placeholder="Informe alguma ideia ou referência para a arte"
+              [(ngModel)]="sugestaoArte">
+            </textarea>
+
+          </div>
+
+        </section>
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              event
+            </span>
+
+            <div>
+
+              <h2>
+                Data e Prazo
+              </h2>
+
+              <p>
+                Informe quando será o evento
+                e o prazo para entrega da arte.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="dataEvento"
+              type="date"
+              label="Data do Evento"
+              icon="calendar_month"
+              [required]="true"
+              [(ngModel)]="dataEvento">
+            </app-portal-input>
+
+
+            <div class="campo-nativo">
+
+              <label for="horarioEvento">
+                Horário do Evento
+                <span>*</span>
+              </label>
+
+              <div class="campo-nativo__controle">
+
+                <span class="material-icons">
+                  schedule
+                </span>
+
+                <input
+                  id="horarioEvento"
+                  name="horarioEvento"
+                  type="time"
+                  required
+                  [(ngModel)]="horarioEvento">
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <app-portal-input
+            name="dataEntrega"
+            type="date"
+            label="Até qual data a arte precisa ser entregue?"
+            icon="event_available"
+            [required]="true"
+            [(ngModel)]="dataEntrega">
+          </app-portal-input>
+
+        </section>
+
+
+        <div class="tarefa-form-actions">
+
+          <app-portal-button
+            type="button"
+            variant="secondary"
+            (buttonClick)="cancelar()">
+            Cancelar
+          </app-portal-button>
+
+
+          <app-portal-button
+            type="submit"
+            icon="save"
+            [disabled]="!formularioValido"
+            [loading]="salvando"
+            loadingText="Salvando">
+
+            {{
+              modoEdicao
+                ? 'Salvar Alterações'
+                : 'Salvar Tarefa'
+            }}
+
+          </app-portal-button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </section>
+</main>

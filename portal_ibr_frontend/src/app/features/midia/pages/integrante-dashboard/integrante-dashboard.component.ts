@@ -69,30 +69,29 @@ export class IntegranteDashboardComponent {
 
 
       case 'tarefas':
-
-        console.log(
-          'Tarefas'
-        );
+        void this.router.navigate([
+          '/midia/integrante/tarefas'
+        ]);
 
         break;
 
 
       case 'minha-escala':
 
-        console.log(
-          'Minha Escala'
-        );
+        void this.router.navigate([
+          '/midia/integrante/minha-escala'
+        ]);
 
         break;
 
 
-      case 'escala-completa':
+     case 'escala-completa':
 
-        console.log(
-          'Escala Completa'
-        );
+      void this.router.navigate([
+        '/midia/integrante/escala-completa'
+      ]);
 
-        break;
+      break;
 
     }
 
