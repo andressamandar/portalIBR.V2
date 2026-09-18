@@ -73,7 +73,7 @@
                 class="status-escala status-existente">
 
                 <span class="material-icons">
-                  edit_calendar
+                  event_available
                 </span>
 
                 <div>
@@ -82,9 +82,19 @@
                     Esta data já possui uma escala
                   </strong>
 
-                  <p>
-                    Você está editando a escala existente.
-                  </p>
+                  @if (camposEscalaAbertos) {
+
+                    <p>
+                      Você está editando a escala existente.
+                    </p>
+
+                  } @else {
+
+                    <p>
+                      A escala desta data já foi salva.
+                    </p>
+
+                  }
 
                 </div>
 
@@ -133,11 +143,18 @@
                   para esta data.
                 </p>
 
-              } @else {
+              } @else if (camposEscalaAbertos) {
 
                 <p>
                   Selecione abaixo os integrantes
                   para cada função.
+                </p>
+
+              } @else {
+
+                <p>
+                  Clique em Editar Escala caso precise
+                  alterar os integrantes.
                 </p>
 
               }
@@ -147,161 +164,189 @@
           </div>
 
 
-          <section class="funcoes-section">
-
-            <div class="funcoes-header">
-
-              <h2>
-                Montar Escala
-              </h2>
-
-              <p>
-                Selecione um ou mais integrantes
-                para cada função.
-              </p>
-
-            </div>
-
-
-            <div class="funcoes-grid">
-
-              @for (
-                funcao of funcoesEscala;
-                track funcao;
-                let indice = $index
-              ) {
-
-                <div class="funcao-item">
-
-                  <app-portal-select
-                    [name]="'funcao-' + indice"
-                    [label]="funcao"
-                    placeholder="Selecione"
-                    icon="person"
-                    [options]="obterOpcoesPorFuncao(funcao)"
-                    optionLabel="nome"
-                    optionValue="id"
-                    [multiple]="true"
-                    [(ngModel)]="selecoesPorFuncao[funcao]"
-                    (ngModelChange)="verificarDuplicidade(funcao)">
-                  </app-portal-select>
-
-
-                  @if (
-                    obterOpcoesPorFuncao(funcao).length === 0
-                  ) {
-
-                    <span class="sem-disponiveis">
-                      Nenhum integrante disponível
-                      para esta função.
-                    </span>
-
-                  }
-
-                </div>
-
-              }
-
-            </div>
-
-
-            @if (temAlgumaSelecao) {
-
-              <section class="preview-section">
-
-                <div class="preview-header">
-
-                  <span class="material-icons">
-                    visibility
-                  </span>
-
-                  <div>
-
-                    <h2>
-                      Pré-visualização da Escala
-                    </h2>
-
-                    <p>
-                      Confira como a escala ficará
-                      antes de salvar.
-                    </p>
-
-                  </div>
-
-                </div>
-
-
-                <div class="preview-lista">
-
-                  @for (
-                    funcao of funcoesEscala;
-                    track funcao
-                  ) {
-
-                    @if (
-                      obterSelecionadosPorFuncao(
-                        funcao
-                      ).length > 0
-                    ) {
-
-                      <div class="preview-item">
-
-                        <strong>
-                          {{ funcao }}
-                        </strong>
-
-
-                        <div class="preview-integrantes">
-
-                          @for (
-                            integrante of
-                            obterSelecionadosPorFuncao(
-                              funcao
-                            );
-                            track integrante.id
-                          ) {
-
-                            <span>
-                              {{ integrante.nome }}
-                            </span>
-
-                          }
-
-                        </div>
-
-                      </div>
-
-                    }
-
-                  }
-
-                </div>
-
-              </section>
-
-            }
-
+          @if (
+            escalaExistente &&
+            !camposEscalaAbertos
+          ) {
 
             <div class="escala-actions">
 
               <app-portal-button
-                icon="save"
-                [disabled]="!temAlgumaSelecao"
-                [loading]="salvandoEscala"
-                loadingText="Salvando"
-                (buttonClick)="salvarEscala()">
+                icon="edit"
+                (buttonClick)="editarEscala()">
 
-                {{
-                  escalaExistente
-                    ? 'Salvar Alterações'
-                    : 'Salvar Escala'
-                }}
+                Editar Escala
 
               </app-portal-button>
 
             </div>
 
-          </section>
+          }
+
+
+          @if (camposEscalaAbertos) {
+
+            <section class="funcoes-section">
+
+              <div class="funcoes-header">
+
+                <h2>
+                  {{
+                    escalaExistente
+                      ? 'Editar Escala'
+                      : 'Montar Escala'
+                  }}
+                </h2>
+
+                <p>
+                  Selecione um ou mais integrantes
+                  para cada função.
+                </p>
+
+              </div>
+
+
+              <div class="funcoes-grid">
+
+                @for (
+                  funcao of funcoesEscala;
+                  track funcao;
+                  let indice = $index
+                ) {
+
+                  <div class="funcao-item">
+
+                    <app-portal-select
+                      [name]="'funcao-' + indice"
+                      [label]="funcao"
+                      placeholder="Selecione"
+                      icon="person"
+                      [options]="obterOpcoesPorFuncao(funcao)"
+                      optionLabel="nome"
+                      optionValue="id"
+                      [multiple]="true"
+                      [(ngModel)]="selecoesPorFuncao[funcao]"
+                      (ngModelChange)="verificarDuplicidade(funcao)">
+                    </app-portal-select>
+
+
+                    @if (
+                      obterOpcoesPorFuncao(funcao).length === 0
+                    ) {
+
+                      <span class="sem-disponiveis">
+                        Nenhum integrante disponível
+                        para esta função.
+                      </span>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              @if (temAlgumaSelecao) {
+
+                <section class="preview-section">
+
+                  <div class="preview-header">
+
+                    <span class="material-icons">
+                      visibility
+                    </span>
+
+                    <div>
+
+                      <h2>
+                        Pré-visualização da Escala
+                      </h2>
+
+                      <p>
+                        Confira como a escala ficará
+                        antes de salvar.
+                      </p>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="preview-lista">
+
+                    @for (
+                      funcao of funcoesEscala;
+                      track funcao
+                    ) {
+
+                      @if (
+                        obterSelecionadosPorFuncao(
+                          funcao
+                        ).length > 0
+                      ) {
+
+                        <div class="preview-item">
+
+                          <strong>
+                            {{ funcao }}
+                          </strong>
+
+
+                          <div class="preview-integrantes">
+
+                            @for (
+                              integrante of
+                              obterSelecionadosPorFuncao(
+                                funcao
+                              );
+                              track integrante.id
+                            ) {
+
+                              <span>
+                                {{ integrante.nome }}
+                              </span>
+
+                            }
+
+                          </div>
+
+                        </div>
+
+                      }
+
+                    }
+
+                  </div>
+
+                </section>
+
+              }
+
+
+              <div class="escala-actions">
+
+                <app-portal-button
+                  icon="save"
+                  [disabled]="!temAlgumaSelecao"
+                  [loading]="salvandoEscala"
+                  loadingText="Salvando"
+                  (buttonClick)="salvarEscala()">
+
+                  {{
+                    escalaExistente
+                      ? 'Salvar Alterações'
+                      : 'Salvar Escala'
+                  }}
+
+                </app-portal-button>
+
+              </div>
+
+            </section>
+
+          }
 
         }
 

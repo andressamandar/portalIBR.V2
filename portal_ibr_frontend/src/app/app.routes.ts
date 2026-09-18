@@ -748,6 +748,16 @@ export const routes: Routes = [
         component => component.EscalaCompletaComponent
       )
   },
+
+  {
+    path: 'midia/solicitacoes',
+    loadComponent: () =>
+      import(
+        './features/midia/pages/solicitacoes/solicitacoes.component'
+      ).then(
+        component => component.SolicitacoesComponent
+      )
+  },
   // =====================================
   // DESENVOLVIMENTO
   // =====================================

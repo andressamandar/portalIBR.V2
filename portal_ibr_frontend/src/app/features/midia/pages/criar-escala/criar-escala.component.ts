@@ -112,26 +112,37 @@ export class CriarEscalaComponent
 
   salvandoEscala = false;
 
+  camposEscalaAbertos = false;
+
 
   datas: DataEscala[] = [];
 
-  datasOpcoes: DataEscalaOption[] = [];
+
+  datasOpcoes:
+    DataEscalaOption[] = [];
 
 
   dataSelecionada:
     DataEscalaOption | null = null;
 
 
-  integrantes: Integrante[] = [];
+  integrantes:
+    Integrante[] = [];
+
 
   integrantesDisponiveis:
     IntegranteDisponivel[] = [];
+
 
   integrantesDisponiveisCompletos:
     Integrante[] = [];
 
 
   escalaExistente:
+    Escala | null = null;
+
+
+  escalaOutroMinisterio:
     Escala | null = null;
 
 
@@ -157,7 +168,8 @@ export class CriarEscalaComponent
 
   private carregarDadosIniciais(): void {
 
-    this.carregando = true;
+    this.carregando =
+      true;
 
 
     forkJoin({
@@ -187,11 +199,18 @@ export class CriarEscalaComponent
         this.datasOpcoes =
           this.datas.map(
             data => ({
-              id: data._id,
-              nome: this.montarNomeData(
+
+              id:
+                data._id,
+
+              nome:
+                this.montarNomeData(
+                  data
+                ),
+
+              dataEscala:
                 data
-              ),
-              dataEscala: data
+
             })
           );
 
@@ -226,7 +245,9 @@ export class CriarEscalaComponent
 
   selecionarData(): void {
 
-    if (!this.dataSelecionada) {
+    if (
+      !this.dataSelecionada
+    ) {
 
       this.limparSelecaoData();
 
@@ -242,14 +263,25 @@ export class CriarEscalaComponent
     this.carregandoData =
       true;
 
+
     this.escalaExistente =
       null;
+
+
+    this.escalaOutroMinisterio =
+      null;
+
 
     this.integrantesDisponiveis =
       [];
 
+
     this.integrantesDisponiveisCompletos =
       [];
+
+
+    this.camposEscalaAbertos =
+      false;
 
 
     forkJoin({
@@ -266,7 +298,12 @@ export class CriarEscalaComponent
           .listarDisponiveisPorData(
             data._id,
             'Midia'
-          )
+          ),
+
+      escalasOutroMinisterio:
+        this.escalasService.listar(
+          'Louvor'
+        )
 
     }).subscribe({
 
@@ -274,6 +311,14 @@ export class CriarEscalaComponent
 
         this.escalaExistente =
           response.escala.data;
+
+
+        this.escalaOutroMinisterio =
+          response.escalasOutroMinisterio.data.find(
+            escala =>
+              escala.data ===
+              data.data
+          ) ?? null;
 
 
         this.integrantesDisponiveis =
@@ -299,6 +344,17 @@ export class CriarEscalaComponent
 
 
         this.prepararSelecoes();
+
+
+        /*
+         * Se ainda não existe escala,
+         * os campos ficam abertos.
+         *
+         * Se já existe escala,
+         * os campos ficam fechados.
+         */
+        this.camposEscalaAbertos =
+          !this.escalaExistente;
 
 
         this.carregandoData =
@@ -331,7 +387,8 @@ export class CriarEscalaComponent
 
   private prepararSelecoes(): void {
 
-    this.selecoesPorFuncao = {};
+    this.selecoesPorFuncao =
+      {};
 
 
     for (
@@ -349,8 +406,13 @@ export class CriarEscalaComponent
       ] =
         integrantesEscalados.map(
           integrante => ({
-            id: integrante.id,
-            nome: integrante.nome
+
+            id:
+              integrante.id,
+
+            nome:
+              integrante.nome
+
           })
         );
 
@@ -365,16 +427,23 @@ export class CriarEscalaComponent
 
     const disponiveis =
       this.integrantesDisponiveisCompletos
+
         .filter(
           integrante =>
             integrante.funcoes.includes(
               funcao
             )
         )
+
         .map(
           integrante => ({
-            id: integrante._id,
-            nome: integrante.nome
+
+            id:
+              integrante._id,
+
+            nome:
+              integrante.nome
+
           })
         );
 
@@ -403,7 +472,9 @@ export class CriarEscalaComponent
         );
 
 
-      if (!jaExiste) {
+      if (
+        !jaExiste
+      ) {
 
         opcoes.push(
           selecionado
@@ -430,14 +501,25 @@ export class CriarEscalaComponent
     this.escalaExistente =
       null;
 
+
+    this.escalaOutroMinisterio =
+      null;
+
+
     this.integrantesDisponiveis =
       [];
+
 
     this.integrantesDisponiveisCompletos =
       [];
 
+
     this.selecoesPorFuncao =
       {};
+
+
+    this.camposEscalaAbertos =
+      false;
 
   }
 
@@ -458,7 +540,9 @@ export class CriarEscalaComponent
         : item.tipo;
 
 
-    if (item.escala_criada) {
+    if (
+      item.escala_criada
+    ) {
 
       return (
         `${dataFormatada} - ${descricao} - Escala criada`
@@ -491,6 +575,192 @@ export class CriarEscalaComponent
   }
 
 
+  editarEscala(): void {
+
+    if (
+      !this.escalaExistente
+    ) {
+      return;
+    }
+
+
+    this.camposEscalaAbertos =
+      true;
+
+  }
+
+
+  private marcarDataComoEscalaCriada(): void {
+
+    if (
+      !this.dataSelecionada
+    ) {
+      return;
+    }
+
+
+    const dataId =
+      this.dataSelecionada
+        .dataEscala
+        ._id;
+
+
+    const dataEncontrada =
+      this.datas.find(
+        data =>
+          data._id ===
+          dataId
+      );
+
+
+    if (
+      dataEncontrada
+    ) {
+
+      dataEncontrada.escala_criada =
+        true;
+
+    }
+
+
+    /*
+     * Recria as opções para atualizar
+     * imediatamente o texto:
+     * "- Escala criada".
+     */
+    this.datasOpcoes =
+      this.datas.map(
+        data => ({
+
+          id:
+            data._id,
+
+          nome:
+            this.montarNomeData(
+              data
+            ),
+
+          dataEscala:
+            data
+
+        })
+      );
+
+
+    /*
+     * Mantém a mesma data selecionada
+     * depois de recriar o select.
+     */
+    this.dataSelecionada =
+      this.datasOpcoes.find(
+        opcao =>
+          opcao.id ===
+          dataId
+      ) ?? null;
+
+  }
+
+
+  private estaEscaladoNoOutroMinisterio(
+    integranteId: string
+  ): boolean {
+
+    if (
+      !this.escalaOutroMinisterio
+    ) {
+      return false;
+    }
+
+
+    return Object.values(
+      this.escalaOutroMinisterio.funcoes
+    ).some(
+      integrantes =>
+        integrantes.some(
+          integrante =>
+            integrante.id ===
+            integranteId
+        )
+    );
+
+  }
+
+
+  private removerConflitosComOutroMinisterio(
+    funcao?: string
+  ): boolean {
+
+    const funcoesParaVerificar =
+      funcao
+        ? [funcao]
+        : this.funcoesEscala;
+
+
+    let encontrouConflito =
+      false;
+
+
+    for (
+      const nomeFuncao
+      of funcoesParaVerificar
+    ) {
+
+      const selecionados =
+        this.selecoesPorFuncao[
+          nomeFuncao
+        ] ?? [];
+
+
+      const conflitantes =
+        selecionados.filter(
+          integrante =>
+            this.estaEscaladoNoOutroMinisterio(
+              integrante.id
+            )
+        );
+
+
+      if (
+        conflitantes.length === 0
+      ) {
+        continue;
+      }
+
+
+      this.selecoesPorFuncao[
+        nomeFuncao
+      ] =
+        selecionados.filter(
+          integrante =>
+            !this.estaEscaladoNoOutroMinisterio(
+              integrante.id
+            )
+        );
+
+
+      for (
+        const integrante
+        of conflitantes
+      ) {
+
+        this.snackbar.warning(
+          `${integrante.nome} já foi escalado(a) para o Louvor neste dia.`
+        );
+
+      }
+
+
+      encontrouConflito =
+        true;
+
+    }
+
+
+    return encontrouConflito;
+
+  }
+
+
   salvarEscala(): void {
 
     if (
@@ -501,7 +771,9 @@ export class CriarEscalaComponent
     }
 
 
-    if (!this.temAlgumaSelecao) {
+    if (
+      !this.temAlgumaSelecao
+    ) {
 
       this.snackbar.warning(
         'Selecione pelo menos um integrante antes de salvar a escala.'
@@ -509,6 +781,17 @@ export class CriarEscalaComponent
 
       return;
 
+    }
+
+
+    /*
+     * Confere novamente antes de salvar
+     * se alguém já está escalado no Louvor.
+     */
+    if (
+      this.removerConflitosComOutroMinisterio()
+    ) {
+      return;
     }
 
 
@@ -547,7 +830,8 @@ export class CriarEscalaComponent
     const dados:
       SalvarEscalaRequest = {
 
-      ministerio: 'Midia',
+      ministerio:
+        'Midia',
 
       data_id:
         data._id,
@@ -564,7 +848,12 @@ export class CriarEscalaComponent
       true;
 
 
-    if (this.escalaExistente) {
+    /*
+     * EDIÇÃO
+     */
+    if (
+      this.escalaExistente
+    ) {
 
       this.escalasService
         .editar(
@@ -579,12 +868,28 @@ export class CriarEscalaComponent
               false;
 
 
-            if (response.data) {
+            if (
+              response.data
+            ) {
 
               this.escalaExistente =
                 response.data;
 
             }
+
+
+            /*
+             * Mantém o select atualizado.
+             */
+            this.marcarDataComoEscalaCriada();
+
+
+            /*
+             * Fecha os campos depois
+             * de salvar a edição.
+             */
+            this.camposEscalaAbertos =
+              false;
 
 
             this.snackbar.success(
@@ -620,6 +925,9 @@ export class CriarEscalaComponent
     }
 
 
+    /*
+     * NOVA ESCALA
+     */
     this.escalasService
       .criar(
         dados
@@ -632,12 +940,28 @@ export class CriarEscalaComponent
             false;
 
 
-          if (response.data) {
+          if (
+            response.data
+          ) {
 
             this.escalaExistente =
               response.data;
 
           }
+
+
+          /*
+           * Atualiza imediatamente:
+           * "- Escala criada".
+           */
+          this.marcarDataComoEscalaCriada();
+
+
+          /*
+           * Fecha Foto, Vídeo e Story.
+           */
+          this.camposEscalaAbertos =
+            false;
 
 
           this.snackbar.success(
@@ -674,6 +998,28 @@ export class CriarEscalaComponent
     funcaoAtual: string
   ): void {
 
+    /*
+     * Primeiro verifica conflito
+     * com a escala do Louvor.
+     */
+    const conflitoOutroMinisterio =
+      this.removerConflitosComOutroMinisterio(
+        funcaoAtual
+      );
+
+
+    if (
+      conflitoOutroMinisterio
+    ) {
+      return;
+    }
+
+
+    /*
+     * Depois mantém a regra existente
+     * de aviso se a mesma pessoa estiver
+     * em mais de uma função da Mídia.
+     */
     const selecionados =
       this.selecoesPorFuncao[
         funcaoAtual
@@ -712,7 +1058,9 @@ export class CriarEscalaComponent
           );
 
 
-        if (repetido) {
+        if (
+          repetido
+        ) {
 
           this.snackbar.warning(
             `${integrante.nome} também está escalado para ${outraFuncao} neste dia.`

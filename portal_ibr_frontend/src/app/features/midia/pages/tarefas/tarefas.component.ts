@@ -13,9 +13,18 @@ import {
 } from '@angular/material/dialog';
 
 import {
+  forkJoin
+} from 'rxjs';
+
+import {
   Tarefa,
   TarefasService
 } from '../../../../core/services/tarefas.service';
+
+import {
+  Solicitacao,
+  SolicitacoesService
+} from '../../../../core/services/solicitacoes.service';
 
 import {
   PortalSnackbarService
@@ -55,6 +64,9 @@ export class TarefasComponent
   private readonly tarefasService =
     inject(TarefasService);
 
+  private readonly solicitacoesService =
+    inject(SolicitacoesService);
+
   private readonly snackbar =
     inject(PortalSnackbarService);
 
@@ -67,17 +79,29 @@ export class TarefasComponent
 
   tarefas: Tarefa[] = [];
 
+  solicitacoes: Solicitacao[] = [];
+
+
   carregando = false;
+
+  solicitacaoConvertendoId:
+    string | null = null;
+
+  tarefaConcluindoId:
+    string | null = null;
 
 
   ngOnInit(): void {
-    this.carregarTarefas();
+
+    this.carregarDados();
+
   }
 
 
-  carregarTarefas(): void {
+  carregarDados(): void {
 
-    this.carregando = true;
+    this.carregando =
+      true;
 
 
     this.tarefasService
@@ -89,15 +113,16 @@ export class TarefasComponent
           this.tarefas =
             response.data;
 
-          this.carregando =
-            false;
+
+          this.carregarSolicitacoes();
 
         },
 
 
         error: erro => {
 
-          this.tarefas = [];
+          this.tarefas =
+            [];
 
           this.carregando =
             false;
@@ -118,12 +143,99 @@ export class TarefasComponent
 
   }
 
+  private carregarSolicitacoes(): void {
+
+    this.solicitacoesService
+      .listar()
+      .subscribe({
+
+        next: response => {
+
+          this.solicitacoes =
+            response.data;
+
+
+          this.carregando =
+            false;
+
+        },
+
+
+        error: erro => {
+
+          this.solicitacoes =
+            [];
+
+          this.carregando =
+            false;
+
+
+          const mensagem =
+            erro?.error?.message ??
+            'Não foi possível carregar as solicitações.';
+
+
+          this.snackbar.error(
+            mensagem
+          );
+
+        }
+
+      });
+
+  }
+
+
+  carregarTarefas(): void {
+
+    this.tarefasService
+      .listar()
+      .subscribe({
+
+        next: response => {
+
+          this.tarefas =
+            response.data;
+
+        },
+
+
+        error: erro => {
+
+          const mensagem =
+            erro?.error?.message ??
+            'Não foi possível carregar as tarefas.';
+
+
+          this.snackbar.error(
+            mensagem
+          );
+
+        }
+
+      });
+
+  }
+
+
+  get solicitacoesRecebidas():
+    Solicitacao[] {
+
+    return this.solicitacoes.filter(
+      solicitacao =>
+        solicitacao.status ===
+        'Recebida'
+    );
+
+  }
+
 
   get tarefasAFazer(): Tarefa[] {
 
     return this.tarefas.filter(
       tarefa =>
-        tarefa.status === 'A Fazer'
+        tarefa.status ===
+        'A Fazer'
     );
 
   }
@@ -133,7 +245,8 @@ export class TarefasComponent
 
     return this.tarefas.filter(
       tarefa =>
-        tarefa.status === 'Fazendo'
+        tarefa.status ===
+        'Fazendo'
     );
 
   }
@@ -143,7 +256,8 @@ export class TarefasComponent
 
     return this.tarefas.filter(
       tarefa =>
-        tarefa.status === 'Concluído'
+        tarefa.status ===
+        'Concluído'
     );
 
   }
@@ -176,6 +290,204 @@ export class TarefasComponent
       id,
       'editar'
     ]);
+
+  }
+
+
+  converterEmTarefa(
+    solicitacao: Solicitacao
+  ): void {
+
+    if (
+      this.solicitacaoConvertendoId
+    ) {
+      return;
+    }
+
+
+    const dialogRef =
+      this.dialog.open(
+        PortalDialogComponent,
+        {
+          data: {
+            title:
+              'Converter em tarefa',
+
+            message:
+              'Deseja converter esta solicitação em uma tarefa?',
+
+            type:
+              'info',
+
+            confirmText:
+              'Converter',
+
+            cancelText:
+              'Cancelar'
+          }
+        }
+      );
+
+
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        confirmado => {
+
+          if (
+            confirmado !== true
+          ) {
+            return;
+          }
+
+
+          this.solicitacaoConvertendoId =
+            solicitacao._id;
+
+
+          this.solicitacoesService
+            .converterEmTarefa(
+              solicitacao._id
+            )
+            .subscribe({
+
+              next: response => {
+
+                this.solicitacaoConvertendoId =
+                  null;
+
+
+                this.snackbar.success(
+                  response.message ??
+                  'Solicitação convertida em tarefa com sucesso.'
+                );
+
+
+                this.carregarDados();
+
+              },
+
+
+              error: erro => {
+
+                this.solicitacaoConvertendoId =
+                  null;
+
+
+                const mensagem =
+                  erro?.error?.message ??
+                  'Não foi possível converter a solicitação em tarefa.';
+
+
+                this.snackbar.error(
+                  mensagem
+                );
+
+              }
+
+            });
+
+        }
+      );
+
+  }
+
+
+  concluirTarefa(
+    tarefa: Tarefa
+  ): void {
+
+    if (
+      this.tarefaConcluindoId
+    ) {
+      return;
+    }
+
+
+    const dialogRef =
+      this.dialog.open(
+        PortalDialogComponent,
+        {
+          data: {
+            title:
+              'Concluir tarefa',
+
+            message:
+              'Deseja marcar esta tarefa como concluída?',
+
+            type:
+              'info',
+
+            confirmText:
+              'Concluir',
+
+            cancelText:
+              'Cancelar'
+          }
+        }
+      );
+
+
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        confirmado => {
+
+          if (
+            confirmado !== true
+          ) {
+            return;
+          }
+
+
+          this.tarefaConcluindoId =
+            tarefa._id;
+
+
+          this.tarefasService
+            .concluir(
+              tarefa._id
+            )
+            .subscribe({
+
+              next: response => {
+
+                this.tarefaConcluindoId =
+                  null;
+
+
+                this.snackbar.success(
+                  response.message ??
+                  'Tarefa concluída com sucesso.'
+                );
+
+
+                this.carregarDados();
+
+              },
+
+
+              error: erro => {
+
+                this.tarefaConcluindoId =
+                  null;
+
+
+                const mensagem =
+                  erro?.error?.message ??
+                  'Não foi possível concluir a tarefa.';
+
+
+                this.snackbar.error(
+                  mensagem
+                );
+
+              }
+
+            });
+
+        }
+      );
 
   }
 
@@ -214,7 +526,9 @@ export class TarefasComponent
       .subscribe(
         confirmado => {
 
-          if (confirmado !== true) {
+          if (
+            confirmado !== true
+          ) {
             return;
           }
 
@@ -233,7 +547,7 @@ export class TarefasComponent
                 );
 
 
-                this.carregarTarefas();
+                this.carregarDados();
 
               },
 

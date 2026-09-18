@@ -1,0 +1,64 @@
+<main class="solicitacoes-page">
+
+  <section class="solicitacoes-container">
+
+    <button
+      type="button"
+      class="solicitacoes-back"
+      (click)="voltar()">
+
+      ← Voltar
+
+    </button>
+
+
+    <header class="solicitacoes-header">
+
+      <app-logo
+        variant="full"
+        size="medium">
+      </app-logo>
+
+
+      <div class="solicitacoes-header__text">
+
+        <span>
+          Ministério de Mídia
+        </span>
+
+        <h1>
+          Solicitações
+        </h1>
+
+        <p>
+          Solicite uma nova arte ou acompanhe
+          o andamento de uma solicitação.
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <div class="solicitacoes-options">
+
+      <app-selection-card
+        icon="add_circle"
+        title="Nova Solicitação"
+        subtitle="Envie uma nova solicitação de arte para a equipe de Mídia"
+        (cardClick)="novaSolicitacao()">
+      </app-selection-card>
+
+
+      <app-selection-card
+        icon="track_changes"
+        title="Acompanhar Solicitações"
+        subtitle="Consulte o andamento das solicitações enviadas"
+        (cardClick)="acompanharSolicitacoes()">
+      </app-selection-card>
+
+    </div>
+
+  </section>
+
+</main>

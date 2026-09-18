@@ -78,11 +78,34 @@
 
             } @else {
 
-              Baixar Minha Escala
+              Baixar Escala da Mídia
 
             }
 
           </app-portal-button>
+
+
+          @if (podeBaixarEscalaCompleta) {
+
+            <app-portal-button
+              variant="secondary"
+              icon="picture_as_pdf"
+              [disabled]="gerandoPdfCompleto"
+              (buttonClick)="baixarPdfCompleto()">
+
+              @if (gerandoPdfCompleto) {
+
+                Gerando PDF...
+
+              } @else {
+
+                Baixar Escala Unificada
+
+              }
+
+            </app-portal-button>
+
+          }
 
         </div>
 

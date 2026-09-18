@@ -52,10 +52,11 @@
   }
 }
 
-.minha-escala-acoes {
-  display: flex;
-  justify-content: flex-end;
-}
+ .minha-escala-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: variables.$space-3;
+  }
 
 .minha-escala-vazia {
   padding: variables.$space-5;
@@ -218,7 +219,10 @@
 
   }
 
+
+
   .minha-escala-acoes {
+    flex-direction: column;
     justify-content: stretch;
 
     app-portal-button {

@@ -400,19 +400,34 @@ def concluir_tarefa_service(
                 400
             )
 
-        integrante_id = usuario.get(
+        perfil = usuario.get(
+            "perfil"
+        )
+
+        usuario_id = usuario.get(
             "id"
         )
 
-        if (
+        eh_lideranca_midia = (
+            perfil
+            == "lideranca_midia"
+        )
+
+        eh_responsavel = (
             tarefa.get(
                 "responsavel_id"
             )
-            != integrante_id
+            == usuario_id
+        )
+
+        if (
+            not eh_lideranca_midia
+            and not eh_responsavel
         ):
             return error(
                 "Somente o responsável "
-                "pela tarefa pode concluí-la.",
+                "pela tarefa ou a liderança "
+                "da Mídia pode concluí-la.",
                 403
             )
 

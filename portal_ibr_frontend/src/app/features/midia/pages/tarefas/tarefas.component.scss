@@ -65,10 +65,143 @@
   }
 }
 
+
+/* =========================================
+   SOLICITAÇÕES
+   ========================================= */
+
+.solicitacoes-section {
+  padding: variables.$space-5;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-5;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+}
+
+.solicitacoes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: variables.$space-4;
+
+  > div {
+    display: flex;
+    align-items: flex-start;
+    gap: variables.$space-3;
+  }
+
+  .material-icons {
+    flex-shrink: 0;
+
+    color: variables.$primary;
+    font-size: 26px;
+  }
+
+  > div > div {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-1;
+  }
+
+  h2 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.solicitacoes-lista {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: variables.$space-4;
+}
+
+.solicitacao-card {
+  min-width: 0;
+
+  padding: variables.$space-4;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-medium;
+
+  background: variables.$surface-secondary;
+}
+
+.solicitacao-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: variables.$space-3;
+}
+
+.solicitacao-status {
+  padding:
+    variables.$space-1
+    variables.$space-3;
+
+  border-radius:
+    variables.$radius-pill;
+
+  background:
+    variables.$warning-soft;
+
+  color:
+    variables.$warning;
+
+  font-size:
+    variables.$font-size-xs;
+
+  font-weight:
+    variables.$font-weight-semibold;
+}
+
+.solicitacao-card__acoes {
+  display: flex;
+  justify-content: flex-end;
+
+  padding-top:
+    variables.$space-2;
+}
+
+
+/* =========================================
+   KANBAN
+   ========================================= */
+
 .kanban {
   display: grid;
+
   grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
 
   gap: variables.$space-5;
 
@@ -154,6 +287,11 @@
   font-weight: variables.$font-weight-semibold;
 }
 
+
+/* =========================================
+   CARDS
+   ========================================= */
+
 .tarefa-card {
   padding: variables.$space-4;
 
@@ -217,9 +355,23 @@
     color: variables.$primary;
   }
 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   .material-icons {
     font-size: 20px;
   }
+}
+
+.icone-acao.sucesso {
+
+  &:hover {
+    background: variables.$success-soft;
+    color: variables.$success;
+  }
+
 }
 
 .icone-acao.perigo {
@@ -332,9 +484,18 @@
   text-align: center;
 }
 
+
+/* =========================================
+   RESPONSIVO
+   ========================================= */
+
 @media (max-width: 1100px) {
 
   .kanban {
+    grid-template-columns: 1fr;
+  }
+
+  .solicitacoes-lista {
     grid-template-columns: 1fr;
   }
 
@@ -361,6 +522,18 @@
 
   .tarefas-container {
     gap: variables.$space-5;
+  }
+
+  .solicitacoes-section {
+    padding: variables.$space-4;
+  }
+
+  .solicitacao-card__acoes {
+
+    app-portal-button {
+      width: 100%;
+    }
+
   }
 
 }

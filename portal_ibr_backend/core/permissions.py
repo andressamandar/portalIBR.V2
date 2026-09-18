@@ -42,9 +42,9 @@ PERMISSOES = {
 
     ],
 
-    # ===================================
-    # LIDERANÇA MIDIA
-    # ===================================
+        # ===================================
+        # LIDERANÇA MIDIA
+        # ===================================
 
     "lideranca_midia": [
 
@@ -59,10 +59,10 @@ PERMISSOES = {
 
         "visualizar_tarefas",
         "gerenciar_tarefas",
+        "concluir_tarefa",
         "gerenciar_solicitacoes",
 
         "baixar_pdf"
-
     ],
 
     # ===================================
