@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
+
 from database.mongo import db
+
 from services.disponibilidades_service import (
     buscar_disponibilidade_integrante_service,
     listar_disponibilidades_service,
@@ -22,12 +24,13 @@ disponibilidades_bp = Blueprint(
 )
 def listar_datas_disponiveis():
 
-    ministerio = request.args.get("ministerio")
+    ministerio = request.args.get(
+        "ministerio"
+    )
 
     filtro = {
         "ministerio": ministerio,
-        "ativo": True,
-        "escala_criada": False
+        "ativo": True
     }
 
     datas = []
@@ -37,11 +40,17 @@ def listar_datas_disponiveis():
     ).sort("data", 1):
 
         datas.append({
-            "_id": str(d["_id"]),
+            "_id": str(
+                d["_id"]
+            ),
             "data": d["data"],
             "tipo": d["tipo"],
             "nome_evento": d.get(
                 "nome_evento"
+            ),
+            "escala_criada": d.get(
+                "escala_criada",
+                False
             )
         })
 
@@ -49,11 +58,12 @@ def listar_datas_disponiveis():
         "success": True,
         "data": datas
     })
-    
+
+
 @disponibilidades_bp.route(
-        "",
-        methods=["GET"]
-    )
+    "",
+    methods=["GET"]
+)
 def listar_disponibilidades():
 
     return listar_disponibilidades_service(
@@ -70,7 +80,9 @@ def listar_disponibilidades():
 def salvar_disponibilidade():
 
     return salvar_disponibilidade_service(
-        request.get_json(silent=True) or {}
+        request.get_json(
+            silent=True
+        ) or {}
     )
 
 
@@ -84,10 +96,12 @@ def buscar_disponibilidade(
 
     return (
         buscar_disponibilidade_integrante_service(
-            integrante_id=integrante_id,
-            ministerio=request.args.get(
-                "ministerio"
-            )
+            integrante_id=
+                integrante_id,
+            ministerio=
+                request.args.get(
+                    "ministerio"
+                )
         )
     )
 
@@ -134,12 +148,14 @@ def visualizar_preenchimento():
                 "integrante_id": str(
                     integrante["_id"]
                 ),
-                "ministerio": ministerio
+                "ministerio":
+                    ministerio
             })
         )
 
         resposta.append({
-            "nome": integrante["nome"],
+            "nome":
+                integrante["nome"],
             "preencheu":
                 preenchido is not None
         })
@@ -156,8 +172,11 @@ def visualizar_preenchimento():
 )
 def disponibilidades_limitadas():
 
-    return listar_disponibilidades_limitadas_service(
-        ministerio=request.args.get(
-            "ministerio"
+    return (
+        listar_disponibilidades_limitadas_service(
+            ministerio=
+                request.args.get(
+                    "ministerio"
+                )
         )
     )
