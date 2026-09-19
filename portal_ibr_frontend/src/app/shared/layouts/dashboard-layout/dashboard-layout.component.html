@@ -1,17 +1,11 @@
-<mat-sidenav-container class="dashboard-layout">
-  <mat-sidenav
-    class="dashboard-layout__sidebar"
-    mode="side"
-    opened
-  >
-    <app-sidebar />
-  </mat-sidenav>
+<div class="dashboard-layout">
 
-  <mat-sidenav-content class="dashboard-layout__content">
-    <app-header />
+  <app-header />
 
-    <main class="dashboard-layout__main">
-      <router-outlet />
-    </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <main class="dashboard-layout__main">
+
+    <router-outlet />
+
+  </main>
+
+</div>

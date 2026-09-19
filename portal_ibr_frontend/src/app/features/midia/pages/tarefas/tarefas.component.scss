@@ -1,8 +1,14 @@
 @use '../../../../../theme/variables' as variables;
 
+
 :host {
   display: block;
 }
+
+
+/* =========================================
+   PÁGINA
+   ========================================= */
 
 .tarefas-page {
   min-height: 100vh;
@@ -20,6 +26,11 @@
   flex-direction: column;
   gap: variables.$space-7;
 }
+
+
+/* =========================================
+   CABEÇALHO
+   ========================================= */
 
 .tarefas-header {
   display: flex;
@@ -67,7 +78,7 @@
 
 
 /* =========================================
-   SOLICITAÇÕES
+   SOLICITAÇÕES RECEBIDAS
    ========================================= */
 
 .solicitacoes-section {
@@ -96,7 +107,8 @@
     gap: variables.$space-3;
   }
 
-  .material-icons {
+  > .material-icons,
+  > div > .material-icons {
     flex-shrink: 0;
 
     color: variables.$primary;
@@ -165,109 +177,39 @@
     variables.$space-1
     variables.$space-3;
 
-  border-radius:
-    variables.$radius-pill;
+  border-radius: variables.$radius-pill;
 
-  background:
-    variables.$warning-soft;
+  background: variables.$warning-soft;
 
-  color:
-    variables.$warning;
-
-  font-size:
-    variables.$font-size-xs;
-
-  font-weight:
-    variables.$font-weight-semibold;
+  color: variables.$warning;
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-semibold;
 }
 
 .solicitacao-card__acoes {
+  padding-top: variables.$space-2;
+
   display: flex;
   justify-content: flex-end;
-
-  padding-top:
-    variables.$space-2;
 }
 
 
 /* =========================================
-   KANBAN
+   TAGS E CONTADORES
    ========================================= */
 
-.kanban {
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
-
-  gap: variables.$space-5;
-
-  align-items: start;
-}
-
-.kanban-coluna {
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-  gap: variables.$space-4;
-
-  padding: variables.$space-4;
-
-  border: 1px solid variables.$border-light;
-  border-radius: variables.$radius-large;
-  background: variables.$surface-secondary;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: variables.$space-3;
-
-    > div {
-      display: flex;
-      align-items: center;
-      gap: variables.$space-2;
-    }
-
-    h2 {
-      margin: 0;
-
-      color: variables.$text-primary;
-      font-size: variables.$font-size-md;
-      font-weight: variables.$font-weight-semibold;
-    }
-  }
-
-  &__tarefas {
-    display: flex;
-    flex-direction: column;
-    gap: variables.$space-3;
-  }
-}
-
-.status-indicador {
-  width: 10px;
-  height: 10px;
-
-  flex-shrink: 0;
+.ministerio-tag {
+  padding:
+    variables.$space-1
+    variables.$space-3;
 
   border-radius: variables.$radius-pill;
-}
 
-.status-indicador.a-fazer {
-  background: variables.$warning;
-}
+  background: variables.$primary-soft;
 
-.status-indicador.fazendo {
-  background: variables.$info;
-}
-
-.status-indicador.concluido {
-  background: variables.$success;
+  color: variables.$primary-dark;
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-semibold;
 }
 
 .quantidade {
@@ -280,6 +222,7 @@
   justify-content: center;
 
   border-radius: variables.$radius-pill;
+
   background: variables.$surface;
 
   color: variables.$text-secondary;
@@ -289,99 +232,9 @@
 
 
 /* =========================================
-   CARDS
+   INFORMAÇÕES COMPARTILHADAS
+   SOLICITAÇÕES / TAREFAS
    ========================================= */
-
-.tarefa-card {
-  padding: variables.$space-4;
-
-  display: flex;
-  flex-direction: column;
-  gap: variables.$space-4;
-
-  border: 1px solid variables.$border-light;
-  border-radius: variables.$radius-medium;
-  background: variables.$surface;
-  box-shadow: variables.$shadow-small;
-}
-
-.tarefa-card__topo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: variables.$space-3;
-}
-
-.ministerio-tag {
-  padding:
-    variables.$space-1
-    variables.$space-3;
-
-  border-radius: variables.$radius-pill;
-  background: variables.$primary-soft;
-
-  color: variables.$primary-dark;
-  font-size: variables.$font-size-xs;
-  font-weight: variables.$font-weight-semibold;
-}
-
-.tarefa-card__acoes {
-  display: flex;
-  align-items: center;
-  gap: variables.$space-1;
-}
-
-.icone-acao {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: variables.$radius-small;
-  background: transparent;
-
-  color: variables.$text-secondary;
-
-  cursor: pointer;
-
-  transition: variables.$transition-fast;
-
-  &:hover {
-    background: variables.$primary-soft;
-    color: variables.$primary;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .material-icons {
-    font-size: 20px;
-  }
-}
-
-.icone-acao.sucesso {
-
-  &:hover {
-    background: variables.$success-soft;
-    color: variables.$success;
-  }
-
-}
-
-.icone-acao.perigo {
-
-  &:hover {
-    background: variables.$danger-soft;
-    color: variables.$danger;
-  }
-
-}
 
 .tarefa-card__descricao,
 .tarefa-card__sugestao {
@@ -448,24 +301,346 @@
   padding: variables.$space-3;
 
   border-radius: variables.$radius-small;
+
   background: variables.$primary-soft;
 }
 
-.responsavel {
-  padding-top: variables.$space-3;
 
+/* =========================================
+   KANBAN
+   ========================================= */
+
+/* =========================================
+   KANBAN
+   ========================================= */
+
+.kanban {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-5;
+}
+
+.kanban-coluna {
+  min-width: 0;
+
+  padding: variables.$space-4;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-3;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+
+  background: variables.$surface-secondary;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: variables.$space-3;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: variables.$space-2;
+    }
+
+    h2 {
+      margin: 0;
+
+      color: variables.$text-primary;
+      font-size: variables.$font-size-md;
+      font-weight: variables.$font-weight-semibold;
+    }
+  }
+
+  &__tarefas {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+
+    gap: variables.$space-3;
+
+    align-items: start;
+  }
+}
+
+
+/* =========================================
+   STATUS DO KANBAN
+   ========================================= */
+
+.status-indicador {
+  width: 10px;
+  height: 10px;
+
+  flex-shrink: 0;
+
+  border-radius: variables.$radius-pill;
+
+  &.a-fazer {
+    background: variables.$warning;
+  }
+
+  &.fazendo {
+    background: variables.$info;
+  }
+
+  &.concluido {
+    background: variables.$success;
+  }
+}
+
+
+/* =========================================
+   CARD DA TAREFA
+   COMPACTO
+   ========================================= */
+
+.tarefa-card {
+  min-width: 0;
+
+  padding: variables.$space-3;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-medium;
+
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+}
+
+.tarefa-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: variables.$space-2;
+}
+
+.tarefa-card__acoes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+
+/* =========================================
+   AÇÕES DOS CARDS
+   ========================================= */
+
+.icone-acao {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: variables.$radius-small;
+
+  background: transparent;
+
+  color: variables.$text-secondary;
+
+  cursor: pointer;
+
+  transition: variables.$transition-fast;
+
+  &:hover {
+    background: variables.$primary-soft;
+    color: variables.$primary;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+  }
+
+  .material-icons {
+    font-size: 18px;
+  }
+
+  &.sucesso:hover {
+    background: variables.$success-soft;
+    color: variables.$success;
+  }
+
+  &.perigo:hover {
+    background: variables.$danger-soft;
+    color: variables.$danger;
+  }
+}
+
+
+/* =========================================
+   RESUMO DA TAREFA
+   ========================================= */
+
+.tarefa-card__resumo {
+  padding: variables.$space-2;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  border-radius: variables.$radius-medium;
+
+  background: variables.$surface-secondary;
+}
+
+.tarefa-card__solicitante {
   display: flex;
   align-items: center;
   gap: variables.$space-2;
 
+  > .material-icons {
+    flex-shrink: 0;
+
+    color: variables.$primary;
+    font-size: 18px;
+  }
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  small {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+  }
+
+  strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xs;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+.tarefa-card__descricao-principal {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  small {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+    font-weight: variables.$font-weight-semibold;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xs;
+    font-weight: variables.$font-weight-medium;
+    line-height: 1.4;
+
+    display: -webkit-box;
+
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+  }
+}
+
+
+/* =========================================
+   INFORMAÇÕES DO CARD NO KANBAN
+   ========================================= */
+
+.kanban {
+
+  .ministerio-tag {
+    padding:
+      3px
+      variables.$space-2;
+  }
+
+  .tarefa-card__informacoes {
+    gap: variables.$space-2;
+
+    > div {
+      gap: variables.$space-2;
+    }
+
+    .material-icons {
+      font-size: 17px;
+    }
+
+    small,
+    strong {
+      font-size: variables.$font-size-xs;
+    }
+
+    strong {
+      line-height: 1.3;
+    }
+  }
+
+  .tarefa-card__sugestao {
+    padding: variables.$space-2;
+
+    gap: 2px;
+
+    strong,
+    p {
+      font-size: variables.$font-size-xs;
+    }
+
+    p {
+      line-height: 1.4;
+
+      display: -webkit-box;
+
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+
+      overflow: hidden;
+    }
+  }
+}
+
+
+/* =========================================
+   RESPONSÁVEL
+   ========================================= */
+
+.responsavel {
+  padding-top: variables.$space-2;
+
+  display: flex;
+  align-items: center;
+  gap: variables.$space-1;
+
   border-top: 1px solid variables.$border-light;
 
   color: variables.$text-secondary;
-  font-size: variables.$font-size-sm;
+  font-size: variables.$font-size-xs;
 
   .material-icons {
+    flex-shrink: 0;
+
     color: variables.$primary;
-    font-size: 20px;
+    font-size: 18px;
   }
 
   strong {
@@ -473,8 +648,13 @@
   }
 }
 
+
+/* =========================================
+   COLUNA VAZIA
+   ========================================= */
+
 .coluna-vazia {
-  padding: variables.$space-5;
+  padding: variables.$space-4;
 
   border: 1px dashed variables.$border;
   border-radius: variables.$radius-medium;
@@ -501,6 +681,7 @@
 
 }
 
+
 @media (max-width: 800px) {
 
   .tarefas-header {
@@ -509,10 +690,10 @@
       align-items: stretch;
       flex-direction: column;
     }
-
   }
 
 }
+
 
 @media (max-width: 600px) {
 
@@ -533,7 +714,6 @@
     app-portal-button {
       width: 100%;
     }
-
   }
 
 }

@@ -1,10 +1,16 @@
 from datetime import datetime, timezone
 
+from repositories.escalas_repository import (
+    EscalasRepository
+)
 from repositories.louvores_escala_repository import (
     LouvoresEscalaRepository
 )
 from schemas.louvor_escala_schema import (
     LouvorEscalaSchema
+)
+from services.notificacoes_service import (
+    NotificacoesService
 )
 from utils.exceptions import AppError
 from utils.logger import logger
@@ -109,6 +115,196 @@ def _enriquecer_louvores_escala(documento):
     }
 
 
+def _formatar_data(data):
+    if not data:
+        return ""
+
+    try:
+        data_convertida = (
+            datetime.strptime(
+                data,
+                "%Y-%m-%d"
+            )
+        )
+
+        return data_convertida.strftime(
+            "%d/%m/%Y"
+        )
+
+    except Exception:
+        return data
+
+
+def _normalizar_louvores(
+    louvores
+):
+    return [
+        {
+            "louvor_id": str(
+                item.get(
+                    "louvor_id",
+                    ""
+                )
+            ),
+            "tom": (
+                item.get(
+                    "tom",
+                    ""
+                )
+                or ""
+            ).strip()
+        }
+        for item in (
+            louvores
+            or []
+        )
+    ]
+
+
+def _louvores_foram_alterados(
+    documento_anterior,
+    novos_louvores
+):
+    if not documento_anterior:
+        return True
+
+    louvores_anteriores = (
+        _normalizar_louvores(
+            documento_anterior.get(
+                "louvores",
+                []
+            )
+        )
+    )
+
+    louvores_novos = (
+        _normalizar_louvores(
+            novos_louvores
+        )
+    )
+
+    return (
+        louvores_anteriores
+        != louvores_novos
+    )
+
+
+def _obter_integrantes_escala(
+    escala
+):
+    integrantes_ids = set()
+
+    if not escala:
+        return integrantes_ids
+
+    for ids_funcao in escala.get(
+        "funcoes",
+        {}
+    ).values():
+
+        for integrante_id in (
+            ids_funcao
+        ):
+            integrantes_ids.add(
+                str(
+                    integrante_id
+                )
+            )
+
+    return integrantes_ids
+
+
+def _criar_notificacoes_louvores(
+    data_id,
+    ministerio,
+    tipo
+):
+    if ministerio != "Louvor":
+        return
+
+    escala = (
+        EscalasRepository
+        .buscar_por_data_id(
+            data_id=data_id,
+            ministerio=ministerio
+        )
+    )
+
+    if not escala:
+        return
+
+    integrantes_ids = (
+        _obter_integrantes_escala(
+            escala
+        )
+    )
+
+    if not integrantes_ids:
+        return
+
+    data_formatada = (
+        _formatar_data(
+            escala.get(
+                "data"
+            )
+        )
+    )
+
+    if tipo == "louvores_definidos":
+
+        titulo = (
+            "Louvores definidos"
+        )
+
+        mensagem = (
+            "Os louvores da escala de "
+            f"{data_formatada} "
+            "foram definidos."
+        )
+
+    else:
+
+        titulo = (
+            "Louvores alterados"
+        )
+
+        mensagem = (
+            "Houve alteração nos louvores "
+            "da escala de "
+            f"{data_formatada}."
+        )
+
+    for integrante_id in (
+        integrantes_ids
+    ):
+        try:
+            NotificacoesService.criar(
+                tipo=tipo,
+                titulo=titulo,
+                mensagem=mensagem,
+                ministerio="Louvor",
+                destinatario_perfil=(
+                    "integrante_louvor"
+                ),
+                destinatario_id=(
+                    integrante_id
+                ),
+                referencia_tipo=(
+                    "louvores_escala"
+                ),
+                referencia_id=(
+                    escala["_id"]
+                )
+            )
+
+        except Exception:
+            logger.exception(
+                "Erro ao criar notificação "
+                "de louvores para o integrante "
+                f"{integrante_id}"
+            )
+
+
 def buscar_louvores_por_data_service(
     data_id,
     ministerio
@@ -154,12 +350,43 @@ def salvar_louvores_escala_service(
     data
 ):
     try:
-        dados = LouvorEscalaSchema.validar(
-            data
+        dados = (
+            LouvorEscalaSchema.validar(
+                data
+            )
         )
 
-        dados["ultima_atualizacao"] = (
-            datetime.now(timezone.utc)
+        documento_anterior = (
+            LouvoresEscalaRepository
+            .buscar_por_data(
+                data_id=dados[
+                    "data_id"
+                ],
+                ministerio=dados[
+                    "ministerio"
+                ]
+            )
+        )
+
+        primeira_definicao = (
+            documento_anterior
+            is None
+        )
+
+        houve_alteracao = (
+            _louvores_foram_alterados(
+                documento_anterior,
+                dados.get(
+                    "louvores",
+                    []
+                )
+            )
+        )
+
+        dados[
+            "ultima_atualizacao"
+        ] = datetime.now(
+            timezone.utc
         )
 
         (
@@ -187,12 +414,37 @@ def salvar_louvores_escala_service(
             )
         )
 
+        if houve_alteracao:
+
+            if primeira_definicao:
+
+                tipo_notificacao = (
+                    "louvores_definidos"
+                )
+
+            else:
+
+                tipo_notificacao = (
+                    "louvores_alterados"
+                )
+
+            _criar_notificacoes_louvores(
+                data_id=dados[
+                    "data_id"
+                ],
+                ministerio=dados[
+                    "ministerio"
+                ],
+                tipo=tipo_notificacao
+            )
+
         return success(
             data=_enriquecer_louvores_escala(
                 documento
             ),
             message=(
-                "Louvores da escala salvos com sucesso."
+                "Louvores da escala "
+                "salvos com sucesso."
             )
         )
 
@@ -236,12 +488,15 @@ def listar_louvores_escala_service(
 
         return success(
             data=documentos,
-            total=len(documentos)
+            total=len(
+                documentos
+            )
         )
 
     except Exception as e:
         logger.exception(
-            "Erro ao listar louvores das escalas"
+            "Erro ao listar louvores "
+            "das escalas"
         )
 
         return error(

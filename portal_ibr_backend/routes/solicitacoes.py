@@ -10,7 +10,9 @@ from middlewares.auth_middleware import (
 from services.solicitacoes_service import (
     listar_solicitacoes_service,
     buscar_solicitacao_service,
+    acompanhar_solicitacoes_service,
     cadastrar_solicitacao_service,
+    editar_solicitacao_publica_service,
     converter_solicitacao_service
 )
 
@@ -24,6 +26,7 @@ solicitacoes_bp = Blueprint(
 
 # ==========================================
 # NOVA SOLICITAÇÃO
+# PÚBLICO
 # ==========================================
 
 @solicitacoes_bp.route(
@@ -32,6 +35,43 @@ solicitacoes_bp = Blueprint(
 )
 def cadastrar_solicitacao():
     return cadastrar_solicitacao_service(
+        request.get_json()
+    )
+
+
+# ==========================================
+# ACOMPANHAR SOLICITAÇÕES POR CELULAR
+# PÚBLICO
+# ==========================================
+
+@solicitacoes_bp.route(
+    "/acompanhar/<celular>",
+    methods=["GET"]
+)
+def acompanhar_solicitacoes(
+    celular
+):
+    return acompanhar_solicitacoes_service(
+        celular
+    )
+
+
+# ==========================================
+# EDITAR SOLICITAÇÃO
+# PÚBLICO
+# ==========================================
+
+@solicitacoes_bp.route(
+    "/acompanhar/<celular>/<id>",
+    methods=["PUT"]
+)
+def editar_solicitacao_publica(
+    celular,
+    id
+):
+    return editar_solicitacao_publica_service(
+        id,
+        celular,
         request.get_json()
     )
 
@@ -53,7 +93,8 @@ def listar_solicitacoes():
 
 
 # ==========================================
-# BUSCAR SOLICITAÇÃO
+# BUSCAR SOLICITAÇÃO POR ID
+# LIDERANÇA DA MÍDIA
 # ==========================================
 
 @solicitacoes_bp.route(
@@ -63,7 +104,9 @@ def listar_solicitacoes():
 @require_permission(
     "gerenciar_solicitacoes"
 )
-def buscar_solicitacao(id):
+def buscar_solicitacao(
+    id
+):
     return buscar_solicitacao_service(
         id
     )
@@ -71,6 +114,7 @@ def buscar_solicitacao(id):
 
 # ==========================================
 # CONVERTER EM TAREFA
+# LIDERANÇA DA MÍDIA
 # ==========================================
 
 @solicitacoes_bp.route(
@@ -80,7 +124,9 @@ def buscar_solicitacao(id):
 @require_permission(
     "gerenciar_solicitacoes"
 )
-def converter_solicitacao(id):
+def converter_solicitacao(
+    id
+):
     return converter_solicitacao_service(
         id
     )

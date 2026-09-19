@@ -1,29 +1,252 @@
 <header class="header">
+
   <div class="header__title">
-    <span>Portal IBR</span>
+    <span>
+      Portal IBR
+    </span>
   </div>
+
 
   <div class="header__actions">
-    <button
-      type="button"
-      mat-icon-button
-      aria-label="Notificações"
-    >
-      <mat-icon>notifications</mat-icon>
-    </button>
 
-    <button
-      type="button"
-      class="header__profile"
-    >
-      <span class="header__avatar">E</span>
 
-      <span class="header__profile-text">
-        <strong>Eduardo</strong>
-        <small>Integrante</small>
+    <!-- =====================================
+         NOTIFICAÇÕES
+         ===================================== -->
+
+    <div class="notificacoes">
+
+      <button
+        type="button"
+        mat-icon-button
+        class="notificacoes__botao"
+        aria-label="Notificações"
+        (click)="alternarPainelNotificacoes()"
+      >
+
+        <mat-icon>
+          notifications
+        </mat-icon>
+
+
+        @if (naoLidas > 0) {
+
+          <span class="notificacoes__contador">
+            {{
+              naoLidas > 99
+                ? '99+'
+                : naoLidas
+            }}
+          </span>
+
+        }
+
+      </button>
+
+
+      @if (painelNotificacoesAberto) {
+
+        <section class="notificacoes__painel">
+
+
+          <!-- CABEÇALHO DAS NOTIFICAÇÕES -->
+
+          <header class="notificacoes__header">
+
+            <div>
+
+              <h2>
+                Notificações
+              </h2>
+
+
+              @if (naoLidas > 0) {
+
+                <span>
+                  {{ naoLidas }}
+
+                  {{
+                    naoLidas === 1
+                      ? 'não lida'
+                      : 'não lidas'
+                  }}
+                </span>
+
+              } @else {
+
+                <span>
+                  Nenhuma notificação não lida
+                </span>
+
+              }
+
+            </div>
+
+
+            @if (naoLidas > 0) {
+
+              <button
+                type="button"
+                class="notificacoes__marcar-todas"
+                (click)="marcarTodasComoLidas()"
+              >
+                Marcar todas como lidas
+              </button>
+
+            }
+
+          </header>
+
+
+          <!-- CONTEÚDO DAS NOTIFICAÇÕES -->
+
+          <div class="notificacoes__conteudo">
+
+            @if (carregandoNotificacoes) {
+
+              <div class="notificacoes__estado">
+
+                <mat-icon>
+                  hourglass_empty
+                </mat-icon>
+
+                <span>
+                  Carregando notificações...
+                </span>
+
+              </div>
+
+            } @else if (
+              notificacoes.length === 0
+            ) {
+
+              <div class="notificacoes__estado">
+
+                <mat-icon>
+                  notifications_none
+                </mat-icon>
+
+                <strong>
+                  Nenhuma notificação
+                </strong>
+
+                <span>
+                  Quando houver novidades,
+                  elas aparecerão aqui.
+                </span>
+
+              </div>
+
+            } @else {
+
+              @for (
+                notificacao of notificacoes;
+                track notificacao._id
+              ) {
+
+                <button
+                  type="button"
+                  class="notificacao-item"
+                  [class.notificacao-item--nao-lida]="
+                    !notificacao.lida
+                  "
+                  (click)="
+                    marcarComoLida(
+                      notificacao
+                    )
+                  "
+                >
+
+                  <div class="notificacao-item__icone">
+
+                    <mat-icon>
+                      {{
+                        iconeNotificacao(
+                          notificacao.tipo
+                        )
+                      }}
+                    </mat-icon>
+
+                  </div>
+
+
+                  <div class="notificacao-item__conteudo">
+
+                    <div class="notificacao-item__topo">
+
+                      <strong>
+                        {{ notificacao.titulo }}
+                      </strong>
+
+
+                      @if (!notificacao.lida) {
+
+                        <span
+                          class="notificacao-item__indicador"
+                          aria-label="Notificação não lida"
+                        >
+                        </span>
+
+                      }
+
+                    </div>
+
+
+                    <p>
+                      {{ notificacao.mensagem }}
+                    </p>
+
+
+                    <small>
+                      {{
+                        formatarHorario(
+                          notificacao.data_cadastro
+                        )
+                      }}
+                    </small>
+
+                  </div>
+
+                </button>
+
+              }
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+    </div>
+
+
+    <!-- =====================================
+         USUÁRIO LOGADO
+         ===================================== -->
+
+    <div class="header__profile">
+
+      <span class="header__avatar">
+        {{ inicialUsuario }}
       </span>
 
-      <mat-icon>expand_more</mat-icon>
-    </button>
+
+      <span class="header__profile-text">
+
+        <strong>
+          {{ nomeUsuario }}
+        </strong>
+
+        <small>
+          {{ perfilUsuario }}
+        </small>
+
+      </span>
+
+    </div>
+
   </div>
+
 </header>

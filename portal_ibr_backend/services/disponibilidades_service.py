@@ -6,6 +6,9 @@ from repositories.disponibilidades_repository import (
 from schemas.disponibilidade_schema import (
     DisponibilidadeSchema
 )
+from services.notificacoes_service import (
+    NotificacoesService
+)
 from utils.exceptions import AppError
 from utils.logger import logger
 from utils.responses import error, success
@@ -42,20 +45,124 @@ def _serialize_disponibilidade(documento):
     }
 
 
+def _obter_perfil_lideranca(ministerio):
+    if ministerio == "Louvor":
+        return "lideranca_louvor"
+
+    if ministerio == "Midia":
+        return "lideranca_midia"
+
+    return None
+
+
+def _criar_notificacao_disponibilidade(
+    disponibilidade,
+    era_nova
+):
+    if not disponibilidade:
+        return
+
+    ministerio = disponibilidade.get(
+        "ministerio"
+    )
+
+    integrante_nome = disponibilidade.get(
+        "integrante_nome"
+    )
+
+    perfil_lideranca = (
+        _obter_perfil_lideranca(
+            ministerio
+        )
+    )
+
+    if not perfil_lideranca:
+        return
+
+    if era_nova:
+        tipo = "disponibilidade_salva"
+        titulo = "Disponibilidade salva"
+
+        mensagem = (
+            f"{integrante_nome} salvou "
+            f"sua disponibilidade no "
+            f"{ministerio}."
+        )
+
+    else:
+        tipo = "disponibilidade_alterada"
+        titulo = "Disponibilidade alterada"
+
+        mensagem = (
+            f"{integrante_nome} alterou "
+            f"sua disponibilidade no "
+            f"{ministerio}."
+        )
+
+    try:
+        NotificacoesService.criar(
+            tipo=tipo,
+            titulo=titulo,
+            mensagem=mensagem,
+            ministerio=ministerio,
+            destinatario_perfil=(
+                perfil_lideranca
+            ),
+            referencia_tipo=(
+                "disponibilidade"
+            ),
+            referencia_id=(
+                disponibilidade["_id"]
+            )
+        )
+
+    except Exception:
+        logger.exception(
+            "Erro ao criar notificação "
+            "de disponibilidade"
+        )
+
+
 def salvar_disponibilidade_service(data):
     try:
         dados = DisponibilidadeSchema.validar(
             data
         )
 
-        dados["data_preenchimento"] = (
-            datetime.now(timezone.utc)
+        disponibilidade_anterior = (
+            DisponibilidadesRepository
+            .buscar_por_integrante_e_ministerio(
+                integrante_id=dados[
+                    "integrante_id"
+                ],
+                ministerio=dados[
+                    "ministerio"
+                ]
+            )
         )
 
-        DisponibilidadesRepository.salvar_ou_atualizar(
-            integrante_id=dados["integrante_id"],
-            ministerio=dados["ministerio"],
-            dados=dados
+        era_nova = (
+            disponibilidade_anterior
+            is None
+        )
+
+        dados["data_preenchimento"] = (
+            datetime.now(
+                timezone.utc
+            )
+        )
+
+        (
+            DisponibilidadesRepository
+            .salvar_ou_atualizar(
+                integrante_id=dados[
+                    "integrante_id"
+                ],
+                ministerio=dados[
+                    "ministerio"
+                ],
+                dados=dados
+            )
         )
 
         disponibilidade = (
@@ -68,6 +175,11 @@ def salvar_disponibilidade_service(data):
                     "ministerio"
                 ]
             )
+        )
+
+        _criar_notificacao_disponibilidade(
+            disponibilidade,
+            era_nova
         )
 
         return success(
@@ -90,7 +202,10 @@ def salvar_disponibilidade_service(data):
             "Erro ao salvar disponibilidade"
         )
 
-        return error(str(e), 500)
+        return error(
+            str(e),
+            500
+        )
 
 
 def buscar_disponibilidade_integrante_service(
@@ -129,7 +244,10 @@ def buscar_disponibilidade_integrante_service(
             "do integrante"
         )
 
-        return error(str(e), 500)
+        return error(
+            str(e),
+            500
+        )
 
 
 def listar_disponiveis_por_data_service(
@@ -166,12 +284,15 @@ def listar_disponiveis_por_data_service(
                     "integrante_nome"
                 )
             }
-            for documento in documentos
+            for documento
+            in documentos
         ]
 
         return success(
             data=integrantes,
-            total=len(integrantes)
+            total=len(
+                integrantes
+            )
         )
 
     except Exception as e:
@@ -180,12 +301,15 @@ def listar_disponiveis_por_data_service(
             "disponíveis por data"
         )
 
-        return error(str(e), 500)
-    
-    
+        return error(
+            str(e),
+            500
+        )
+
+
 def listar_disponibilidades_service(
-        ministerio
-    ):
+    ministerio
+):
     try:
         if not ministerio:
             return error(
@@ -204,12 +328,15 @@ def listar_disponibilidades_service(
             _serialize_disponibilidade(
                 documento
             )
-            for documento in documentos
+            for documento
+            in documentos
         ]
 
         return success(
             data=disponibilidades,
-            total=len(disponibilidades)
+            total=len(
+                disponibilidades
+            )
         )
 
     except Exception as e:
@@ -217,11 +344,15 @@ def listar_disponibilidades_service(
             "Erro ao listar disponibilidades"
         )
 
-        return error(str(e), 500)
-    
-    
+        return error(
+            str(e),
+            500
+        )
+
+
 def listar_disponibilidades_limitadas_service(
-    ministerio):
+    ministerio
+):
     try:
         if not ministerio:
             return error(
@@ -238,7 +369,8 @@ def listar_disponibilidades_limitadas_service(
 
         ids_datas_abertas = {
             str(data["_id"])
-            for data in datas_abertas
+            for data
+            in datas_abertas
         }
 
         documentos = list(
@@ -254,35 +386,49 @@ def listar_disponibilidades_limitadas_service(
 
             datas_disponiveis = [
                 item.get("data")
-                for item in documento.get(
+                for item
+                in documento.get(
                     "disponibilidades",
                     []
                 )
                 if (
                     item.get("data_id")
                     in ids_datas_abertas
-                    and item.get("disponivel")
+                    and item.get(
+                        "disponivel"
+                    )
                     is True
                 )
             ]
 
-            if len(datas_disponiveis) <= 1:
-                resultado.append({
-                    "nome": documento.get(
-                        "integrante_nome"
-                    ),
-                    "datas":
-                        datas_disponiveis
-                })
+            if len(
+                datas_disponiveis
+            ) <= 1:
+
+                resultado.append(
+                    {
+                        "nome": (
+                            documento.get(
+                                "integrante_nome"
+                            )
+                        ),
+                        "datas": (
+                            datas_disponiveis
+                        )
+                    }
+                )
 
         return success(
             data=resultado,
-            total=len(resultado)
+            total=len(
+                resultado
+            )
         )
 
     except Exception as e:
         logger.exception(
-            "Erro ao listar disponibilidades limitadas"
+            "Erro ao listar disponibilidades "
+            "limitadas"
         )
 
         return error(

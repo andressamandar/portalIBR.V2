@@ -1,0 +1,481 @@
+@use '../../../../../theme/variables' as variables;
+
+:host {
+  display: block;
+}
+
+.acompanhar-page {
+  min-height: 100vh;
+  padding: variables.$space-6;
+
+  background: variables.$background;
+}
+
+.acompanhar-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-6;
+}
+
+.acompanhar-header {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-2;
+
+  > span {
+    color: variables.$primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-xxl;
+    font-weight: variables.$font-weight-bold;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-md;
+    line-height: 1.5;
+  }
+}
+
+
+/* CONSULTA */
+
+.consulta-card {
+  padding: variables.$space-5;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  align-items: end;
+  gap: variables.$space-4;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+}
+
+.consulta-campo {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+    line-height: 1.5;
+  }
+}
+
+
+/* RESULTADOS */
+
+.solicitacoes-encontradas {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+}
+
+.solicitacoes-encontradas__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  p {
+    margin:
+      variables.$space-1
+      0
+      0;
+
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+  }
+}
+
+.solicitacoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-3;
+}
+
+
+/* CARD */
+
+.solicitacao-card {
+  overflow: hidden;
+
+  border: 1px solid variables.$border-light;
+  border-radius: variables.$radius-large;
+
+  background: variables.$surface;
+  box-shadow: variables.$shadow-small;
+
+  transition: variables.$transition;
+}
+
+.solicitacao-card.expandida {
+  border-color: variables.$primary-light;
+}
+
+.solicitacao-resumo {
+  width: 100%;
+  padding: variables.$space-4;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: variables.$space-4;
+
+  border: none;
+
+  background: transparent;
+
+  font-family: variables.$font-family;
+  text-align: left;
+
+  cursor: pointer;
+
+  &:hover {
+    background: variables.$surface-secondary;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset variables.$shadow-focus;
+  }
+}
+
+.solicitacao-resumo__principal {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-3;
+}
+
+.solicitacao-resumo__topo {
+  display: flex;
+  align-items: center;
+  gap: variables.$space-2;
+  flex-wrap: wrap;
+}
+
+.solicitacao-resumo__descricao {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-md;
+    font-weight: variables.$font-weight-semibold;
+  }
+
+  span {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+  }
+}
+
+.expandir-icone {
+  flex-shrink: 0;
+
+  color: variables.$primary;
+  font-size: 28px;
+}
+
+
+/* TAGS */
+
+.ministerio-tag,
+.status-badge {
+  padding:
+    variables.$space-1
+    variables.$space-3;
+
+  border-radius: variables.$radius-pill;
+
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-semibold;
+}
+
+.ministerio-tag {
+  background: variables.$primary-soft;
+  color: variables.$primary-dark;
+}
+
+.status-badge.recebida,
+.status-badge.a-fazer {
+  background: variables.$warning-soft;
+  color: variables.$warning;
+}
+
+.status-badge.fazendo {
+  background: variables.$info-soft;
+  color: variables.$info;
+}
+
+.status-badge.concluido {
+  background: variables.$success-soft;
+  color: variables.$success;
+}
+
+
+/* DETALHES */
+
+.solicitacao-detalhes {
+  padding: variables.$space-5;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-5;
+
+  border-top: 1px solid variables.$border-light;
+
+  background: variables.$surface-secondary;
+}
+
+.detalhes-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: variables.$space-4;
+}
+
+.detalhe-item {
+  display: flex;
+  align-items: flex-start;
+  gap: variables.$space-3;
+
+  > .material-icons {
+    flex-shrink: 0;
+
+    color: variables.$primary;
+    font-size: 22px;
+  }
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  small {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+  }
+
+  strong {
+    color: variables.$text-primary;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-medium;
+    line-height: 1.4;
+  }
+}
+
+.descricao-completa,
+.sugestao-arte {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-1;
+
+  small {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+    font-weight: variables.$font-weight-semibold;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-sm;
+    line-height: 1.5;
+  }
+}
+
+.sugestao-arte {
+  padding: variables.$space-4;
+
+  border-radius: variables.$radius-medium;
+
+  background: variables.$primary-soft;
+}
+
+
+/* ANDAMENTO */
+
+.andamento {
+  padding-top: variables.$space-5;
+
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+
+  border-top: 1px solid variables.$border-light;
+
+  h3 {
+    margin: 0;
+
+    color: variables.$text-primary;
+    font-size: variables.$font-size-md;
+    font-weight: variables.$font-weight-semibold;
+  }
+}
+
+.andamento-etapas {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$space-4;
+}
+
+.andamento-etapa {
+  display: flex;
+  align-items: flex-start;
+  gap: variables.$space-3;
+
+  > .material-icons {
+    flex-shrink: 0;
+
+    color: variables.$text-disabled;
+    font-size: 22px;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-1;
+  }
+
+  strong {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-sm;
+  }
+
+  small {
+    color: variables.$text-secondary;
+    font-size: variables.$font-size-xs;
+    line-height: 1.4;
+  }
+
+  &.ativa {
+
+    > .material-icons {
+      color: variables.$success;
+    }
+
+    strong {
+      color: variables.$text-primary;
+    }
+  }
+}
+
+
+/* AÇÕES */
+
+.solicitacao-acoes {
+  padding-top: variables.$space-4;
+
+  display: flex;
+  justify-content: flex-end;
+
+  border-top: 1px solid variables.$border-light;
+}
+
+.edicao-bloqueada {
+  padding: variables.$space-3;
+
+  display: flex;
+  align-items: center;
+  gap: variables.$space-2;
+
+  border-radius: variables.$radius-small;
+
+  background: variables.$surface;
+
+  color: variables.$text-secondary;
+  font-size: variables.$font-size-sm;
+  line-height: 1.4;
+
+  .material-icons {
+    flex-shrink: 0;
+
+    color: variables.$text-secondary;
+    font-size: 20px;
+  }
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 700px) {
+
+  .consulta-card {
+    grid-template-columns: 1fr;
+  }
+
+  .detalhes-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .acompanhar-page {
+    padding: variables.$space-4;
+  }
+
+  .solicitacao-resumo {
+    align-items: flex-start;
+  }
+
+  .solicitacao-detalhes {
+    padding: variables.$space-4;
+  }
+
+  .solicitacao-acoes {
+
+    app-portal-button {
+      width: 100%;
+    }
+  }
+
+}

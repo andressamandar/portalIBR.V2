@@ -1,37 +1,32 @@
 @use '../../../../theme/variables' as variables;
 
+
 .dashboard-layout {
   min-height: 100vh;
-  background: variables.$background;
+
+  background:
+    variables.$background;
 }
 
-.dashboard-layout__sidebar {
-  width: 272px;
-  border-right: 0;
-  background: variables.$primary-dark;
-}
-
-.dashboard-layout__content {
-  min-height: 100vh;
-  background: variables.$background;
-}
 
 .dashboard-layout__main {
   padding: 28px;
 }
 
+
 @media (max-width: 900px) {
-  .dashboard-layout__sidebar {
-    width: 240px;
-  }
 
   .dashboard-layout__main {
     padding: 20px;
   }
+
 }
 
+
 @media (max-width: 600px) {
+
   .dashboard-layout__main {
     padding: 16px;
   }
+
 }

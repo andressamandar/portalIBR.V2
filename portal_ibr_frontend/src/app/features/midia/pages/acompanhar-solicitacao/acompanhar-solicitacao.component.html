@@ -1,0 +1,593 @@
+<main class="acompanhar-page">
+
+  <section class="acompanhar-container">
+
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+
+        Voltar
+
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="acompanhar-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Acompanhar Solicitações
+      </h1>
+
+      <p>
+        Digite o número de celular informado
+        no momento da solicitação.
+      </p>
+
+    </header>
+
+
+    <!-- CONSULTA -->
+
+    <section class="consulta-card">
+
+      <div class="consulta-campo">
+
+        <app-portal-input
+          name="celular"
+          label="Celular"
+          placeholder="Ex.: 11999999999"
+          icon="phone"
+          [required]="true"
+          [(ngModel)]="celular">
+        </app-portal-input>
+
+
+        <p>
+          Digite somente DDD + número do celular,
+          sem caracteres.
+        </p>
+
+      </div>
+
+
+      <app-portal-button
+        icon="search"
+        [disabled]="!celularValido"
+        [loading]="consultando"
+        loadingText="Consultando"
+        (buttonClick)="consultar()">
+
+        Consultar Solicitações
+
+      </app-portal-button>
+
+    </section>
+
+
+    @if (consultando) {
+
+      <app-portal-loading
+        message="Consultando solicitações...">
+      </app-portal-loading>
+
+    }
+
+
+    @if (
+      solicitacoes.length > 0 &&
+      !consultando
+    ) {
+
+      <section class="solicitacoes-encontradas">
+
+        <header class="solicitacoes-encontradas__header">
+
+          <div>
+
+            <h2>
+              Suas solicitações
+            </h2>
+
+            <p>
+              Encontramos
+              {{ solicitacoes.length }}
+              {{
+                solicitacoes.length === 1
+                  ? 'solicitação'
+                  : 'solicitações'
+              }}
+              para este celular.
+            </p>
+
+          </div>
+
+        </header>
+
+
+        <div class="solicitacoes-lista">
+
+          @for (
+            solicitacao of solicitacoes;
+            track solicitacao._id
+          ) {
+
+            <article
+              class="solicitacao-card"
+              [class.expandida]="
+                estaExpandida(
+                  solicitacao
+                )
+              ">
+
+
+              <!-- RESUMO -->
+
+              <button
+                type="button"
+                class="solicitacao-resumo"
+                (click)="
+                  alternarSolicitacao(
+                    solicitacao
+                  )
+                ">
+
+                <div class="solicitacao-resumo__principal">
+
+                  <div class="solicitacao-resumo__topo">
+
+                    <span class="ministerio-tag">
+                      {{ solicitacao.ministerio }}
+                    </span>
+
+
+                    <span
+                      class="status-badge"
+                      [class.recebida]="
+                        statusAtual(
+                          solicitacao
+                        ) === 'Recebida'
+                      "
+                      [class.a-fazer]="
+                        statusAtual(
+                          solicitacao
+                        ) === 'A Fazer'
+                      "
+                      [class.fazendo]="
+                        statusAtual(
+                          solicitacao
+                        ) === 'Fazendo'
+                      "
+                      [class.concluido]="
+                        statusAtual(
+                          solicitacao
+                        ) === 'Concluído'
+                      ">
+
+                      {{
+                        statusAtual(
+                          solicitacao
+                        )
+                      }}
+
+                    </span>
+
+                  </div>
+
+
+                  <div class="solicitacao-resumo__descricao">
+
+                    <strong>
+                      {{ solicitacao.descricao }}
+                    </strong>
+
+                    <span>
+                      Evento:
+                      {{
+                        formatarData(
+                          solicitacao.data_evento
+                        )
+                      }}
+                      às
+                      {{ solicitacao.horario_evento }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <span class="material-icons expandir-icone">
+
+                  {{
+                    estaExpandida(
+                      solicitacao
+                    )
+                      ? 'expand_less'
+                      : 'expand_more'
+                  }}
+
+                </span>
+
+              </button>
+
+
+              <!-- DETALHES -->
+
+              @if (
+                estaExpandida(
+                  solicitacao
+                )
+              ) {
+
+                <div class="solicitacao-detalhes">
+
+
+                  <div class="detalhes-grid">
+
+
+                    <div class="detalhe-item">
+
+                      <span class="material-icons">
+                        person
+                      </span>
+
+                      <div>
+
+                        <small>
+                          Solicitante
+                        </small>
+
+                        <strong>
+                          {{ solicitacao.solicitante }}
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="detalhe-item">
+
+                      <span class="material-icons">
+                        phone
+                      </span>
+
+                      <div>
+
+                        <small>
+                          Celular
+                        </small>
+
+                        <strong>
+                          {{ solicitacao.celular }}
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="detalhe-item">
+
+                      <span class="material-icons">
+                        aspect_ratio
+                      </span>
+
+                      <div>
+
+                        <small>
+                          Formatos
+                        </small>
+
+                        <strong>
+                          {{
+                            formatarFormatos(
+                              solicitacao.formatos_solicitados
+                            )
+                          }}
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="detalhe-item">
+
+                      <span class="material-icons">
+                        event
+                      </span>
+
+                      <div>
+
+                        <small>
+                          Evento
+                        </small>
+
+                        <strong>
+                          {{
+                            formatarData(
+                              solicitacao.data_evento
+                            )
+                          }}
+                          às
+                          {{ solicitacao.horario_evento }}
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="detalhe-item">
+
+                      <span class="material-icons">
+                        event_available
+                      </span>
+
+                      <div>
+
+                        <small>
+                          Data de Entrega
+                        </small>
+
+                        <strong>
+                          {{
+                            formatarData(
+                              solicitacao.data_entrega
+                            )
+                          }}
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="descricao-completa">
+
+                    <small>
+                      Descrição
+                    </small>
+
+                    <p>
+                      {{ solicitacao.descricao }}
+                    </p>
+
+                  </div>
+
+
+                  @if (
+                    solicitacao.sugestao_arte
+                  ) {
+
+                    <div class="sugestao-arte">
+
+                      <small>
+                        Sugestão para a arte
+                      </small>
+
+                      <p>
+                        {{ solicitacao.sugestao_arte }}
+                      </p>
+
+                    </div>
+
+                  }
+
+
+                  <!-- ANDAMENTO -->
+
+                  <section class="andamento">
+
+                    <h3>
+                      Andamento da Solicitação
+                    </h3>
+
+
+                    <div class="andamento-etapas">
+
+
+                      <div
+                        class="andamento-etapa ativa">
+
+                        <span class="material-icons">
+                          check_circle
+                        </span>
+
+                        <div>
+
+                          <strong>
+                            Solicitação Recebida
+                          </strong>
+
+                          <small>
+                            Sua solicitação foi enviada
+                            para a equipe de Mídia.
+                          </small>
+
+                        </div>
+
+                      </div>
+
+
+                      <div
+                        class="andamento-etapa"
+                        [class.ativa]="
+                          solicitacao.status ===
+                          'Convertida'
+                        ">
+
+                        <span class="material-icons">
+
+                          {{
+                            solicitacao.status ===
+                            'Convertida'
+                              ? 'check_circle'
+                              : 'radio_button_unchecked'
+                          }}
+
+                        </span>
+
+                        <div>
+
+                          <strong>
+                            Transformada em Tarefa
+                          </strong>
+
+                          <small>
+                            A liderança encaminhou
+                            a solicitação para a equipe.
+                          </small>
+
+                        </div>
+
+                      </div>
+
+
+                      <div
+                        class="andamento-etapa"
+                        [class.ativa]="
+                          solicitacao.status_tarefa ===
+                          'Fazendo' ||
+                          solicitacao.status_tarefa ===
+                          'Concluído'
+                        ">
+
+                        <span class="material-icons">
+
+                          {{
+                            solicitacao.status_tarefa ===
+                            'Fazendo' ||
+                            solicitacao.status_tarefa ===
+                            'Concluído'
+                              ? 'check_circle'
+                              : 'radio_button_unchecked'
+                          }}
+
+                        </span>
+
+                        <div>
+
+                          <strong>
+                            Em Produção
+                          </strong>
+
+                          <small>
+                            Um integrante da equipe
+                            assumiu a tarefa.
+                          </small>
+
+                        </div>
+
+                      </div>
+
+
+                      <div
+                        class="andamento-etapa"
+                        [class.ativa]="
+                          solicitacao.status_tarefa ===
+                          'Concluído'
+                        ">
+
+                        <span class="material-icons">
+
+                          {{
+                            solicitacao.status_tarefa ===
+                            'Concluído'
+                              ? 'check_circle'
+                              : 'radio_button_unchecked'
+                          }}
+
+                        </span>
+
+                        <div>
+
+                          <strong>
+                            Concluída
+                          </strong>
+
+                          <small>
+                            A solicitação foi marcada
+                            como concluída.
+                          </small>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </section>
+
+
+                  <!-- EDIÇÃO -->
+
+                  <div class="solicitacao-acoes">
+
+                    @if (
+                      podeEditar(
+                        solicitacao
+                      )
+                    ) {
+
+                      <app-portal-button
+                        icon="edit"
+                        (buttonClick)="
+                          editarSolicitacao(
+                            solicitacao
+                          )
+                        ">
+
+                        Editar Solicitação
+
+                      </app-portal-button>
+
+                    } @else {
+
+                      <div class="edicao-bloqueada">
+
+                        <span class="material-icons">
+                          lock
+                        </span>
+
+                        <span>
+                          Esta solicitação não pode mais
+                          ser editada porque já foi assumida
+                          pela equipe.
+                        </span>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              }
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </section>
+
+</main>

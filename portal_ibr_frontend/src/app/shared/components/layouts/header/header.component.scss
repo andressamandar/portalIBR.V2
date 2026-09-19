@@ -1,13 +1,22 @@
-@use '../../../../theme/variables' as variables;
+@use '../../../../../theme/variables' as variables;
+
+
+/* =========================================
+   HEADER
+   ========================================= */
 
 .header {
   min-height: 72px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+
   padding: 12px 28px;
+
   border-bottom: 1px solid variables.$border;
+
   background: variables.$surface;
 }
 
@@ -23,29 +32,398 @@
   gap: 12px;
 }
 
+
+/* =========================================
+   NOTIFICAÇÕES
+   ========================================= */
+
+.notificacoes {
+  position: relative;
+}
+
+.notificacoes__botao {
+  position: relative;
+
+  color: variables.$text-secondary;
+
+  transition: 0.2s ease;
+
+  &:hover {
+    color: variables.$primary;
+
+    background:
+      rgba(17, 90, 138, 0.08);
+  }
+}
+
+
+/* =========================================
+   CONTADOR DO SININHO
+   ========================================= */
+
+.notificacoes__contador {
+  position: absolute;
+
+  top: 1px;
+  right: 0;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid variables.$surface;
+  border-radius: 999px;
+
+  background: variables.$primary;
+
+  color: #ffffff;
+
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+
+/* =========================================
+   PAINEL DE NOTIFICAÇÕES
+   ========================================= */
+
+.notificacoes__painel {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  z-index: 1000;
+
+  width: 390px;
+  max-width: calc(100vw - 32px);
+
+  overflow: hidden;
+
+  border: 1px solid variables.$border;
+  border-radius: variables.$radius-medium;
+
+  background: variables.$surface;
+
+  box-shadow:
+    0 12px 32px
+    rgba(0, 0, 0, 0.14);
+}
+
+
+/* =========================================
+   CABEÇALHO DO PAINEL
+   ========================================= */
+
+.notificacoes__header {
+  padding: 16px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  border-bottom:
+    1px solid variables.$border;
+
+  background:
+    variables.$surface;
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  h2 {
+    margin: 0;
+
+    color: variables.$text-primary;
+
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  span {
+    color: variables.$text-secondary;
+
+    font-size: 0.75rem;
+  }
+}
+
+.notificacoes__marcar-todas {
+  padding: 4px 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: variables.$primary;
+
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+
+/* =========================================
+   CONTEÚDO DO PAINEL
+   ========================================= */
+
+.notificacoes__conteudo {
+  max-height: 430px;
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+}
+
+
+/* =========================================
+   ESTADO VAZIO / CARREGANDO
+   ========================================= */
+
+.notificacoes__estado {
+  min-height: 170px;
+
+  padding: 28px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  color: variables.$text-secondary;
+
+  text-align: center;
+
+  .material-icons {
+    margin-bottom: 4px;
+
+    color: variables.$primary;
+
+    font-size: 32px;
+  }
+
+  strong {
+    color: variables.$text-primary;
+
+    font-size: 0.9rem;
+  }
+
+  span {
+    max-width: 260px;
+
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+}
+
+
+/* =========================================
+   ITEM DA NOTIFICAÇÃO
+   ========================================= */
+
+.notificacao-item {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  border: 0;
+  border-bottom:
+    1px solid variables.$border;
+
+  background: variables.$surface;
+
+  color: inherit;
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background:
+      rgba(17, 90, 138, 0.05);
+  }
+}
+
+
+/* =========================================
+   NOTIFICAÇÃO NÃO LIDA
+   ========================================= */
+
+.notificacao-item--nao-lida {
+  background:
+    rgba(17, 90, 138, 0.07);
+
+  &:hover {
+    background:
+      rgba(17, 90, 138, 0.11);
+  }
+}
+
+
+/* =========================================
+   ÍCONE
+   ========================================= */
+
+.notificacao-item__icone {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    rgba(17, 90, 138, 0.1);
+
+  color: variables.$primary;
+
+  .material-icons {
+    font-size: 20px;
+  }
+}
+
+
+/* =========================================
+   TEXTO
+   ========================================= */
+
+.notificacao-item__conteudo {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  p {
+    margin: 0;
+
+    color: variables.$text-secondary;
+
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  small {
+    color: variables.$primary;
+
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+}
+
+.notificacao-item__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  strong {
+    min-width: 0;
+
+    color: variables.$text-primary;
+
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+}
+
+
+/* =========================================
+   BOLINHA NÃO LIDA
+   ========================================= */
+
+.notificacao-item__indicador {
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: variables.$primary;
+}
+
+
+/* =========================================
+   PERFIL
+   ========================================= */
+
 .header__profile {
   display: flex;
   align-items: center;
   gap: 10px;
+
   padding: 7px 10px;
+
+  border: 0;
   border-radius: variables.$radius-medium;
+
   background: transparent;
+
   color: variables.$text-primary;
+
+  font-family: inherit;
+
   cursor: pointer;
 
+  transition: 0.2s ease;
+
   &:hover {
-    background: rgba(17, 90, 138, 0.08);
+    background:
+      rgba(17, 90, 138, 0.08);
   }
 }
 
 .header__avatar {
   width: 38px;
   height: 38px;
+
   display: grid;
   place-items: center;
+
   border-radius: 50%;
+
   background: variables.$primary;
+
   color: variables.$surface;
+
   font-weight: 700;
 }
 
@@ -54,17 +432,67 @@
   flex-direction: column;
   align-items: flex-start;
 
+  strong {
+    color: variables.$text-primary;
+  }
+
   small {
     color: variables.$text-secondary;
   }
 }
 
+
+/* =========================================
+   RESPONSIVO
+   ========================================= */
+
 @media (max-width: 600px) {
+
   .header {
     padding: 10px 16px;
+  }
+
+  .header__title {
+    font-size: 0.95rem;
   }
 
   .header__profile-text {
     display: none;
   }
+
+  .header__profile {
+    padding: 5px;
+  }
+
+  .header__avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .notificacoes__painel {
+    position: fixed;
+
+    top: 72px;
+    right: 12px;
+    left: 12px;
+
+    width: auto;
+    max-width: none;
+  }
+
+  .notificacoes__header {
+    padding: 14px;
+
+    gap: 10px;
+  }
+
+  .notificacoes__marcar-todas {
+    font-size: 0.7rem;
+  }
+
+  .notificacoes__conteudo {
+    max-height:
+      calc(100vh - 150px);
+  }
+
 }

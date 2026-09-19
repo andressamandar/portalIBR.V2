@@ -36,6 +36,8 @@ export interface Solicitacao {
 
   solicitante: string;
 
+  celular: string;
+
   formatos_solicitados: string[];
 
   descricao: string;
@@ -89,6 +91,29 @@ export interface NovaSolicitacaoRequest {
 
   solicitante: string;
 
+  celular: string;
+
+  formatos_solicitados: string[];
+
+  descricao: string;
+
+  sugestao_arte: string;
+
+  data_evento: string;
+
+  horario_evento: string;
+
+  data_entrega: string;
+
+}
+
+
+export interface EditarSolicitacaoRequest {
+
+  ministerio: string;
+
+  solicitante: string;
+
   formatos_solicitados: string[];
 
   descricao: string;
@@ -110,6 +135,7 @@ export interface NovaSolicitacaoResponse {
 
   data: {
     id: string;
+    protocolo: string;
   };
 
   message?: string;
@@ -182,6 +208,31 @@ export class SolicitacoesService {
     return this.http.put<ConverterSolicitacaoResponse>(
       `${this.apiUrl}/${solicitacaoId}/converter`,
       {}
+    );
+
+  }
+
+
+  acompanhar(
+    celular: string
+  ): Observable<SolicitacoesResponse> {
+
+    return this.http.get<SolicitacoesResponse>(
+      `${this.apiUrl}/acompanhar/${celular}`
+    );
+
+  }
+
+
+  editarPublica(
+    celular: string,
+    solicitacaoId: string,
+    dados: EditarSolicitacaoRequest
+  ): Observable<SolicitacaoResponse> {
+
+    return this.http.put<SolicitacaoResponse>(
+      `${this.apiUrl}/acompanhar/${celular}/${solicitacaoId}`,
+      dados
     );
 
   }

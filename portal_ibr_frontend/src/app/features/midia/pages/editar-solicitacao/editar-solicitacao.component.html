@@ -1,0 +1,318 @@
+<main class="solicitacao-form-page">
+
+  <section class="solicitacao-form-container">
+
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+
+        Voltar
+
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="solicitacao-form-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Editar Solicitação
+      </h1>
+
+      <p>
+        Altere as informações da sua solicitação.
+      </p>
+
+    </header>
+
+
+    @if (carregando) {
+
+      <app-portal-loading
+        message="Carregando solicitação...">
+      </app-portal-loading>
+
+    } @else if (solicitacao) {
+
+      <form
+        class="solicitacao-form-card"
+        (ngSubmit)="salvar()">
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              info
+            </span>
+
+            <div>
+
+              <h2>
+                Informações da Solicitação
+              </h2>
+
+              <p>
+                Altere os dados necessários.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="ministerio"
+              label="Qual ministério?"
+              placeholder="Digite o ministério"
+              icon="church"
+              [required]="true"
+              [(ngModel)]="ministerio">
+            </app-portal-input>
+
+
+            <app-portal-input
+              name="solicitante"
+              label="Solicitante"
+              placeholder="Digite seu nome"
+              icon="person"
+              [required]="true"
+              [(ngModel)]="solicitante">
+            </app-portal-input>
+
+          </div>
+
+
+          <div class="protocolo-card">
+
+            <span class="material-icons">
+              phone
+            </span>
+
+            <div>
+
+              <small>
+                Celular / Protocolo
+              </small>
+
+              <strong>
+                {{ celular }}
+              </strong>
+
+              <p>
+                O número utilizado como protocolo
+                não pode ser alterado.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <app-portal-select
+            name="formatosSolicitados"
+            label="Formatos solicitados"
+            placeholder="Selecione um ou mais formatos"
+            icon="aspect_ratio"
+            [options]="formatos"
+            optionLabel="nome"
+            optionValue="id"
+            [multiple]="true"
+            [required]="true"
+            [(ngModel)]="formatosSelecionados">
+          </app-portal-select>
+
+        </section>
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              description
+            </span>
+
+            <div>
+
+              <h2>
+                Detalhes da Arte
+              </h2>
+
+              <p>
+                Atualize o que precisa ser produzido.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="descricao">
+
+              Descrição
+
+              <span>
+                *
+              </span>
+
+            </label>
+
+
+            <textarea
+              id="descricao"
+              name="descricao"
+              rows="5"
+              required
+              [(ngModel)]="descricao">
+            </textarea>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="sugestaoArte">
+              Sugestão para a arte
+            </label>
+
+
+            <textarea
+              id="sugestaoArte"
+              name="sugestaoArte"
+              rows="4"
+              [(ngModel)]="sugestaoArte">
+            </textarea>
+
+          </div>
+
+        </section>
+
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              event
+            </span>
+
+            <div>
+
+              <h2>
+                Data e Prazo
+              </h2>
+
+              <p>
+                Atualize a data, horário
+                ou prazo da solicitação.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="dataEvento"
+              type="date"
+              label="Data do Evento"
+              icon="calendar_month"
+              [required]="true"
+              [(ngModel)]="dataEvento">
+            </app-portal-input>
+
+
+            <div class="campo-nativo">
+
+              <label for="horarioEvento">
+
+                Horário do Evento
+
+                <span>
+                  *
+                </span>
+
+              </label>
+
+
+              <div class="campo-nativo__controle">
+
+                <span class="material-icons">
+                  schedule
+                </span>
+
+
+                <input
+                  id="horarioEvento"
+                  name="horarioEvento"
+                  type="time"
+                  required
+                  [(ngModel)]="horarioEvento">
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <app-portal-input
+            name="dataEntrega"
+            type="date"
+            label="Até qual data a arte precisa ser entregue?"
+            icon="event_available"
+            [required]="true"
+            [(ngModel)]="dataEntrega">
+          </app-portal-input>
+
+        </section>
+
+
+        <div class="solicitacao-form-actions">
+
+          <app-portal-button
+            type="button"
+            variant="secondary"
+            (buttonClick)="voltar()">
+
+            Cancelar
+
+          </app-portal-button>
+
+
+          <app-portal-button
+            type="submit"
+            icon="save"
+            [disabled]="!formularioValido"
+            [loading]="salvando"
+            loadingText="Salvando">
+
+            Salvar Alterações
+
+          </app-portal-button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </section>
+
+</main>

@@ -11,6 +11,15 @@ class SolicitacaoSchema:
     @staticmethod
     def validar(data):
 
+        if not isinstance(
+            data,
+            dict
+        ):
+            raise AppError(
+                "Dados da solicitação não informados.",
+                400
+            )
+
         ministerio = (
             data.get(
                 "ministerio",
@@ -26,6 +35,13 @@ class SolicitacaoSchema:
             )
             .strip()
         )
+
+        celular = str(
+            data.get(
+                "celular",
+                ""
+            )
+        ).strip()
 
         formatos_solicitados = (
             data.get(
@@ -93,6 +109,33 @@ class SolicitacaoSchema:
             )
 
 
+        if not campo_obrigatorio(
+            celular
+        ):
+            raise AppError(
+                "Celular é obrigatório.",
+                400
+            )
+
+
+        if not celular.isdigit():
+            raise AppError(
+                "Digite somente DDD + número do celular, "
+                "sem caracteres.",
+                400
+            )
+
+
+        if len(celular) not in [
+            10,
+            11
+        ]:
+            raise AppError(
+                "Informe o celular com DDD e número.",
+                400
+            )
+
+
         if not lista_obrigatoria(
             formatos_solicitados
         ):
@@ -144,6 +187,9 @@ class SolicitacaoSchema:
 
             "solicitante":
                 solicitante,
+
+            "celular":
+                celular,
 
             "formatos_solicitados":
                 formatos_solicitados,

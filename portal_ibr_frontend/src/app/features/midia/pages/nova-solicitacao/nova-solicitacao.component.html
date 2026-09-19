@@ -1,0 +1,405 @@
+<main class="solicitacao-form-page">
+
+  <section class="solicitacao-form-container">
+
+
+    <div>
+
+      <app-portal-button
+        variant="text"
+        icon="arrow_back"
+        (buttonClick)="voltar()">
+
+        Voltar
+
+      </app-portal-button>
+
+    </div>
+
+
+    <header class="solicitacao-form-header">
+
+      <span>
+        Ministério de Mídia
+      </span>
+
+      <h1>
+        Nova Solicitação
+      </h1>
+
+      <p>
+        Preencha as informações da arte
+        que deseja solicitar.
+      </p>
+
+    </header>
+
+
+    @if (protocolo) {
+
+      <!-- ===================================== -->
+      <!-- SOLICITAÇÃO ENVIADA -->
+      <!-- ===================================== -->
+
+      <section class="solicitacao-sucesso">
+
+        <span
+          class="material-icons solicitacao-sucesso__icone">
+
+          check_circle
+
+        </span>
+
+
+        <div class="solicitacao-sucesso__texto">
+
+          <h2>
+            Solicitação enviada!
+          </h2>
+
+          <p>
+            Sua solicitação foi recebida
+            pela equipe de Mídia.
+          </p>
+
+          <p>
+            Seu protocolo para acompanhar
+            a solicitação é o seu número de celular.
+          </p>
+
+        </div>
+
+
+        <div class="protocolo-box">
+
+          <span>
+            Seu protocolo
+          </span>
+
+          <strong>
+            {{ protocolo }}
+          </strong>
+
+        </div>
+
+
+        <div class="solicitacao-sucesso__acoes">
+
+          <app-portal-button
+            type="button"
+            variant="secondary"
+            icon="content_copy"
+            (buttonClick)="copiarProtocolo()">
+
+            Copiar Número
+
+          </app-portal-button>
+
+
+          <app-portal-button
+            type="button"
+            icon="track_changes"
+            (buttonClick)="acompanharSolicitacao()">
+
+            Acompanhar Solicitações
+
+          </app-portal-button>
+
+        </div>
+
+      </section>
+
+    } @else {
+
+      <!-- ===================================== -->
+      <!-- FORMULÁRIO -->
+      <!-- ===================================== -->
+
+      <form
+        class="solicitacao-form-card"
+        (ngSubmit)="salvar()">
+
+
+        <!-- ===================================== -->
+        <!-- INFORMAÇÕES DA SOLICITAÇÃO -->
+        <!-- ===================================== -->
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              info
+            </span>
+
+            <div>
+
+              <h2>
+                Informações da Solicitação
+              </h2>
+
+              <p>
+                Informe quem está solicitando
+                e para qual ministério.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="ministerio"
+              label="Qual ministério?"
+              placeholder="Digite o ministério"
+              icon="church"
+              [required]="true"
+              [(ngModel)]="ministerio">
+            </app-portal-input>
+
+
+            <app-portal-input
+              name="solicitante"
+              label="Solicitante"
+              placeholder="Digite seu nome"
+              icon="person"
+              [required]="true"
+              [(ngModel)]="solicitante">
+            </app-portal-input>
+
+          </div>
+
+
+          <div class="campo-celular">
+
+            <app-portal-input
+              name="celular"
+              label="Celular"
+              placeholder="Ex.: 11999999999"
+              icon="phone"
+              [required]="true"
+              [(ngModel)]="celular">
+            </app-portal-input>
+
+
+            <p class="campo-ajuda">
+              Digite somente DDD + número do celular,
+              sem caracteres. Seu número será usado
+              para localizar e acompanhar a solicitação.
+            </p>
+
+          </div>
+
+
+          <app-portal-select
+            name="formatosSolicitados"
+            label="Formatos solicitados"
+            placeholder="Selecione um ou mais formatos"
+            icon="aspect_ratio"
+            [options]="formatos"
+            optionLabel="nome"
+            optionValue="id"
+            [multiple]="true"
+            [required]="true"
+            [(ngModel)]="formatosSelecionados">
+          </app-portal-select>
+
+        </section>
+
+
+        <!-- ===================================== -->
+        <!-- DETALHES DA ARTE -->
+        <!-- ===================================== -->
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              description
+            </span>
+
+            <div>
+
+              <h2>
+                Detalhes da Arte
+              </h2>
+
+              <p>
+                Descreva o que precisa ser produzido.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="descricao">
+
+              Descrição
+
+              <span>
+                *
+              </span>
+
+            </label>
+
+
+            <textarea
+              id="descricao"
+              name="descricao"
+              rows="5"
+              placeholder="Descreva sua solicitação"
+              required
+              [(ngModel)]="descricao">
+            </textarea>
+
+          </div>
+
+
+          <div class="campo-textarea">
+
+            <label for="sugestaoArte">
+              Sugestão para a arte
+            </label>
+
+
+            <textarea
+              id="sugestaoArte"
+              name="sugestaoArte"
+              rows="4"
+              placeholder="Informe alguma ideia ou referência para a arte"
+              [(ngModel)]="sugestaoArte">
+            </textarea>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================== -->
+        <!-- DATA E PRAZO -->
+        <!-- ===================================== -->
+
+        <section class="form-section">
+
+          <div class="form-section__header">
+
+            <span class="material-icons">
+              event
+            </span>
+
+            <div>
+
+              <h2>
+                Data e Prazo
+              </h2>
+
+              <p>
+                Informe quando será o evento
+                e até quando a arte precisa estar pronta.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <app-portal-input
+              name="dataEvento"
+              type="date"
+              label="Data do Evento"
+              icon="calendar_month"
+              [required]="true"
+              [(ngModel)]="dataEvento">
+            </app-portal-input>
+
+
+            <div class="campo-nativo">
+
+              <label for="horarioEvento">
+
+                Horário do Evento
+
+                <span>
+                  *
+                </span>
+
+              </label>
+
+
+              <div class="campo-nativo__controle">
+
+                <span class="material-icons">
+                  schedule
+                </span>
+
+
+                <input
+                  id="horarioEvento"
+                  name="horarioEvento"
+                  type="time"
+                  required
+                  [(ngModel)]="horarioEvento">
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <app-portal-input
+            name="dataEntrega"
+            type="date"
+            label="Até qual data a arte precisa ser entregue?"
+            icon="event_available"
+            [required]="true"
+            [(ngModel)]="dataEntrega">
+          </app-portal-input>
+
+        </section>
+
+
+        <!-- ===================================== -->
+        <!-- AÇÕES -->
+        <!-- ===================================== -->
+
+        <div class="solicitacao-form-actions">
+
+          <app-portal-button
+            type="button"
+            variant="secondary"
+            (buttonClick)="voltar()">
+
+            Cancelar
+
+          </app-portal-button>
+
+
+          <app-portal-button
+            type="submit"
+            icon="send"
+            [disabled]="!formularioValido"
+            [loading]="salvando"
+            loadingText="Enviando">
+
+            Enviar Solicitação
+
+          </app-portal-button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </section>
+
+</main>
