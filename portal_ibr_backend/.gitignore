@@ -1,0 +1,18 @@
+# Credenciais e variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Arquivos gerados pelo Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Arquivos locais
+.vercel/
+.vscode/

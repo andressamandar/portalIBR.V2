@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 
@@ -15,7 +17,27 @@ from routes.notificacoes import notificacoes_bp
 
 app = Flask(__name__)
 
-CORS(app)
+
+# Em desenvolvimento, permite o Angular local.
+# Na Vercel, configuraremos FRONTEND_URL com
+# o endereço definitivo do frontend.
+origens_permitidas = [
+    origem.strip()
+    for origem in os.getenv(
+        "FRONTEND_URL",
+        "http://localhost:4200"
+    ).split(",")
+    if origem.strip()
+]
+
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": origens_permitidas
+        }
+    }
+)
 
 
 app.register_blueprint(integrantes_bp)
@@ -26,7 +48,7 @@ app.register_blueprint(usuarios_bp)
 app.register_blueprint(louvores_bp)
 app.register_blueprint(louvores_escala_bp)
 app.register_blueprint(tarefas_bp)
-app.register_blueprint( solicitacoes_bp)
+app.register_blueprint(solicitacoes_bp)
 app.register_blueprint(notificacoes_bp)
 
 
@@ -40,6 +62,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(
-        debug=True
-    )
+    app.run(debug=True)
