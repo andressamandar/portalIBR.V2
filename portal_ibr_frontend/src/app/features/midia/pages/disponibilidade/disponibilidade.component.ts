@@ -1,70 +1,52 @@
-import {
-  Component,
-  inject,
-  OnInit
-} from '@angular/core';
-
-import {
-  Router
-} from '@angular/router';
-
-import {
-  forkJoin
-} from 'rxjs';
-
-import {
-  AuthService,
-  AuthUsuario
-} from '../../../../core/services/auth.service';
-
-import {
-  DataDisponivel,
-  DisponibilidadesService,
-  SalvarDisponibilidadeRequest
-} from '../../../../core/services/disponibilidades.service';
-
-import {
-  Escala,
-  EscalasService
-} from '../../../../core/services/escalas.service';
-
-import {
-  PortalSnackbarService
-} from '../../../../core/services/portal-snackbar.service';
-
-import {
-  PortalButtonComponent
-} from '../../../../shared/components/ui/portal-button/portal-button.component';
-
-import {
-  PortalLoadingComponent
-} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
-
-import {
-  PortalEmptyStateComponent
-} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
+import {Component,inject,OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {forkJoin} from 'rxjs';
+import {AuthService,AuthUsuario} from '../../../../core/services/auth.service';
+import {DataDisponivel,DisponibilidadesService,SalvarDisponibilidadeRequest} from '../../../../core/services/disponibilidades.service';
+import {Escala,EscalasService} from '../../../../core/services/escalas.service';
+import {PortalSnackbarService} from '../../../../core/services/portal-snackbar.service';
+import {PortalButtonComponent} from '../../../../shared/components/ui/portal-button/portal-button.component';
+import {PortalLoadingComponent} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
+import {PortalEmptyStateComponent} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
 
 
 interface DataDisponibilidadeTela {
   data_id: string;
+
   data: string;
+
   tipo: string;
+
   nome_evento: string | null;
+
   disponivel: boolean;
+
   bloqueadaPorLouvor: boolean;
+
+  escala_criada: boolean;
+
+  salva: boolean;
+
+  editando: boolean;
 }
 
 
 @Component({
   selector: 'app-disponibilidade',
+
   standalone: true,
+
   imports: [
     PortalButtonComponent,
     PortalLoadingComponent,
     PortalEmptyStateComponent
   ],
-  templateUrl: './disponibilidade.component.html',
-  styleUrl: './disponibilidade.component.scss'
+
+  templateUrl:
+    './disponibilidade.component.html',
+
+  styleUrl:
+    './disponibilidade.component.scss'
 })
 export class DisponibilidadeComponent
   implements OnInit {
@@ -73,23 +55,30 @@ export class DisponibilidadeComponent
     inject(AuthService);
 
   private readonly disponibilidadesService =
-    inject(DisponibilidadesService);
+    inject(
+      DisponibilidadesService
+    );
 
   private readonly escalasService =
     inject(EscalasService);
 
   private readonly snackbar =
-    inject(PortalSnackbarService);
+    inject(
+      PortalSnackbarService
+    );
 
   private readonly router =
     inject(Router);
 
 
-  readonly usuario: AuthUsuario | null =
-    this.authService.obterUsuario();
+  readonly usuario:
+    AuthUsuario | null =
+      this.authService
+        .obterUsuario();
 
 
-  datas: DataDisponibilidadeTela[] = [];
+  datas:
+    DataDisponibilidadeTela[] = [];
 
   carregando = false;
 
@@ -101,7 +90,30 @@ export class DisponibilidadeComponent
   }
 
 
-  private carregarDisponibilidades(): void {
+  get temDatasEmEdicao(): boolean {
+    return this.datas.some(
+      item =>
+        !item.escala_criada
+        &&
+        (
+          !item.salva
+          ||
+          item.editando
+        )
+    );
+  }
+
+
+  get possuiAlteracao(): boolean {
+    return this.datas.some(
+      item =>
+        item.editando
+    );
+  }
+
+
+  private carregarDisponibilidades():
+    void {
 
     if (!this.usuario?.id) {
 
@@ -136,9 +148,10 @@ export class DisponibilidadeComponent
           ),
 
       escalasLouvor:
-        this.escalasService.listar(
-          'Louvor'
-        )
+        this.escalasService
+          .listar(
+            'Louvor'
+          )
 
     }).subscribe({
 
@@ -147,10 +160,14 @@ export class DisponibilidadeComponent
         const datasDisponiveis =
           response.datas.data;
 
+
         const disponibilidadesSalvas =
           response.disponibilidade
             .data
-            ?.disponibilidades ?? [];
+            ?.disponibilidades
+          ??
+          [];
+
 
         const escalasLouvor =
           response.escalasLouvor.data;
@@ -165,7 +182,6 @@ export class DisponibilidadeComponent
 
         this.carregando =
           false;
-
       },
 
 
@@ -176,29 +192,32 @@ export class DisponibilidadeComponent
 
 
         const mensagem =
-          erro?.error?.message ??
+          erro?.error?.message
+          ??
           'Não foi possível carregar as datas disponíveis.';
 
 
         this.snackbar.error(
           mensagem
         );
-
       }
 
     });
-
   }
 
 
   private prepararDatas(
-    datasDisponiveis: DataDisponivel[],
+    datasDisponiveis:
+      DataDisponivel[],
+
     disponibilidadesSalvas: {
       data_id: string;
       data: string;
       disponivel: boolean;
     }[],
-    escalasLouvor: Escala[]
+
+    escalasLouvor:
+      Escala[]
   ): void {
 
     if (!this.usuario?.id) {
@@ -207,13 +226,34 @@ export class DisponibilidadeComponent
 
 
     this.datas =
-      datasDisponiveis.map(
-        data => {
+      datasDisponiveis
+
+        .filter(data => {
 
           const disponibilidadeSalva =
             disponibilidadesSalvas.find(
               item =>
-                item.data_id === data._id
+                item.data_id
+                ===
+                data._id
+            );
+
+
+          return (
+            !data.escala_criada
+            ||
+            !!disponibilidadeSalva
+          );
+        })
+
+        .map(data => {
+
+          const disponibilidadeSalva =
+            disponibilidadesSalvas.find(
+              item =>
+                item.data_id
+                ===
+                data._id
             );
 
 
@@ -222,6 +262,10 @@ export class DisponibilidadeComponent
               data.data,
               escalasLouvor
             );
+
+
+          const salva =
+            !!disponibilidadeSalva;
 
 
           return {
@@ -240,18 +284,26 @@ export class DisponibilidadeComponent
 
             bloqueadaPorLouvor,
 
+            escala_criada:
+              data.escala_criada,
+
+            salva,
+
+            editando:
+              !salva
+              &&
+              !data.escala_criada,
+
             disponivel:
               bloqueadaPorLouvor
                 ? false
                 : disponibilidadeSalva
-                  ? disponibilidadeSalva.disponivel
+                  ? disponibilidadeSalva
+                      .disponivel
                   : true
-
           };
 
-        }
-      );
-
+        });
   }
 
 
@@ -285,19 +337,29 @@ export class DisponibilidadeComponent
         integrantes =>
           integrantes.some(
             integrante =>
-              integrante.id ===
+              integrante.id
+              ===
               this.usuario?.id
           )
       );
-
   }
 
 
   alternarDisponibilidade(
-    item: DataDisponibilidadeTela
+    item:
+      DataDisponibilidadeTela
   ): void {
 
-    if (item.bloqueadaPorLouvor) {
+    if (
+      item.escala_criada
+    ) {
+      return;
+    }
+
+
+    if (
+      item.bloqueadaPorLouvor
+    ) {
 
       this.snackbar.warning(
         'Você já está escalado no Ministério de Louvor nesta data.'
@@ -307,17 +369,57 @@ export class DisponibilidadeComponent
     }
 
 
+    if (
+      item.salva
+      &&
+      !item.editando
+    ) {
+      return;
+    }
+
+
     item.disponivel =
       !item.disponivel;
+  }
 
+
+  editarDisponibilidade(
+    item:
+      DataDisponibilidadeTela
+  ): void {
+
+    if (
+      item.escala_criada
+    ) {
+      return;
+    }
+
+
+    if (
+      item.bloqueadaPorLouvor
+    ) {
+
+      this.snackbar.warning(
+        'Você já está escalado no Ministério de Louvor nesta data.'
+      );
+
+      return;
+    }
+
+
+    item.editando =
+      true;
   }
 
 
   salvar(): void {
 
     if (
-      !this.usuario?.id ||
+      !this.usuario?.id
+      ||
       this.salvando
+      ||
+      !this.temDatasEmEdicao
     ) {
       return;
     }
@@ -356,7 +458,6 @@ export class DisponibilidadeComponent
 
           })
         )
-
     };
 
 
@@ -366,17 +467,27 @@ export class DisponibilidadeComponent
       )
       .subscribe({
 
-        next: response => {
+        next: () => {
 
           this.salvando =
             false;
 
 
+          this.datas =
+            this.datas.map(
+              item => ({
+                ...item,
+
+                salva: true,
+
+                editando: false
+              })
+            );
+
+
           this.snackbar.success(
-            response.message ??
             'Disponibilidade salva com sucesso.'
           );
-
         },
 
 
@@ -387,18 +498,17 @@ export class DisponibilidadeComponent
 
 
           const mensagem =
-            erro?.error?.message ??
+            erro?.error?.message
+            ??
             'Não foi possível salvar sua disponibilidade.';
 
 
           this.snackbar.error(
             mensagem
           );
-
         }
 
       });
-
   }
 
 
@@ -414,17 +524,20 @@ export class DisponibilidadeComponent
       data.split('-');
 
 
-    return `${dia}/${mes}/${ano}`;
-
+    return (
+      `${dia}/${mes}/${ano}`
+    );
   }
 
 
   descricaoData(
-    item: DataDisponibilidadeTela
+    item:
+      DataDisponibilidadeTela
   ): string {
 
     if (
-      item.tipo === 'Outros' &&
+      item.tipo === 'Outros'
+      &&
       item.nome_evento
     ) {
       return item.nome_evento;
@@ -432,7 +545,6 @@ export class DisponibilidadeComponent
 
 
     return item.tipo;
-
   }
 
 
@@ -441,7 +553,6 @@ export class DisponibilidadeComponent
     void this.router.navigate([
       '/midia/integrante'
     ]);
-
   }
 
 }

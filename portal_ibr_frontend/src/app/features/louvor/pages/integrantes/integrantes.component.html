@@ -1,131 +1,189 @@
 <main class="integrantes-page">
+
   <section class="integrantes-container">
 
     <header class="integrantes-header">
 
       <div>
+
         <app-portal-button
           variant="text"
           icon="arrow_back"
-          (buttonClick)="voltar()">
+          (buttonClick)="voltar()"
+        >
           Voltar
         </app-portal-button>
+
       </div>
 
-      <div class="integrantes-header__content">
-        <div>
-          <span>Ministério de Louvor</span>
 
-          <h1>Cadastro de Integrantes</h1>
+      <div class="integrantes-header__content">
+
+        <div>
+
+          <span>
+            Ministério de Louvor
+          </span>
+
+          <h1>
+            Cadastro de Integrantes
+          </h1>
 
           <p>
             Gerencie os integrantes e suas funções no ministério.
           </p>
+
         </div>
 
+
         <app-portal-button
-            icon="person_add"
-            (buttonClick)="cadastrarIntegrante()">
-            Cadastrar Integrante
+          icon="person_add"
+          (buttonClick)="cadastrarIntegrante()"
+        >
+          Cadastrar Integrante
         </app-portal-button>
+
       </div>
 
     </header>
 
+
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando integrantes...">
+        message="Carregando integrantes..."
+      >
       </app-portal-loading>
 
-    } @else if (integrantes.length === 0) {
+    } @else if (
+      integrantes.length === 0
+    ) {
 
-        <app-portal-empty-state
-            icon="group_off"
-            title="Nenhum integrante cadastrado"
-            message="Ainda não existem integrantes ativos no Ministério de Louvor."
-            actionText="Cadastrar integrante"
-            actionIcon="person_add"
-            (actionClick)="cadastrarIntegrante()">
-        </app-portal-empty-state>
+      <app-portal-empty-state
+        icon="group_off"
+        title="Nenhum integrante cadastrado"
+        message="Ainda não existem integrantes ativos no Ministério de Louvor."
+        actionText="Cadastrar integrante"
+        actionIcon="person_add"
+        (actionClick)="cadastrarIntegrante()"
+      >
+      </app-portal-empty-state>
 
     } @else {
 
-      <section class="integrantes-list">
+      <section class="integrantes-list-container">
 
-        @for (
-          integrante of integrantes;
-          track integrante._id
-        ) {
+        <div class="integrantes-list">
 
-          <article class="integrante-card">
+          @for (
+            integrante of integrantes;
+            track integrante._id
+          ) {
 
-            <div class="integrante-card__content">
+            <article class="integrante-card">
 
-              <div class="integrante-card__name">
+
+              <div class="integrante-card__topo">
+
                 <div class="integrante-card__avatar">
-                  {{ integrante.nome.charAt(0).toUpperCase() }}
+
+                  {{
+                    integrante.nome
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
+
                 </div>
 
-                <div>
+
+                <div class="integrante-card__name">
+
                   <h2>
                     {{ integrante.nome }}
                   </h2>
 
                   <span>
 
-                    {{ obterFuncoesLouvor(integrante).length }}
+                    {{
+                      obterFuncoesLouvor(
+                        integrante
+                      ).length
+                    }}
 
                     {{
-                      obterFuncoesLouvor(integrante).length === 1
+                      obterFuncoesLouvor(
+                        integrante
+                      ).length === 1
                         ? 'função'
                         : 'funções'
                     }}
 
                   </span>
+
                 </div>
+
               </div>
+
 
               <div class="integrante-card__functions">
 
                 @for (
-                  funcao of obterFuncoesLouvor(integrante);
+                  funcao of obterFuncoesLouvor(
+                    integrante
+                  );
                   track funcao
-                )  {
+                ) {
+
                   <span class="integrante-card__function">
                     {{ funcao }}
                   </span>
+
                 }
 
               </div>
 
-            </div>
 
-            <div class="integrante-card__actions">
+              <div class="integrante-card__actions">
 
-              <app-portal-button
-                variant="outline"
-                icon="edit"
-                (buttonClick)="editarIntegrante(integrante._id)">
-                Editar
-              </app-portal-button>
+                <app-portal-button
+                  variant="outline"
+                  icon="edit"
+                  [fullWidth]="true"
+                  (buttonClick)="
+                    editarIntegrante(
+                      integrante._id
+                    )
+                  "
+                >
+                  Editar
+                </app-portal-button>
 
-              <app-portal-button
-                variant="danger"
-                icon="person_off"
-                (buttonClick)="desativarIntegrante(integrante)">
-                Desativar
-              </app-portal-button>
 
-            </div>
+                <app-portal-button
+                  variant="danger"
+                  icon="person_off"
+                  [fullWidth]="true"
+                  (buttonClick)="
+                    desativarIntegrante(
+                      integrante
+                    )
+                  "
+                >
+                  Desativar
+                </app-portal-button>
 
-          </article>
+              </div>
 
-        }
+            </article>
+
+          }
+
+        </div>
 
       </section>
 
     }
 
   </section>
+
 </main>

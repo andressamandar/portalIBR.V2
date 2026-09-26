@@ -6,26 +6,48 @@
   (click)="handleClick()"
 >
   <span class="selection-card__icon">
-    <mat-icon>{{ icon }}</mat-icon>
+    <mat-icon>
+      {{ icon }}
+    </mat-icon>
   </span>
 
   <span class="selection-card__content">
+
     <span class="selection-card__heading">
-      <strong>{{ title }}</strong>
+
+      <strong
+        [class.selection-card__title--long]="
+          title.length > 18
+        "
+        [class.selection-card__title--very-long]="
+          title.length > 28
+        "
+      >
+        {{ title }}
+      </strong>
 
       @if (badge) {
+
         <span class="selection-card__badge">
           {{ badge }}
         </span>
+
       }
+
     </span>
 
     @if (subtitle) {
-      <small>{{ subtitle }}</small>
+
+      <small>
+        {{ subtitle }}
+      </small>
+
     }
+
   </span>
 
   <mat-icon class="selection-card__arrow">
     arrow_forward
   </mat-icon>
+
 </button>

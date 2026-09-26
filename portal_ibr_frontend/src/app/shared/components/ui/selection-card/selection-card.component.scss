@@ -1,19 +1,56 @@
 @use '../../../../../theme/variables' as variables;
 
+
+:host {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+
+  flex: 1 1 0;
+}
+
+
 .selection-card {
   width: 100%;
-  min-height: 150px;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 160px;
+
   padding: 26px;
+
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+
+  grid-template-columns:
+    58px
+    minmax(0, 1fr)
+    24px;
+
   align-items: center;
+
   gap: 18px;
-  border: 1px solid variables.$border;
-  border-radius: variables.$radius-large;
-  background: variables.$surface;
-  color: variables.$text-primary;
-  box-shadow: variables.$shadow-small;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid variables.$border;
+
+  border-radius:
+    variables.$radius-large;
+
+  background:
+    variables.$surface;
+
+  color:
+    variables.$text-primary;
+
+  box-shadow:
+    variables.$shadow-small;
+
   cursor: pointer;
+
   text-align: left;
 
   transition:
@@ -21,92 +58,363 @@
     border-color variables.$transition,
     box-shadow variables.$transition;
 
+
   &:hover:not(:disabled) {
-    transform: translateY(-4px);
-    border-color: variables.$primary-light;
-    box-shadow: variables.$shadow-medium;
+    transform:
+      translateY(-4px);
+
+    border-color:
+      variables.$primary-light;
+
+    box-shadow:
+      variables.$shadow-medium;
+
 
     .selection-card__arrow {
-      transform: translateX(4px);
+      transform:
+        translateX(4px);
     }
   }
 
+
   &:focus-visible {
-    outline: 3px solid rgba(17, 90, 138, 0.25);
+    outline:
+      3px solid rgba(
+        17,
+        90,
+        138,
+        0.25
+      );
+
     outline-offset: 3px;
   }
+
 
   &:disabled {
     cursor: not-allowed;
   }
 }
 
+
 .selection-card--disabled {
   opacity: 0.55;
 }
 
+
+/* =====================================
+   ÍCONE
+   ===================================== */
+
 .selection-card__icon {
   width: 58px;
   height: 58px;
+
   display: grid;
+
   place-items: center;
-  border-radius: variables.$radius-medium;
-  background: rgba(17, 90, 138, 0.1);
-  color: variables.$primary;
+
+  border-radius:
+    variables.$radius-medium;
+
+  background:
+    rgba(
+      17,
+      90,
+      138,
+      0.1
+    );
+
+  color:
+    variables.$primary;
+
 
   mat-icon {
     width: 30px;
     height: 30px;
+
     font-size: 30px;
   }
 }
 
+
+/* =====================================
+   CONTEÚDO
+   ===================================== */
+
 .selection-card__content {
+  width: 100%;
   min-width: 0;
+
   display: flex;
+
   flex-direction: column;
+
+  justify-content: center;
+
   gap: 8px;
 
+
   small {
-    color: variables.$text-secondary;
+    color:
+      variables.$text-secondary;
+
     line-height: 1.45;
+
+    white-space: normal;
+
+    word-break: normal;
+
+    overflow-wrap: normal;
   }
 }
+
+
+/* =====================================
+   TÍTULO
+   ===================================== */
 
 .selection-card__heading {
+  width: 100%;
+  min-width: 0;
+
   display: flex;
+
   align-items: center;
+
   flex-wrap: wrap;
+
   gap: 10px;
 
+
   strong {
-    color: variables.$primary-dark;
+    width: 100%;
+
+    color:
+      variables.$primary-dark;
+
     font-size: 1.2rem;
+
+    line-height: 1.3;
+
+    white-space: normal;
+
+    /*
+     * Não permite quebrar
+     * palavras no meio.
+     */
+    word-break: keep-all;
+
+    overflow-wrap: normal;
+
+    hyphens: none;
   }
 }
+
+
+/*
+ * Exemplo:
+ * "Cadastro de Integrantes"
+ */
+
+.selection-card__title--long {
+  font-size:
+    1rem !important;
+}
+
+
+/*
+ * Títulos ainda maiores
+ */
+
+.selection-card__title--very-long {
+  font-size:
+    0.9rem !important;
+}
+
+
+/* =====================================
+   BADGE
+   ===================================== */
 
 .selection-card__badge {
   padding: 4px 8px;
+
+  flex-shrink: 0;
+
   border-radius: 999px;
-  background: rgba(17, 90, 138, 0.1);
-  color: variables.$primary;
+
+  background:
+    rgba(
+      17,
+      90,
+      138,
+      0.1
+    );
+
+  color:
+    variables.$primary;
+
   font-size: 0.72rem;
+
   font-weight: 700;
 }
 
+
+/* =====================================
+   SETA
+   ===================================== */
+
 .selection-card__arrow {
-  color: variables.$primary;
-  transition: transform variables.$transition;
+  width: 24px;
+  height: 24px;
+
+  color:
+    variables.$primary;
+
+  flex-shrink: 0;
+
+  transition:
+    transform variables.$transition;
 }
 
-@media (max-width: 500px) {
+
+/* =====================================
+   TABLET
+   ===================================== */
+
+@media (max-width: 768px) {
+
+  :host {
+    width: 100%;
+
+    flex:
+      1 1 100%;
+  }
+
+
   .selection-card {
     min-height: 130px;
-    padding: 20px;
-    grid-template-columns: auto minmax(0, 1fr);
+
+    padding: 22px;
+
+    grid-template-columns:
+      52px
+      minmax(0, 1fr)
+      24px;
+
+    gap: 16px;
   }
+
+
+  .selection-card__icon {
+    width: 52px;
+    height: 52px;
+
+
+    mat-icon {
+      width: 28px;
+      height: 28px;
+
+      font-size: 28px;
+    }
+  }
+
+
+  .selection-card__heading {
+
+    strong {
+      font-size: 1.05rem;
+    }
+  }
+
+
+  .selection-card__title--long {
+    font-size:
+      0.95rem !important;
+  }
+
+
+  .selection-card__title--very-long {
+    font-size:
+      0.88rem !important;
+  }
+
+}
+
+
+/* =====================================
+   CELULAR
+   ===================================== */
+
+@media (max-width: 500px) {
+
+  :host {
+    width: 100%;
+
+    height: auto;
+  }
+
+
+  .selection-card {
+    width: 100%;
+
+    min-height: 105px;
+
+    padding: 18px;
+
+    grid-template-columns:
+      48px
+      minmax(0, 1fr);
+
+    gap: 14px;
+  }
+
+
+  .selection-card__icon {
+    width: 48px;
+    height: 48px;
+
+
+    mat-icon {
+      width: 26px;
+      height: 26px;
+
+      font-size: 26px;
+    }
+  }
+
+
+  .selection-card__heading {
+
+    strong {
+      font-size: 1rem;
+    }
+  }
+
+
+  .selection-card__title--long {
+    font-size:
+      0.9rem !important;
+  }
+
+
+  .selection-card__title--very-long {
+    font-size:
+      0.82rem !important;
+  }
+
+
+  .selection-card__content {
+
+    small {
+      font-size:
+        variables.$font-size-sm;
+    }
+  }
+
 
   .selection-card__arrow {
     display: none;
   }
+
 }

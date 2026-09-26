@@ -1,18 +1,42 @@
 @use '../../../../../theme/variables' as variables;
 
+
+:host {
+  display: inline-block;
+
+  max-width: 100%;
+}
+
+
 .portal-button {
   min-height: 44px;
+
+  max-width: 100%;
+
   padding: 0 18px;
 
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
+
   gap: 9px;
 
-  border: 1px solid transparent;
-  border-radius: variables.$radius-small;
+  border:
+    1px solid transparent;
+
+  border-radius:
+    variables.$radius-small;
+
+  box-sizing: border-box;
 
   font-weight: 700;
+
+  line-height: 1.2;
+
+  text-align: center;
+
   cursor: pointer;
 
   transition:
@@ -22,67 +46,183 @@
     transform variables.$transition,
     box-shadow variables.$transition;
 
+
   mat-icon {
     width: 20px;
+
     height: 20px;
+
+    flex-shrink: 0;
+
     font-size: 20px;
   }
+
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
   }
 
+
   &:focus-visible {
-    outline: 3px solid rgba(17, 90, 138, 0.25);
+    outline:
+      3px solid rgba(
+        17,
+        90,
+        138,
+        0.25
+      );
+
     outline-offset: 3px;
   }
 
+
   &:disabled {
     opacity: 0.55;
+
     cursor: not-allowed;
   }
 }
 
+
+.portal-button__label {
+  min-width: 0;
+
+  white-space: normal;
+
+  overflow-wrap: break-word;
+
+  text-align: center;
+}
+
+
 .portal-button--primary {
-  background: variables.$primary;
-  color: variables.$surface;
-  box-shadow: variables.$shadow-small;
+  background:
+    variables.$primary;
+
+  color:
+    variables.$surface;
+
+  box-shadow:
+    variables.$shadow-small;
+
 
   &:hover:not(:disabled) {
-    background: variables.$primary-light;
-    box-shadow: variables.$shadow-medium;
+    background:
+      variables.$primary-light;
+
+    box-shadow:
+      variables.$shadow-medium;
   }
 }
+
 
 .portal-button--secondary {
-  border-color: variables.$border;
-  background: variables.$surface;
-  color: variables.$primary-dark;
+  border-color:
+    variables.$border;
+
+  background:
+    variables.$surface;
+
+  color:
+    variables.$primary-dark;
+
 
   &:hover:not(:disabled) {
-    border-color: variables.$primary-light;
-    background: rgba(17, 90, 138, 0.06);
+    border-color:
+      variables.$primary-light;
+
+    background:
+      rgba(
+        17,
+        90,
+        138,
+        0.06
+      );
   }
 }
+
+
+.portal-button--outline {
+  border-color:
+    variables.$primary;
+
+  background:
+    transparent;
+
+  color:
+    variables.$primary;
+
+
+  &:hover:not(:disabled) {
+    background:
+      variables.$primary-soft;
+  }
+}
+
 
 .portal-button--danger {
-  background: variables.$danger;
-  color: variables.$surface;
+  background:
+    variables.$danger;
+
+  color:
+    variables.$surface;
+
 
   &:hover:not(:disabled) {
-    filter: brightness(1.06);
+    filter:
+      brightness(1.06);
   }
 }
+
 
 .portal-button--text {
-  background: transparent;
-  color: variables.$primary;
+  background:
+    transparent;
+
+  color:
+    variables.$primary;
+
 
   &:hover:not(:disabled) {
-    background: rgba(17, 90, 138, 0.08);
+    background:
+      rgba(
+        17,
+        90,
+        138,
+        0.08
+      );
   }
 }
+
 
 .portal-button--full-width {
   width: 100%;
+}
+
+
+.portal-button--loading {
+  cursor: wait;
+}
+
+
+.portal-button__spinner {
+  flex-shrink: 0;
+}
+
+
+@media (max-width: 600px) {
+
+  :host {
+    max-width: 100%;
+  }
+
+
+  .portal-button {
+    min-height: 46px;
+
+    padding:
+      8px
+      16px;
+  }
+
 }

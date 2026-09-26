@@ -1,34 +1,76 @@
-import {Component,inject,OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthService,AuthUsuario} from '../../../../core/services/auth.service';
-import {DataDisponivel,DisponibilidadesService,SalvarDisponibilidadeRequest} from '../../../../core/services/disponibilidades.service';
-import {PortalSnackbarService} from '../../../../core/services/portal-snackbar.service';
-import {PortalButtonComponent} from '../../../../shared/components/ui/portal-button/portal-button.component';
-import {PortalLoadingComponent} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
-import {PortalEmptyStateComponent} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
+import {
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
 
+import {
+  Router
+} from '@angular/router';
 
+import {
+  AuthService,
+  AuthUsuario
+} from '../../../../core/services/auth.service';
+
+import {
+  DataDisponivel,
+  DisponibilidadesService,
+  SalvarDisponibilidadeRequest
+} from '../../../../core/services/disponibilidades.service';
+
+import {
+  PortalSnackbarService
+} from '../../../../core/services/portal-snackbar.service';
+
+import {
+  PortalButtonComponent
+} from '../../../../shared/components/ui/portal-button/portal-button.component';
+
+import {
+  PortalLoadingComponent
+} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
+
+import {
+  PortalEmptyStateComponent
+} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
 
 
 interface DataDisponibilidadeTela {
   data_id: string;
+
   data: string;
+
   tipo: string;
+
   nome_evento: string | null;
+
   disponivel: boolean;
+
+  escala_criada: boolean;
+
+  salva: boolean;
+
+  editando: boolean;
 }
 
 
 @Component({
   selector: 'app-disponibilidade',
+
   standalone: true,
+
   imports: [
     PortalButtonComponent,
     PortalLoadingComponent,
     PortalEmptyStateComponent
   ],
-  templateUrl: './disponibilidade.component.html',
-  styleUrl: './disponibilidade.component.scss'
+
+  templateUrl:
+    './disponibilidade.component.html',
+
+  styleUrl:
+    './disponibilidade.component.scss'
 })
 export class DisponibilidadeComponent
   implements OnInit {
@@ -37,22 +79,30 @@ export class DisponibilidadeComponent
     inject(AuthService);
 
   private readonly disponibilidadesService =
-    inject(DisponibilidadesService);
+    inject(
+      DisponibilidadesService
+    );
 
   private readonly snackbar =
-    inject(PortalSnackbarService);
+    inject(
+      PortalSnackbarService
+    );
 
   private readonly router =
     inject(Router);
 
 
-  readonly usuario: AuthUsuario | null =
-    this.authService.obterUsuario();
+  readonly usuario:
+    AuthUsuario | null =
+      this.authService
+        .obterUsuario();
 
 
-  datas: DataDisponibilidadeTela[] = [];
+  datas:
+    DataDisponibilidadeTela[] = [];
 
   carregando = false;
+
   salvando = false;
 
 
@@ -61,8 +111,33 @@ export class DisponibilidadeComponent
   }
 
 
-  private carregarDisponibilidades(): void {
+  get temDatasEmEdicao(): boolean {
+    return this.datas.some(
+      item =>
+        !item.escala_criada
+        &&
+        (
+          !item.salva
+          ||
+          item.editando
+        )
+    );
+  }
+
+
+  get possuiAlteracao(): boolean {
+    return this.datas.some(
+      item =>
+        item.editando
+    );
+  }
+
+
+  private carregarDisponibilidades():
+    void {
+
     if (!this.usuario?.id) {
+
       this.snackbar.error(
         'Não foi possível identificar o integrante.'
       );
@@ -77,7 +152,9 @@ export class DisponibilidadeComponent
     this.carregando = true;
 
     this.disponibilidadesService
-      .listarDatasDisponiveis('Louvor')
+      .listarDatasDisponiveis(
+        'Louvor'
+      )
       .subscribe({
         next: response => {
           this.prepararDatas(
@@ -89,17 +166,21 @@ export class DisponibilidadeComponent
           this.carregando = false;
 
           const mensagem =
-            erro?.error?.message ??
+            erro?.error?.message
+            ??
             'Não foi possível carregar as datas disponíveis.';
 
-          this.snackbar.error(mensagem);
+          this.snackbar.error(
+            mensagem
+          );
         }
       });
   }
 
 
   private prepararDatas(
-    datasDisponiveis: DataDisponivel[]
+    datasDisponiveis:
+      DataDisponivel[]
   ): void {
 
     if (!this.usuario?.id) {
@@ -116,29 +197,83 @@ export class DisponibilidadeComponent
         next: response => {
 
           const salvas =
-            response.data?.disponibilidades ?? [];
+            response.data
+              ?.disponibilidades
+            ??
+            [];
 
           this.datas =
-            datasDisponiveis.map(data => {
+            datasDisponiveis
+              .filter(data => {
 
-              const disponibilidadeSalva =
-                salvas.find(
-                  item =>
-                    item.data_id === data._id
+                const salva =
+                  salvas.find(
+                    item =>
+                      item.data_id
+                      ===
+                      data._id
+                  );
+
+                /*
+                 * Data sem escala:
+                 * sempre aparece.
+                 *
+                 * Data com escala:
+                 * só continua aparecendo
+                 * caso o integrante já
+                 * tenha informado sua
+                 * disponibilidade.
+                 */
+
+                return (
+                  !data.escala_criada
+                  ||
+                  !!salva
                 );
+              })
+              .map(data => {
 
-              return {
-                data_id: data._id,
-                data: data.data,
-                tipo: data.tipo,
-                nome_evento:
-                  data.nome_evento,
-                disponivel:
-                  disponibilidadeSalva
-                    ? disponibilidadeSalva.disponivel
-                    : true
-              };
-            });
+                const disponibilidadeSalva =
+                  salvas.find(
+                    item =>
+                      item.data_id
+                      ===
+                      data._id
+                  );
+
+                const salva =
+                  !!disponibilidadeSalva;
+
+                return {
+                  data_id:
+                    data._id,
+
+                  data:
+                    data.data,
+
+                  tipo:
+                    data.tipo,
+
+                  nome_evento:
+                    data.nome_evento,
+
+                  disponivel:
+                    disponibilidadeSalva
+                      ? disponibilidadeSalva
+                          .disponivel
+                      : true,
+
+                  escala_criada:
+                    data.escala_criada,
+
+                  salva,
+
+                  editando:
+                    !salva
+                    &&
+                    !data.escala_criada
+                };
+              });
 
           this.carregando = false;
         },
@@ -147,28 +282,65 @@ export class DisponibilidadeComponent
           this.carregando = false;
 
           const mensagem =
-            erro?.error?.message ??
+            erro?.error?.message
+            ??
             'Não foi possível carregar sua disponibilidade.';
 
-          this.snackbar.error(mensagem);
+          this.snackbar.error(
+            mensagem
+          );
         }
       });
   }
 
 
   alternarDisponibilidade(
-    item: DataDisponibilidadeTela
+    item:
+      DataDisponibilidadeTela
   ): void {
+
+    if (
+      item.escala_criada
+    ) {
+      return;
+    }
+
+    if (
+      item.salva
+      &&
+      !item.editando
+    ) {
+      return;
+    }
 
     item.disponivel =
       !item.disponivel;
   }
 
 
-  salvar(): void {
+  editarDisponibilidade(
+    item:
+      DataDisponibilidadeTela
+  ): void {
+
     if (
-      !this.usuario?.id ||
+      item.escala_criada
+    ) {
+      return;
+    }
+
+    item.editando = true;
+  }
+
+
+  salvar(): void {
+
+    if (
+      !this.usuario?.id
+      ||
       this.salvando
+      ||
+      !this.temDatasEmEdicao
     ) {
       return;
     }
@@ -188,34 +360,57 @@ export class DisponibilidadeComponent
         'Louvor',
 
       disponibilidades:
-        this.datas.map(item => ({
-          data_id: item.data_id,
-          data: item.data,
-          disponivel:
-            item.disponivel
-        }))
+        this.datas.map(
+          item => ({
+            data_id:
+              item.data_id,
+
+            data:
+              item.data,
+
+            disponivel:
+              item.disponivel
+          })
+        )
     };
 
     this.disponibilidadesService
-      .salvar(dados)
+      .salvar(
+        dados
+      )
       .subscribe({
-        next: response => {
+        next: () => {
+
           this.salvando = false;
 
+          this.datas =
+            this.datas.map(
+              item => ({
+                ...item,
+
+                salva: true,
+
+                editando: false
+              })
+            );
+
           this.snackbar.success(
-            response.message ??
             'Disponibilidade salva com sucesso.'
           );
         },
 
         error: erro => {
+
           this.salvando = false;
 
           const mensagem =
-            erro?.error?.message ??
+            erro?.error?.message
+            ??
             'Não foi possível salvar sua disponibilidade.';
 
-          this.snackbar.error(mensagem);
+          this.snackbar.error(
+            mensagem
+          );
         }
       });
   }
@@ -229,18 +424,24 @@ export class DisponibilidadeComponent
       ano,
       mes,
       dia
-    ] = data.split('-');
+    ] = data.split(
+      '-'
+    );
 
-    return `${dia}/${mes}/${ano}`;
+    return (
+      `${dia}/${mes}/${ano}`
+    );
   }
 
 
   descricaoData(
-    item: DataDisponibilidadeTela
+    item:
+      DataDisponibilidadeTela
   ): string {
 
     if (
-      item.tipo === 'Outros' &&
+      item.tipo === 'Outros'
+      &&
       item.nome_evento
     ) {
       return item.nome_evento;
@@ -251,8 +452,10 @@ export class DisponibilidadeComponent
 
 
   voltar(): void {
+
     void this.router.navigate([
       '/louvor/integrante'
     ]);
   }
+
 }

@@ -1,4 +1,5 @@
 <main class="integrantes-page">
+
   <section class="integrantes-container">
 
     <header class="integrantes-header">
@@ -8,7 +9,8 @@
         <app-portal-button
           variant="text"
           icon="arrow_back"
-          (buttonClick)="voltar()">
+          (buttonClick)="voltar()"
+        >
           Voltar
         </app-portal-button>
 
@@ -36,7 +38,8 @@
 
         <app-portal-button
           icon="person_add"
-          (buttonClick)="cadastrarIntegrante()">
+          (buttonClick)="cadastrarIntegrante()"
+        >
           Cadastrar Integrante
         </app-portal-button>
 
@@ -48,10 +51,13 @@
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando integrantes...">
+        message="Carregando integrantes..."
+      >
       </app-portal-loading>
 
-    } @else if (integrantes.length === 0) {
+    } @else if (
+      integrantes.length === 0
+    ) {
 
       <app-portal-empty-state
         icon="group_off"
@@ -59,23 +65,25 @@
         message="Ainda não existem integrantes ativos no Ministério de Mídia."
         actionText="Cadastrar integrante"
         actionIcon="person_add"
-        (actionClick)="cadastrarIntegrante()">
+        (actionClick)="cadastrarIntegrante()"
+      >
       </app-portal-empty-state>
 
     } @else {
 
-      <section class="integrantes-list">
+      <section class="integrantes-list-container">
 
-        @for (
-          integrante of integrantes;
-          track integrante._id
-        ) {
+        <div class="integrantes-list">
 
-          <article class="integrante-card">
+          @for (
+            integrante of integrantes;
+            track integrante._id
+          ) {
 
-            <div class="integrante-card__content">
+            <article class="integrante-card">
 
-              <div class="integrante-card__name">
+
+              <div class="integrante-card__topo">
 
                 <div class="integrante-card__avatar">
 
@@ -88,22 +96,29 @@
                 </div>
 
 
-                <div>
+                <div class="integrante-card__name">
 
                   <h2>
                     {{ integrante.nome }}
                   </h2>
 
                   <span>
-                        {{ obterFuncoesMidia(integrante).length }}
 
-                        {{
-                            obterFuncoesMidia(integrante).length === 1
-                            ? 'função'
-                            : 'funções'
-                        }}
+                    {{
+                      obterFuncoesMidia(
+                        integrante
+                      ).length
+                    }}
 
-                    </span>
+                    {{
+                      obterFuncoesMidia(
+                        integrante
+                      ).length === 1
+                        ? 'função'
+                        : 'funções'
+                    }}
+
+                  </span>
 
                 </div>
 
@@ -112,10 +127,12 @@
 
               <div class="integrante-card__functions">
 
-               @for (
-                funcao of obterFuncoesMidia(integrante);
-                track funcao
-                )  {
+                @for (
+                  funcao of obterFuncoesMidia(
+                    integrante
+                  );
+                  track funcao
+                ) {
 
                   <span class="integrante-card__function">
                     {{ funcao }}
@@ -125,35 +142,48 @@
 
               </div>
 
-            </div>
+
+              <div class="integrante-card__actions">
+
+                <app-portal-button
+                  variant="outline"
+                  icon="edit"
+                  [fullWidth]="true"
+                  (buttonClick)="
+                    editarIntegrante(
+                      integrante._id
+                    )
+                  "
+                >
+                  Editar
+                </app-portal-button>
 
 
-            <div class="integrante-card__actions">
+                <app-portal-button
+                  variant="danger"
+                  icon="person_off"
+                  [fullWidth]="true"
+                  (buttonClick)="
+                    desativarIntegrante(
+                      integrante
+                    )
+                  "
+                >
+                  Desativar
+                </app-portal-button>
 
-              <app-portal-button
-                variant="outline"
-                icon="edit"
-                (buttonClick)="editarIntegrante(integrante._id)">
-                Editar
-              </app-portal-button>
+              </div>
 
+            </article>
 
-              <app-portal-button
-                variant="danger"
-                icon="person_off"
-                (buttonClick)="desativarIntegrante(integrante)">
-                Desativar
-              </app-portal-button>
+          }
 
-            </div>
-
-          </article>
-
-        }
+        </div>
 
       </section>
 
     }
 
   </section>
+
 </main>

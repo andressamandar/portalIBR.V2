@@ -1,13 +1,18 @@
 <main class="escalar-louvores-page">
+
   <section class="escalar-louvores-container">
 
+
     <div>
+
       <app-portal-button
         variant="text"
         icon="arrow_back"
-        (buttonClick)="voltar()">
+        (buttonClick)="voltar()"
+      >
         Voltar
       </app-portal-button>
+
     </div>
 
 
@@ -23,7 +28,7 @@
 
       <p>
         Selecione uma data com escala criada
-        para organizar os louvores do culto.
+        para visualizar os louvores do culto.
       </p>
 
     </header>
@@ -32,12 +37,16 @@
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando louvores...">
+        message="Carregando louvores..."
+      >
       </app-portal-loading>
 
     } @else {
 
       <section class="escalar-louvores-card">
+
+
+        <!-- TODAS AS DATAS -->
 
         <app-portal-select
           name="data"
@@ -49,11 +58,85 @@
           optionValue="id"
           [required]="true"
           [(ngModel)]="dataSelecionada"
-          (ngModelChange)="selecionarData()">
+          (ngModelChange)="selecionarData()"
+        >
         </app-portal-select>
 
 
-        @if (datasOpcoes.length === 0) {
+        <!-- DATAS EM QUE O INTEGRANTE É MINISTRO -->
+
+        @if (temDatasComoMinistro) {
+
+          <section class="datas-ministro">
+
+            <div class="datas-ministro__header">
+
+              <span class="material-icons">
+                record_voice_over
+              </span>
+
+              <div>
+
+                <h2>
+                  Escolha os louvores das escalas
+                  em que você será ministro
+                </h2>
+
+                <p>
+                  Estas são as datas em que você está
+                  escalado na função Ministração.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="datas-ministro__lista">
+
+              @for (
+                data of datasMinistro;
+                track data.id
+              ) {
+
+                <button
+                  type="button"
+                  class="data-ministro-button"
+                  [class.data-ministro-button--ativa]="
+                    dataSelecionada?.id === data.id
+                  "
+                  (click)="selecionarDataMinistro(data)"
+                >
+
+                  <span class="material-icons">
+                    event
+                  </span>
+
+                  <span>
+                    {{ data.nome }}
+                  </span>
+
+                  <span
+                    class="material-icons
+                    data-ministro-button__seta"
+                  >
+                    arrow_forward
+                  </span>
+
+                </button>
+
+              }
+
+            </div>
+
+          </section>
+
+        }
+
+
+        @if (
+          datasOpcoes.length === 0
+        ) {
 
           <div class="mensagem-vazia">
 
@@ -82,16 +165,27 @@
         @if (carregandoData) {
 
           <app-portal-loading
-            message="Carregando dados da escala...">
+            message="Carregando dados da escala..."
+          >
           </app-portal-loading>
 
-        } @else if (dataSelecionada) {
+        } @else if (
+          dataSelecionada
+        ) {
 
 
-          <!-- STATUS DOS LOUVORES -->
-          @if (louvoresEscalaExistentes) {
+          <!-- STATUS -->
 
-            <div class="status-data status-existente">
+          @if (
+            louvoresEscalaExistentes
+          ) {
+
+            <div
+              class="
+                status-data
+                status-existente
+              "
+            >
 
               <span class="material-icons">
                 queue_music
@@ -100,12 +194,12 @@
               <div>
 
                 <strong>
-                  Esta data já possui louvores escalados
+                  Esta data já possui louvores definidos
                 </strong>
 
                 <p>
-                  Os louvores definidos para esta data
-                  estão carregados abaixo.
+                  Confira abaixo os louvores
+                  definidos para esta escala.
                 </p>
 
               </div>
@@ -114,7 +208,12 @@
 
           } @else {
 
-            <div class="status-data status-novo">
+            <div
+              class="
+                status-data
+                status-novo
+              "
+            >
 
               <span class="material-icons">
                 library_add
@@ -123,12 +222,12 @@
               <div>
 
                 <strong>
-                  Nenhum louvor escalado ainda
+                  Nenhum louvor definido ainda
                 </strong>
 
                 <p>
-                  Ainda não existem louvores definidos
-                  para esta data.
+                  Ainda não existem louvores
+                  definidos para esta data.
                 </p>
 
               </div>
@@ -139,10 +238,13 @@
 
 
           <!-- PRÉ-VISUALIZAÇÃO DA ESCALA -->
+
           @if (
-            escalaSelecionada &&
+            escalaSelecionada
+            &&
             (
-              ehLiderancaLouvor ||
+              ehLiderancaLouvor
+              ||
               podeEditarLouvores
             )
           ) {
@@ -171,10 +273,13 @@
               </div>
 
 
-              @if (funcoesEscalaPreview.length === 0) {
+              @if (
+                funcoesEscalaPreview.length === 0
+              ) {
 
                 <div class="preview-escala-vazia">
-                  Nenhuma função preenchida nesta escala.
+                  Nenhuma função preenchida
+                  nesta escala.
                 </div>
 
               } @else {
@@ -193,7 +298,11 @@
                       </strong>
 
                       <span>
-                        {{ funcao.integrantes.join(', ') }}
+                        {{
+                          funcao.integrantes.join(
+                            ', '
+                          )
+                        }}
                       </span>
 
                     </div>
@@ -210,11 +319,17 @@
 
 
           <!-- PERMISSÃO DO INTEGRANTE -->
+
           @if (ehIntegranteLouvor) {
 
             @if (podeEditarLouvores) {
 
-              <div class="status-data status-ministro">
+              <div
+                class="
+                  status-data
+                  status-ministro
+                "
+              >
 
                 <span class="material-icons">
                   edit_note
@@ -226,10 +341,24 @@
                     Você está escalado em Ministração
                   </strong>
 
-                  <p>
-                    Você pode selecionar, alterar os tons
-                    e salvar os louvores desta data.
-                  </p>
+                  @if (modoEdicaoLouvores) {
+
+                    <p>
+                      Selecione os louvores,
+                      ajuste os tons e salve
+                      as alterações desta escala.
+                    </p>
+
+                  } @else {
+
+                    <p>
+                      Os louvores desta escala
+                      estão em modo de visualização.
+                      Use o botão de editar caso
+                      precise fazer alterações.
+                    </p>
+
+                  }
 
                 </div>
 
@@ -237,7 +366,12 @@
 
             } @else {
 
-              <div class="status-data status-visualizacao">
+              <div
+                class="
+                  status-data
+                  status-visualizacao
+                "
+              >
 
                 <span class="material-icons">
                   visibility
@@ -263,8 +397,11 @@
           }
 
 
-          <!-- LOUVORES DA DATA -->
-          @if (totalSelecionados > 0) {
+          <!-- LOUVORES SELECIONADOS -->
+
+          @if (
+            totalSelecionados > 0
+          ) {
 
             <section class="louvores-selecionados">
 
@@ -279,11 +416,21 @@
                   <div>
 
                     <h2>
-                      @if (podeEditarLouvores) {
+
+                      @if (
+                        modoEdicaoLouvores
+                        &&
+                        podeEditarLouvores
+                      ) {
+
                         Louvores Selecionados
+
                       } @else {
+
                         Louvores da Data
+
                       }
+
                     </h2>
 
                     <p>
@@ -322,15 +469,17 @@
 
                       <div class="selecionado-meta">
 
-                        <!-- CATEGORIA -->
                         <span>
                           Categoria:
                           {{ item.louvor.categoria }}
                         </span>
 
 
-                        <!-- EDIÇÃO -->
-                        @if (podeEditarLouvores) {
+                        @if (
+                          modoEdicaoLouvores
+                          &&
+                          podeEditarLouvores
+                        ) {
 
                           @if (item.louvor.tom) {
 
@@ -343,7 +492,6 @@
 
                         } @else {
 
-                          <!-- VISUALIZAÇÃO DO INTEGRANTE -->
                           <span>
                             Tom:
                             {{ item.tom || '-' }}
@@ -354,7 +502,6 @@
                       </div>
 
 
-                      <!-- VÍDEO -->
                       @if (
                         obterVideoEmbed(
                           item.louvor._id
@@ -364,10 +511,14 @@
                         <div class="selecionado-video">
 
                           <iframe
-                            [src]="obterVideoEmbed(
-                              item.louvor._id
-                            )"
-                            [title]="item.louvor.louvor"
+                            [src]="
+                              obterVideoEmbed(
+                                item.louvor._id
+                              )
+                            "
+                            [title]="
+                              item.louvor.louvor
+                            "
                             allow="
                               accelerometer;
                               autoplay;
@@ -376,7 +527,8 @@
                               gyroscope;
                               picture-in-picture
                             "
-                            allowfullscreen>
+                            allowfullscreen
+                          >
                           </iframe>
 
                         </div>
@@ -386,8 +538,11 @@
                     </div>
 
 
-                    <!-- CAMPO DE TOM SOMENTE PARA QUEM EDITA -->
-                    @if (podeEditarLouvores) {
+                    @if (
+                      podeEditarLouvores
+                      &&
+                      modoEdicaoLouvores
+                    ) {
 
                       <div class="selecionado-tom">
 
@@ -409,7 +564,8 @@
                               item.louvor._id,
                               $event
                             )
-                          ">
+                          "
+                        >
                         </app-portal-input>
 
                       </div>
@@ -427,13 +583,44 @@
           }
 
 
-          <!-- CATÁLOGO COMPLETO SOMENTE PARA EDIÇÃO -->
-          @if (podeEditarLouvores) {
+          <!-- BOTÃO EDITAR -->
+
+          @if (
+            louvoresEscalaExistentes
+            &&
+            podeEditarLouvores
+            &&
+            !modoEdicaoLouvores
+          ) {
+
+            <div class="editar-louvores">
+
+              <app-portal-button
+                variant="primary"
+                icon="edit"
+                (buttonClick)="editarLouvores()"
+              >
+                Editar Louvores da Escala
+              </app-portal-button>
+
+            </div>
+
+          }
+
+
+          <!-- CATÁLOGO -->
+
+          @if (
+            podeEditarLouvores
+            &&
+            modoEdicaoLouvores
+          ) {
 
             <section class="categorias-louvores">
 
 
               <!-- AGITADOS -->
+
               <div class="categoria-section">
 
                 <div class="categoria-header">
@@ -443,6 +630,7 @@
                     <span class="material-icons">
                       music_note
                     </span>
+
                     <div>
 
                       <h2>
@@ -468,7 +656,8 @@
                     label="Pesquisar"
                     placeholder="Digite o nome do louvor"
                     icon="search"
-                    [(ngModel)]="pesquisaAgitados">
+                    [(ngModel)]="pesquisaAgitados"
+                  >
                   </app-portal-input>
 
                 </div>
@@ -549,7 +738,8 @@
                                 rel="noopener noreferrer"
                                 (click)="
                                   $event.stopPropagation()
-                                ">
+                                "
+                              >
                                 Abrir link
                               </a>
 
@@ -600,13 +790,14 @@
 
 
               <!-- CALMOS -->
+
               <div class="categoria-section">
 
                 <div class="categoria-header">
 
                   <div>
 
-                   <span class="material-icons">
+                    <span class="material-icons">
                       music_note
                     </span>
 
@@ -635,7 +826,8 @@
                     label="Pesquisar"
                     placeholder="Digite o nome do louvor"
                     icon="search"
-                    [(ngModel)]="pesquisaCalmos">
+                    [(ngModel)]="pesquisaCalmos"
+                  >
                   </app-portal-input>
 
                 </div>
@@ -716,7 +908,8 @@
                                 rel="noopener noreferrer"
                                 (click)="
                                   $event.stopPropagation()
-                                ">
+                                "
+                              >
                                 Abrir link
                               </a>
 
@@ -770,8 +963,13 @@
           }
 
 
-          <!-- SALVAR SOMENTE PARA QUEM PODE EDITAR -->
-          @if (podeEditarLouvores) {
+          <!-- SALVAR -->
+
+          @if (
+            podeEditarLouvores
+            &&
+            modoEdicaoLouvores
+          ) {
 
             <div class="acoes-louvores">
 
@@ -779,7 +977,8 @@
                 variant="primary"
                 icon="save"
                 [disabled]="salvando"
-                (buttonClick)="salvarLouvores()">
+                (buttonClick)="salvarLouvores()"
+              >
 
                 @if (salvando) {
 
@@ -804,4 +1003,5 @@
     }
 
   </section>
+
 </main>

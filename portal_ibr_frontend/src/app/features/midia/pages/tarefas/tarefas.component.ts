@@ -1,50 +1,14 @@
-import {
-  Component,
-  inject,
-  OnInit
-} from '@angular/core';
-
-import {
-  Router
-} from '@angular/router';
-
-import {
-  MatDialog
-} from '@angular/material/dialog';
-
-import {
-  forkJoin
-} from 'rxjs';
-
-import {
-  Tarefa,
-  TarefasService
-} from '../../../../core/services/tarefas.service';
-
-import {
-  Solicitacao,
-  SolicitacoesService
-} from '../../../../core/services/solicitacoes.service';
-
-import {
-  PortalSnackbarService
-} from '../../../../core/services/portal-snackbar.service';
-
-import {
-  PortalButtonComponent
-} from '../../../../shared/components/ui/portal-button/portal-button.component';
-
-import {
-  PortalLoadingComponent
-} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
-
-import {
-  PortalEmptyStateComponent
-} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
-
-import {
-  PortalDialogComponent
-} from '../../../../shared/components/ui/portal-dialog/portal-dialog.component';
+import {Component,inject,OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {forkJoin} from 'rxjs';
+import {Tarefa, TarefasService} from '../../../../core/services/tarefas.service';
+import {Solicitacao,SolicitacoesService} from '../../../../core/services/solicitacoes.service';
+import {PortalSnackbarService} from '../../../../core/services/portal-snackbar.service';
+import {PortalButtonComponent} from '../../../../shared/components/ui/portal-button/portal-button.component';
+import {PortalLoadingComponent} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
+import {PortalEmptyStateComponent} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
+import { PortalDialogComponent} from '../../../../shared/components/ui/portal-dialog/portal-dialog.component';
 
 
 @Component({

@@ -24,94 +24,137 @@ export type MinisterioDisponibilidade =
 
 export interface DataDisponivel {
   _id: string;
+
   data: string;
+
   tipo: string;
+
   nome_evento: string | null;
+
+  escala_criada: boolean;
 }
 
 
 export interface DisponibilidadeItem {
   data_id: string;
+
   data: string;
+
   disponivel: boolean;
 }
 
 
 export interface DisponibilidadeIntegrante {
   _id: string;
+
   integrante_id: string;
+
   integrante_nome: string;
-  ministerio: MinisterioDisponibilidade;
-  disponibilidades: DisponibilidadeItem[];
-  data_preenchimento: string | null;
+
+  ministerio:
+    MinisterioDisponibilidade;
+
+  disponibilidades:
+    DisponibilidadeItem[];
+
+  data_preenchimento:
+    string | null;
 }
 
 
 export interface IntegranteDisponivel {
   integrante_id: string;
+
   integrante_nome: string;
 }
 
 
 export interface PreenchimentoDisponibilidade {
   nome: string;
+
   preencheu: boolean;
 }
 
 
 export interface DisponibilidadeLimitada {
   nome: string;
+
   datas: string[];
 }
 
 
 export interface DatasDisponiveisResponse {
   success: boolean;
+
   data: DataDisponivel[];
+
   message?: string;
 }
 
 
 export interface DisponibilidadeResponse {
   success: boolean;
-  data: DisponibilidadeIntegrante | null;
+
+  data:
+    DisponibilidadeIntegrante | null;
+
   message?: string;
 }
 
 
 export interface IntegrantesDisponiveisResponse {
   success: boolean;
-  data: IntegranteDisponivel[];
+
+  data:
+    IntegranteDisponivel[];
+
   total: number;
+
   message?: string;
 }
 
 
 export interface PreenchimentoResponse {
   success: boolean;
-  data: PreenchimentoDisponibilidade[];
+
+  data:
+    PreenchimentoDisponibilidade[];
+
   message?: string;
 }
 
 
 export interface DisponibilidadesLimitadasResponse {
   success: boolean;
-  data: DisponibilidadeLimitada[];
+
+  data:
+    DisponibilidadeLimitada[];
+
   message?: string;
 }
 
 
 export interface SalvarDisponibilidadeRequest {
   integrante_id: string;
+
   integrante_nome: string;
-  ministerio: MinisterioDisponibilidade;
-  disponibilidades: DisponibilidadeItem[];
+
+  ministerio:
+    MinisterioDisponibilidade;
+
+  disponibilidades:
+    DisponibilidadeItem[];
 }
+
 
 export interface DisponibilidadesResponse {
   success: boolean;
-  data: DisponibilidadeIntegrante[];
+
+  data:
+    DisponibilidadeIntegrante[];
+
   total: number;
+
   message?: string;
 }
 
@@ -120,98 +163,158 @@ export interface DisponibilidadesResponse {
   providedIn: 'root'
 })
 export class DisponibilidadesService {
-  private readonly http = inject(HttpClient);
+
+  private readonly http =
+    inject(HttpClient);
 
   private readonly apiUrl =
     `${environment.apiUrl}/api/disponibilidades`;
 
 
   listarDatasDisponiveis(
-    ministerio: MinisterioDisponibilidade
+    ministerio:
+      MinisterioDisponibilidade
   ): Observable<DatasDisponiveisResponse> {
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
 
-    return this.http.get<DatasDisponiveisResponse>(
-      `${this.apiUrl}/datas-disponiveis`,
-      { params }
-    );
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<DatasDisponiveisResponse>(
+        `${this.apiUrl}/datas-disponiveis`,
+        {
+          params
+        }
+      );
   }
 
 
   salvar(
-    dados: SalvarDisponibilidadeRequest
+    dados:
+      SalvarDisponibilidadeRequest
   ): Observable<DisponibilidadeResponse> {
-    return this.http.post<DisponibilidadeResponse>(
-      this.apiUrl,
-      dados
-    );
+
+    return this.http
+      .post<DisponibilidadeResponse>(
+        this.apiUrl,
+        dados
+      );
   }
 
 
   buscarPorIntegrante(
     integranteId: string,
-    ministerio: MinisterioDisponibilidade
+    ministerio:
+      MinisterioDisponibilidade
   ): Observable<DisponibilidadeResponse> {
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
 
-    return this.http.get<DisponibilidadeResponse>(
-      `${this.apiUrl}/integrante/${integranteId}`,
-      { params }
-    );
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<DisponibilidadeResponse>(
+        `${this.apiUrl}/integrante/${integranteId}`,
+        {
+          params
+        }
+      );
   }
 
 
   listarDisponiveisPorData(
     dataId: string,
-    ministerio: MinisterioDisponibilidade
+    ministerio:
+      MinisterioDisponibilidade
   ): Observable<IntegrantesDisponiveisResponse> {
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
 
-    return this.http.get<IntegrantesDisponiveisResponse>(
-      `${this.apiUrl}/data/${dataId}/disponiveis`,
-      { params }
-    );
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<IntegrantesDisponiveisResponse>(
+        `${this.apiUrl}/data/${dataId}/disponiveis`,
+        {
+          params
+        }
+      );
   }
 
 
   visualizarPreenchimento(
-    ministerio: MinisterioDisponibilidade
+    ministerio:
+      MinisterioDisponibilidade
   ): Observable<PreenchimentoResponse> {
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
 
-    return this.http.get<PreenchimentoResponse>(
-      `${this.apiUrl}/preenchimento`,
-      { params }
-    );
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<PreenchimentoResponse>(
+        `${this.apiUrl}/preenchimento`,
+        {
+          params
+        }
+      );
   }
 
 
   listarLimitadas(
-    ministerio: MinisterioDisponibilidade
+    ministerio:
+      MinisterioDisponibilidade
   ): Observable<DisponibilidadesLimitadasResponse> {
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
 
-    return this.http.get<DisponibilidadesLimitadasResponse>(
-      `${this.apiUrl}/limitadas`,
-      { params }
-    );
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<DisponibilidadesLimitadasResponse>(
+        `${this.apiUrl}/limitadas`,
+        {
+          params
+        }
+      );
   }
+
 
   listar(
-    ministerio: MinisterioDisponibilidade
-    ): Observable<DisponibilidadesResponse> {
+    ministerio:
+      MinisterioDisponibilidade
+  ): Observable<DisponibilidadesResponse> {
 
-    const params = new HttpParams()
-      .set('ministerio', ministerio);
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
 
-    return this.http.get<DisponibilidadesResponse>(
-      this.apiUrl,
-      { params }
-    );
+    return this.http
+      .get<DisponibilidadesResponse>(
+        this.apiUrl,
+        {
+          params
+        }
+      );
   }
+
 }

@@ -1,247 +1,546 @@
 @use '../../../../../theme/variables' as variables;
 
+
 :host {
   display: block;
 }
 
+
 .disponibilidade-page {
   min-height: 100vh;
-  padding: variables.$space-6;
 
-  background: variables.$background;
+  padding:
+    variables.$space-6;
+
+  background:
+    variables.$background;
 }
+
 
 .disponibilidade-container {
   width: 100%;
+
   max-width: 900px;
+
   margin: 0 auto;
 
   display: flex;
+
   flex-direction: column;
-  gap: variables.$space-6;
+
+  gap:
+    variables.$space-6;
 }
+
 
 .disponibilidade-header {
   display: flex;
+
   flex-direction: column;
-  gap: variables.$space-2;
+
+  gap:
+    variables.$space-2;
+
 
   span {
-    color: variables.$primary;
-    font-size: variables.$font-size-sm;
-    font-weight: variables.$font-weight-semibold;
+    color:
+      variables.$primary;
+
+    font-size:
+      variables.$font-size-sm;
+
+    font-weight:
+      variables.$font-weight-semibold;
+
     letter-spacing: 0.08em;
+
     text-transform: uppercase;
   }
+
 
   h1 {
     margin: 0;
 
-    color: variables.$text-primary;
-    font-size: variables.$font-size-xxl;
-    font-weight: variables.$font-weight-bold;
+    color:
+      variables.$text-primary;
+
+    font-size:
+      variables.$font-size-xxl;
+
+    font-weight:
+      variables.$font-weight-bold;
+
     line-height: 1.2;
   }
 
+
   p {
     margin: 0;
 
-    color: variables.$text-secondary;
-    font-size: variables.$font-size-md;
+    color:
+      variables.$text-secondary;
+
+    font-size:
+      variables.$font-size-md;
+
     line-height: 1.5;
   }
 }
 
+
 .disponibilidade-card {
-  padding: variables.$space-6;
+  padding:
+    variables.$space-6;
 
   display: flex;
-  flex-direction: column;
-  gap: variables.$space-5;
 
-  border: 1px solid variables.$border-light;
-  border-radius: variables.$radius-large;
-  background: variables.$surface;
-  box-shadow: variables.$shadow-small;
+  flex-direction: column;
+
+  gap:
+    variables.$space-5;
+
+  border:
+    1px solid variables.$border-light;
+
+  border-radius:
+    variables.$radius-large;
+
+  background:
+    variables.$surface;
+
+  box-shadow:
+    variables.$shadow-small;
 }
 
+
 .disponibilidade-aviso {
-  padding: variables.$space-4;
+  padding:
+    variables.$space-4;
 
   display: flex;
+
   align-items: flex-start;
-  gap: variables.$space-3;
 
-  border-radius: variables.$radius-medium;
+  gap:
+    variables.$space-3;
 
-  background: variables.$primary-soft;
+  border-radius:
+    variables.$radius-medium;
+
+  background:
+    variables.$primary-soft;
+
 
   .material-icons {
-    color: variables.$primary;
+    color:
+      variables.$primary;
+
     flex-shrink: 0;
   }
 
+
   p {
     margin: 0;
 
-    color: variables.$text-secondary;
-    font-size: variables.$font-size-sm;
+    color:
+      variables.$text-secondary;
+
+    font-size:
+      variables.$font-size-sm;
+
     line-height: 1.5;
   }
 }
 
+
 .disponibilidade-aviso--louvor {
-  border: 1px solid variables.$border;
-  background: variables.$warning-soft;
+  border:
+    1px solid variables.$border;
+
+  background:
+    variables.$warning-soft;
+
 
   .material-icons {
-    color: variables.$warning;
+    color:
+      variables.$warning;
   }
 }
 
+
 .datas-lista {
   display: flex;
+
   flex-direction: column;
-  gap: variables.$space-3;
+
+  gap:
+    variables.$space-4;
 }
+
+
+.data-bloco {
+  display: flex;
+
+  flex-direction: column;
+
+  gap:
+    variables.$space-3;
+}
+
 
 .data-item {
   width: 100%;
-  padding: variables.$space-4;
+
+  padding:
+    variables.$space-4;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
-  gap: variables.$space-4;
 
-  border-radius: variables.$radius-medium;
+  gap:
+    variables.$space-4;
 
-  cursor: pointer;
+  border-radius:
+    variables.$radius-medium;
 
   text-align: left;
 
   font: inherit;
 
-  transition: variables.$transition;
+  transition:
+    variables.$transition;
+}
+
+
+button.data-item {
+  cursor: pointer;
+
 
   &:hover:not(:disabled) {
-    transform: translateY(-1px);
+    transform:
+      translateY(-1px);
+  }
+
+
+  &:disabled {
+    cursor: not-allowed;
+
+    transform: none;
   }
 }
+
+
+div.data-item {
+  cursor: default;
+}
+
 
 .data-disponivel {
-  border: 1px solid variables.$success;
-  background: variables.$success-soft;
+  border:
+    1px solid variables.$success;
+
+  background:
+    variables.$success-soft;
+
 
   .data-status {
-    color: variables.$success;
+    color:
+      variables.$success;
   }
 }
+
 
 .data-indisponivel {
-  border: 1px solid variables.$danger;
-  background: variables.$danger-soft;
+  border:
+    1px solid variables.$danger;
+
+  background:
+    variables.$danger-soft;
+
 
   .data-status {
-    color: variables.$danger;
+    color:
+      variables.$danger;
   }
 }
 
+
 .data-bloqueada {
-  border: 1px solid variables.$border;
-  background: variables.$surface-secondary;
+  border:
+    1px solid variables.$border;
+
+  background:
+    variables.$surface-secondary;
 
   cursor: not-allowed;
 
   opacity: 0.8;
 
+
   .data-status {
-    color: variables.$text-secondary;
+    color:
+      variables.$text-secondary;
   }
 }
+
 
 .data-info {
   display: flex;
+
   flex-direction: column;
-  gap: variables.$space-1;
+
+  gap:
+    variables.$space-1;
+
 
   strong {
-    color: variables.$text-primary;
-    font-size: variables.$font-size-md;
-    font-weight: variables.$font-weight-semibold;
+    color:
+      variables.$text-primary;
+
+    font-size:
+      variables.$font-size-md;
+
+    font-weight:
+      variables.$font-weight-semibold;
   }
+
 
   span {
-    color: variables.$text-secondary;
-    font-size: variables.$font-size-sm;
+    color:
+      variables.$text-secondary;
+
+    font-size:
+      variables.$font-size-sm;
   }
+
 
   .conflito-louvor {
-    margin-top: variables.$space-1;
+    margin-top:
+      variables.$space-1;
 
-    color: variables.$warning;
-    font-size: variables.$font-size-xs;
-    font-weight: variables.$font-weight-semibold;
+    color:
+      variables.$warning;
+
+    font-size:
+      variables.$font-size-xs;
+
+    font-weight:
+      variables.$font-weight-semibold;
   }
 }
+
 
 .data-status {
   display: flex;
+
   align-items: center;
-  gap: variables.$space-2;
+
+  gap:
+    variables.$space-2;
 
   flex-shrink: 0;
 
+
   strong {
-    font-size: variables.$font-size-sm;
-    font-weight: variables.$font-weight-semibold;
+    font-size:
+      variables.$font-size-sm;
+
+    font-weight:
+      variables.$font-weight-semibold;
   }
 }
 
+
+/* =====================================
+   EDITAR DISPONIBILIDADE
+   ===================================== */
+
+.editar-disponibilidade {
+  width: fit-content;
+
+  padding:
+    variables.$space-2
+    variables.$space-4;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap:
+    variables.$space-2;
+
+  border:
+    1px solid variables.$primary;
+
+  border-radius:
+    variables.$radius-medium;
+
+  background:
+    variables.$surface;
+
+  color:
+    variables.$primary;
+
+  font: inherit;
+
+  font-size:
+    variables.$font-size-sm;
+
+  font-weight:
+    variables.$font-weight-semibold;
+
+  cursor: pointer;
+
+  transition:
+    variables.$transition;
+
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+
+  &:hover:not(:disabled) {
+    background:
+      variables.$primary-soft;
+  }
+
+
+  &:disabled {
+    border-color:
+      variables.$border-light;
+
+    background:
+      variables.$background;
+
+    color:
+      variables.$text-secondary;
+
+    cursor: not-allowed;
+
+    opacity: 0.7;
+  }
+}
+
+
+/* =====================================
+   ESCALA JÁ CRIADA
+   ===================================== */
+
+.escala-criada-aviso {
+  padding:
+    variables.$space-3
+    variables.$space-4;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap:
+    variables.$space-3;
+
+  border:
+    1px solid variables.$border-light;
+
+  border-radius:
+    variables.$radius-medium;
+
+  background:
+    variables.$background;
+
+
+  .material-icons {
+    color:
+      variables.$text-secondary;
+
+    font-size: 20px;
+
+    flex-shrink: 0;
+  }
+
+
+  p {
+    margin: 0;
+
+    color:
+      variables.$text-secondary;
+
+    font-size:
+      variables.$font-size-sm;
+
+    line-height: 1.5;
+  }
+}
+
+
 .disponibilidade-actions {
   display: flex;
+
   justify-content: flex-end;
 
-  padding-top: variables.$space-2;
+  padding-top:
+    variables.$space-2;
 }
+
 
 @media (max-width: 600px) {
 
   .disponibilidade-page {
-    padding: variables.$space-4;
+    padding:
+      variables.$space-4;
   }
 
+
   .disponibilidade-container {
-    gap: variables.$space-5;
+    gap:
+      variables.$space-5;
   }
+
 
   .disponibilidade-header {
 
     h1 {
-      font-size: variables.$font-size-xl;
+      font-size:
+        variables.$font-size-xl;
     }
-
   }
+
 
   .disponibilidade-card {
-    padding: variables.$space-4;
+    padding:
+      variables.$space-4;
   }
 
+
   .data-item {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
   }
+
 
   .data-status {
     width: 100%;
   }
+
+
+  .editar-disponibilidade {
+    width: 100%;
+  }
+
 
   .disponibilidade-actions {
 
     app-portal-button {
       width: 100%;
     }
-
   }
 
 }

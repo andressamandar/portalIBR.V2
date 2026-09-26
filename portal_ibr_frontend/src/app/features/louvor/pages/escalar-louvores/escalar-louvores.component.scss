@@ -696,3 +696,259 @@
   }
 
 }
+
+/* =====================================
+   DATAS EM QUE O INTEGRANTE É MINISTRO
+   ===================================== */
+
+.datas-ministro {
+  padding:
+    variables.$space-5;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap:
+    variables.$space-4;
+
+  border:
+    1px solid variables.$primary;
+
+  border-radius:
+    variables.$radius-large;
+
+  background:
+    variables.$primary-soft;
+}
+
+
+.datas-ministro__header {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap:
+    variables.$space-3;
+
+
+  > .material-icons {
+    color:
+      variables.$primary;
+
+    flex-shrink: 0;
+  }
+
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap:
+      variables.$space-1;
+  }
+
+
+  h2 {
+    margin: 0;
+
+    color:
+      variables.$text-primary;
+
+    font-size:
+      variables.$font-size-lg;
+
+    font-weight:
+      variables.$font-weight-semibold;
+
+    line-height: 1.3;
+  }
+
+
+  p {
+    margin: 0;
+
+    color:
+      variables.$text-secondary;
+
+    font-size:
+      variables.$font-size-sm;
+
+    line-height: 1.5;
+  }
+}
+
+
+.datas-ministro__lista {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap:
+    variables.$space-3;
+}
+
+
+.data-ministro-button {
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 58px;
+
+  padding:
+    variables.$space-3
+    variables.$space-4;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap:
+    variables.$space-3;
+
+  border:
+    1px solid variables.$border-light;
+
+  border-radius:
+    variables.$radius-medium;
+
+  background:
+    variables.$surface;
+
+  color:
+    variables.$text-primary;
+
+  font: inherit;
+
+  font-size:
+    variables.$font-size-sm;
+
+  font-weight:
+    variables.$font-weight-semibold;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    variables.$transition;
+
+
+  > .material-icons {
+    color:
+      variables.$primary;
+
+    flex-shrink: 0;
+  }
+
+
+  > span:not(.material-icons) {
+    min-width: 0;
+
+    word-break: normal;
+
+    overflow-wrap: normal;
+  }
+
+
+  &:hover {
+    border-color:
+      variables.$primary;
+
+    transform:
+      translateY(-1px);
+  }
+}
+
+
+.data-ministro-button--ativa {
+  border-color:
+    variables.$primary;
+
+  background:
+    variables.$surface;
+
+  box-shadow:
+    variables.$shadow-focus;
+}
+
+
+.data-ministro-button__seta {
+  font-size: 20px;
+}
+
+
+/* =====================================
+   BOTÃO EDITAR LOUVORES
+   ===================================== */
+
+.editar-louvores {
+  display: flex;
+
+  justify-content: flex-end;
+
+  padding-top:
+    variables.$space-2;
+}
+
+
+/* =====================================
+   RESPONSIVO
+   ===================================== */
+
+@media (max-width: 700px) {
+
+  .datas-ministro__lista {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .datas-ministro {
+    padding:
+      variables.$space-4;
+  }
+
+
+  .datas-ministro__header {
+
+    h2 {
+      font-size:
+        variables.$font-size-md;
+    }
+  }
+
+
+  .data-ministro-button {
+    min-height: 54px;
+
+    padding:
+      variables.$space-3;
+  }
+
+
+  .editar-louvores {
+
+    app-portal-button {
+      width: 100%;
+    }
+  }
+
+}

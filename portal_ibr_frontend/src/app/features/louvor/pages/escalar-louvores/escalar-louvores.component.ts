@@ -1,43 +1,102 @@
-import {Component,inject, OnInit} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import { Router} from '@angular/router';
-import {forkJoin} from 'rxjs';
-import { DataEscala,DatasService} from '../../../../core/services/datas.service';
-import { Louvor, LouvoresService} from '../../../../core/services/louvores.service';
-import {LouvoresEscala,LouvoresEscalaService} from '../../../../core/services/louvores-escala.service';
-import { PortalSnackbarService} from '../../../../core/services/portal-snackbar.service';
-import { PortalButtonComponent} from '../../../../shared/components/ui/portal-button/portal-button.component';
-import { PortalSelectComponent, PortalSelectOption} from '../../../../shared/components/ui/portal-select/portal-select.component';
-import {PortalLoadingComponent} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
-import {PortalInputComponent} from '../../../../shared/components/ui/portal-input/portal-input.component';
-import {Escala,EscalasService} from '../../../../core/services/escalas.service';
-import {AuthService} from '../../../../core/services/auth.service';
-import {DomSanitizer,SafeResourceUrl} from '@angular/platform-browser';
+import {
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
+
+import {
+  FormsModule
+} from '@angular/forms';
+
+import {
+  Router
+} from '@angular/router';
+
+import {
+  forkJoin
+} from 'rxjs';
+
+import {
+  DomSanitizer,
+  SafeResourceUrl
+} from '@angular/platform-browser';
+
+import {
+  DataEscala,
+  DatasService
+} from '../../../../core/services/datas.service';
+
+import {
+  Louvor,
+  LouvoresService
+} from '../../../../core/services/louvores.service';
+
+import {
+  LouvoresEscala,
+  LouvoresEscalaService
+} from '../../../../core/services/louvores-escala.service';
+
+import {
+  Escala,
+  EscalasService
+} from '../../../../core/services/escalas.service';
+
+import {
+  AuthService
+} from '../../../../core/services/auth.service';
+
+import {
+  PortalSnackbarService
+} from '../../../../core/services/portal-snackbar.service';
+
+import {
+  PortalButtonComponent
+} from '../../../../shared/components/ui/portal-button/portal-button.component';
+
+import {
+  PortalSelectComponent,
+  PortalSelectOption
+} from '../../../../shared/components/ui/portal-select/portal-select.component';
+
+import {
+  PortalLoadingComponent
+} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
+
+import {
+  PortalInputComponent
+} from '../../../../shared/components/ui/portal-input/portal-input.component';
 
 
 interface DataLouvorOption
   extends PortalSelectOption {
 
   id: string;
+
   nome: string;
+
   dataEscala: DataEscala;
 }
 
 
 interface LouvorSelecionado {
   louvor: Louvor;
+
   tom: string;
 }
 
+
 interface FuncaoEscalaPreview {
   nome: string;
+
   integrantes: string[];
 }
 
 
 @Component({
   selector: 'app-escalar-louvores',
+
   standalone: true,
+
   imports: [
     FormsModule,
     PortalButtonComponent,
@@ -45,8 +104,12 @@ interface FuncaoEscalaPreview {
     PortalLoadingComponent,
     PortalInputComponent
   ],
-  templateUrl: './escalar-louvores.component.html',
-  styleUrl: './escalar-louvores.component.scss'
+
+  templateUrl:
+    './escalar-louvores.component.html',
+
+  styleUrl:
+    './escalar-louvores.component.scss'
 })
 export class EscalarLouvoresComponent
   implements OnInit {
@@ -69,15 +132,11 @@ export class EscalarLouvoresComponent
   private readonly snackbar =
     inject(PortalSnackbarService);
 
-
   private readonly authService =
     inject(AuthService);
 
-
   private readonly sanitizer =
     inject(DomSanitizer);
-
-  
 
 
   carregando = false;
@@ -87,10 +146,16 @@ export class EscalarLouvoresComponent
   salvando = false;
 
 
+  modoEdicaoLouvores = false;
+
+
   datasEscaladas:
     DataEscala[] = [];
 
   datasOpcoes:
+    DataLouvorOption[] = [];
+
+  datasMinistro:
     DataLouvorOption[] = [];
 
   dataSelecionada:
@@ -121,8 +186,10 @@ export class EscalarLouvoresComponent
   escalaSelecionada:
     Escala | null = null;
 
+
   videosEmbed:
     Record<string, SafeResourceUrl> = {};
+
 
   ngOnInit(): void {
     this.carregarDadosIniciais();
@@ -153,13 +220,16 @@ export class EscalarLouvoresComponent
     return this.louvoresSelecionados.length;
   }
 
+
   get ehLiderancaLouvor(): boolean {
 
     const usuario =
       this.authService.obterUsuario();
 
-    return usuario?.perfil ===
-      'lideranca_louvor';
+    return (
+      usuario?.perfil ===
+      'lideranca_louvor'
+    );
   }
 
 
@@ -168,8 +238,20 @@ export class EscalarLouvoresComponent
     const usuario =
       this.authService.obterUsuario();
 
-    return usuario?.perfil ===
-      'integrante_louvor';
+    return (
+      usuario?.perfil ===
+      'integrante_louvor'
+    );
+  }
+
+
+  get temDatasComoMinistro(): boolean {
+
+    return (
+      this.ehIntegranteLouvor
+      &&
+      this.datasMinistro.length > 0
+    );
   }
 
 
@@ -177,6 +259,7 @@ export class EscalarLouvoresComponent
 
     const usuario =
       this.authService.obterUsuario();
+
 
     if (!usuario) {
       return false;
@@ -193,8 +276,10 @@ export class EscalarLouvoresComponent
 
     if (
       usuario.perfil !==
-        'integrante_louvor' ||
-      !usuario.id ||
+        'integrante_louvor'
+      ||
+      !usuario.id
+      ||
       !this.escalaSelecionada
     ) {
       return false;
@@ -203,7 +288,9 @@ export class EscalarLouvoresComponent
 
     const ministracao =
       this.escalaSelecionada
-        .funcoes['Ministração'] ?? [];
+        .funcoes['Ministração']
+      ??
+      [];
 
 
     return ministracao.some(
@@ -228,9 +315,11 @@ export class EscalarLouvoresComponent
           ''
         );
 
+
     if (!termo) {
       return louvores;
     }
+
 
     return louvores.filter(
       louvor => {
@@ -246,6 +335,7 @@ export class EscalarLouvoresComponent
               ''
             );
 
+
         return nome.includes(
           termo
         );
@@ -259,6 +349,7 @@ export class EscalarLouvoresComponent
 
     this.carregando = true;
 
+
     forkJoin({
 
       datas:
@@ -267,9 +358,12 @@ export class EscalarLouvoresComponent
         ),
 
       louvores:
-        this.louvoresService.listar()
+        this.louvoresService.listar(),
 
-        
+      escalas:
+        this.escalasService.listar(
+          'Louvor'
+        )
 
     }).subscribe({
 
@@ -286,23 +380,32 @@ export class EscalarLouvoresComponent
         this.datasOpcoes =
           this.datasEscaladas.map(
             data => ({
-              id: data._id,
+
+              id:
+                data._id,
 
               nome:
                 this.montarNomeData(
                   data
                 ),
 
-              dataEscala: data
+              dataEscala:
+                data
+
             })
           );
+
+
+        this.prepararDatasMinistro(
+          response.escalas.data
+        );
 
 
         this.louvores =
           response.louvores.data;
 
-        this.prepararVideos();
 
+        this.prepararVideos();
 
 
         this.louvoresAgitados =
@@ -345,9 +448,12 @@ export class EscalarLouvoresComponent
 
         this.carregando = false;
 
+
         const mensagem =
-          erro?.error?.message ??
+          erro?.error?.message
+          ??
           'Não foi possível carregar os dados dos louvores.';
+
 
         this.snackbar.error(
           mensagem
@@ -358,7 +464,75 @@ export class EscalarLouvoresComponent
   }
 
 
- selecionarData(): void {
+  private prepararDatasMinistro(
+    escalas: Escala[]
+  ): void {
+
+    const usuario =
+      this.authService.obterUsuario();
+
+
+    if (
+      usuario?.perfil !==
+        'integrante_louvor'
+      ||
+      !usuario.id
+    ) {
+
+      this.datasMinistro = [];
+
+      return;
+    }
+
+
+    this.datasMinistro =
+      this.datasOpcoes.filter(
+        opcao => {
+
+          const escala =
+            escalas.find(
+              item =>
+                item.data ===
+                opcao.dataEscala.data
+            );
+
+
+          if (!escala) {
+            return false;
+          }
+
+
+          const ministracao =
+            escala.funcoes[
+              'Ministração'
+            ]
+            ??
+            [];
+
+
+          return ministracao.some(
+            integrante =>
+              integrante.id ===
+              usuario.id
+          );
+        }
+      );
+  }
+
+
+  selecionarDataMinistro(
+    data:
+      DataLouvorOption
+  ): void {
+
+    this.dataSelecionada =
+      data;
+
+    this.selecionarData();
+  }
+
+
+  selecionarData(): void {
 
     this.louvoresEscalaExistentes =
       null;
@@ -366,7 +540,18 @@ export class EscalarLouvoresComponent
     this.escalaSelecionada =
       null;
 
-    this.louvoresSelecionados = [];
+    this.louvoresSelecionados =
+      [];
+
+    this.modoEdicaoLouvores =
+      false;
+
+    this.pesquisaAgitados =
+      '';
+
+    this.pesquisaCalmos =
+      '';
+
 
     if (!this.dataSelecionada) {
       return;
@@ -430,8 +615,10 @@ export class EscalarLouvoresComponent
                     louvor,
 
                     tom:
-                      item.tom ||
-                      louvor.tom ||
+                      item.tom
+                      ||
+                      louvor.tom
+                      ||
                       ''
                   };
                 }
@@ -445,6 +632,20 @@ export class EscalarLouvoresComponent
         }
 
 
+        /*
+         * Se já existem louvores:
+         * abre somente em visualização.
+         *
+         * Se ainda não existem:
+         * liderança ou ministro já
+         * podem começar a selecionar.
+         */
+        this.modoEdicaoLouvores =
+          !this.louvoresEscalaExistentes
+          &&
+          this.podeEditarLouvores;
+
+
         this.carregandoData =
           false;
       },
@@ -455,9 +656,12 @@ export class EscalarLouvoresComponent
         this.carregandoData =
           false;
 
+
         const mensagem =
-          erro?.error?.message ??
+          erro?.error?.message
+          ??
           'Não foi possível carregar os dados desta escala.';
+
 
         this.snackbar.error(
           mensagem
@@ -465,6 +669,22 @@ export class EscalarLouvoresComponent
       }
 
     });
+  }
+
+
+  editarLouvores(): void {
+
+    if (
+      !this.podeEditarLouvores
+      ||
+      !this.dataSelecionada
+    ) {
+      return;
+    }
+
+
+    this.modoEdicaoLouvores =
+      true;
   }
 
 
@@ -484,9 +704,14 @@ export class EscalarLouvoresComponent
     louvor: Louvor
   ): void {
 
-    if (!this.podeEditarLouvores) {
+    if (
+      !this.podeEditarLouvores
+      ||
+      !this.modoEdicaoLouvores
+    ) {
       return;
     }
+
 
     const indice =
       this.louvoresSelecionados
@@ -510,7 +735,11 @@ export class EscalarLouvoresComponent
 
     this.louvoresSelecionados.push({
       louvor,
-      tom: louvor.tom || ''
+
+      tom:
+        louvor.tom
+        ||
+        ''
     });
   }
 
@@ -518,11 +747,16 @@ export class EscalarLouvoresComponent
   alterarTom(
     louvorId: string,
     novoTom: string
-    ): void {
+  ): void {
 
-    if (!this.podeEditarLouvores) {
+    if (
+      !this.podeEditarLouvores
+      ||
+      !this.modoEdicaoLouvores
+    ) {
       return;
     }
+
 
     const item =
       this.louvoresSelecionados.find(
@@ -561,8 +795,12 @@ export class EscalarLouvoresComponent
   salvarLouvores(): void {
 
     if (
-      !this.dataSelecionada ||
-      !this.podeEditarLouvores ||
+      !this.dataSelecionada
+      ||
+      !this.podeEditarLouvores
+      ||
+      !this.modoEdicaoLouvores
+      ||
       this.salvando
     ) {
       return;
@@ -575,7 +813,8 @@ export class EscalarLouvoresComponent
     this.louvoresEscalaService
       .salvar({
 
-        ministerio: 'Louvor',
+        ministerio:
+          'Louvor',
 
         data_id:
           this.dataSelecionada.id,
@@ -583,11 +822,13 @@ export class EscalarLouvoresComponent
         louvores:
           this.louvoresSelecionados.map(
             item => ({
+
               louvor_id:
                 item.louvor._id,
 
               tom:
                 item.tom.trim()
+
             })
           )
 
@@ -602,9 +843,18 @@ export class EscalarLouvoresComponent
           this.salvando =
             false;
 
+          /*
+           * Depois de salvar,
+           * fecha automaticamente
+           * as opções de edição.
+           */
+          this.modoEdicaoLouvores =
+            false;
+
 
           this.snackbar.success(
-            response.message ??
+            response.message
+            ??
             'Louvores salvos com sucesso.'
           );
         },
@@ -617,7 +867,8 @@ export class EscalarLouvoresComponent
 
 
           const mensagem =
-            erro?.error?.message ??
+            erro?.error?.message
+            ??
             'Não foi possível salvar os louvores.';
 
 
@@ -642,12 +893,15 @@ export class EscalarLouvoresComponent
 
     const descricao =
       item.tipo === 'Outros'
-        ? item.nome_evento ??
+        ? item.nome_evento
+          ??
           'Evento'
         : item.tipo;
 
 
-    return `${data} - ${descricao}`;
+    return (
+      `${data} - ${descricao}`
+    );
   }
 
 
@@ -659,18 +913,25 @@ export class EscalarLouvoresComponent
       ano,
       mes,
       dia
-    ] = data.split('-');
+    ] =
+      data.split('-');
 
 
-    return `${dia}/${mes}/${ano}`;
+    return (
+      `${dia}/${mes}/${ano}`
+    );
   }
+
 
   get funcoesEscalaPreview():
     FuncaoEscalaPreview[] {
 
-    if (!this.escalaSelecionada) {
+    if (
+      !this.escalaSelecionada
+    ) {
       return [];
     }
+
 
     return Object.entries(
       this.escalaSelecionada.funcoes
@@ -682,6 +943,7 @@ export class EscalarLouvoresComponent
       .map(
         ([nome, integrantes]) => ({
           nome,
+
           integrantes:
             integrantes.map(
               integrante =>
@@ -691,29 +953,40 @@ export class EscalarLouvoresComponent
       );
   }
 
+
   private prepararVideos(): void {
 
     this.videosEmbed = {};
 
-    for (const louvor of this.louvores) {
+
+    for (
+      const louvor
+      of this.louvores
+    ) {
 
       if (!louvor.link) {
         continue;
       }
+
 
       const videoId =
         this.extrairYoutubeId(
           louvor.link
         );
 
+
       if (!videoId) {
         continue;
       }
 
+
       const url =
         `https://www.youtube.com/embed/${videoId}`;
 
-      this.videosEmbed[louvor._id] =
+
+      this.videosEmbed[
+        louvor._id
+      ] =
         this.sanitizer
           .bypassSecurityTrustResourceUrl(
             url
@@ -731,16 +1004,20 @@ export class EscalarLouvoresComponent
       const url =
         new URL(link);
 
+
       if (
         url.hostname.includes(
           'youtu.be'
         )
       ) {
 
-        return url.pathname
-          .replace('/', '')
-          .split('/')[0] ||
-          null;
+        return (
+          url.pathname
+            .replace('/', '')
+            .split('/')[0]
+          ||
+          null
+        );
       }
 
 
@@ -751,7 +1028,8 @@ export class EscalarLouvoresComponent
       ) {
 
         if (
-          url.pathname === '/watch'
+          url.pathname ===
+          '/watch'
         ) {
 
           return url.searchParams.get(
@@ -766,9 +1044,12 @@ export class EscalarLouvoresComponent
           )
         ) {
 
-          return url.pathname
-            .split('/')[2] ||
-            null;
+          return (
+            url.pathname
+              .split('/')[2]
+            ||
+            null
+          );
         }
 
 
@@ -778,19 +1059,21 @@ export class EscalarLouvoresComponent
           )
         ) {
 
-          return url.pathname
-            .split('/')[2] ||
-            null;
+          return (
+            url.pathname
+              .split('/')[2]
+            ||
+            null
+          );
         }
-
       }
+
 
       return null;
 
     } catch {
 
       return null;
-
     }
   }
 
@@ -799,16 +1082,32 @@ export class EscalarLouvoresComponent
     louvorId: string
   ): SafeResourceUrl | null {
 
-    return this.videosEmbed[
-      louvorId
-    ] ?? null;
+    return (
+      this.videosEmbed[
+        louvorId
+      ]
+      ??
+      null
+    );
   }
 
 
   voltar(): void {
 
+    if (
+      this.ehLiderancaLouvor
+    ) {
+
+      void this.router.navigate([
+        '/louvor/lideranca/louvores'
+      ]);
+
+      return;
+    }
+
+
     void this.router.navigate([
-      '/louvor/lideranca/louvores'
+      '/louvor/integrante'
     ]);
   }
 

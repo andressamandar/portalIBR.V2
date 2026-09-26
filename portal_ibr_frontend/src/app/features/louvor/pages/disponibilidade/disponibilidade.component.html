@@ -1,53 +1,87 @@
 <main class="disponibilidade-page">
+
   <section class="disponibilidade-container">
 
+
     <div>
+
       <app-portal-button
         variant="text"
         icon="arrow_back"
-        (buttonClick)="voltar()">
+        (buttonClick)="voltar()"
+      >
         Voltar
       </app-portal-button>
+
     </div>
 
-    <header class="disponibilidade-header">
-      <span>Ministério de Louvor</span>
 
-      <h1>Disponibilidade</h1>
+    <header class="disponibilidade-header">
+
+      <span>
+        Ministério de Louvor
+      </span>
+
+      <h1>
+        Disponibilidade
+      </h1>
 
       <p>
-        Informe em quais datas você está disponível para servir.
+        Informe em quais datas você está
+        disponível para servir.
       </p>
+
     </header>
+
 
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando datas...">
+        message="Carregando datas..."
+      >
       </app-portal-loading>
 
-    } @else if (datas.length === 0) {
+    } @else if (
+      datas.length === 0
+    ) {
 
       <app-portal-empty-state
         icon="event_busy"
         title="Nenhuma data disponível"
-        message="Não há datas abertas para preenchimento no momento.">
+        message="Não há datas abertas para preenchimento no momento."
+      >
       </app-portal-empty-state>
 
     } @else {
 
-      <section class="disponibilidade-card">
+      <section
+        class="disponibilidade-card"
+      >
 
-        <div class="disponibilidade-aviso">
-          <span class="material-icons">
-            info
-          </span>
 
-          <p>
-            Todas as datas começam marcadas como disponíveis.
-            Desmarque apenas as datas em que você não poderá servir.
-          </p>
-        </div>
+        @if (temDatasEmEdicao) {
+
+          <div
+            class="disponibilidade-aviso"
+          >
+
+            <span
+              class="material-icons"
+            >
+              info
+            </span>
+
+            <p>
+              Todas as datas começam
+              marcadas como disponíveis.
+              Desmarque apenas as datas
+              em que você não poderá servir.
+            </p>
+
+          </div>
+
+        }
+
 
         <div class="datas-lista">
 
@@ -56,67 +90,233 @@
             track item.data_id
           ) {
 
-            <button
-              type="button"
-              class="data-item"
-              [class.data-disponivel]="item.disponivel"
-              [class.data-indisponivel]="!item.disponivel"
-              (click)="alternarDisponibilidade(item)"
+            <div
+              class="data-bloco"
             >
 
-              <div class="data-info">
 
-                <strong>
-                  {{ formatarData(item.data) }}
-                </strong>
+              @if (
+                !item.salva
+                ||
+                item.editando
+              ) {
 
-                <span>
-                  {{ descricaoData(item) }}
-                </span>
-
-              </div>
-
-              <div class="data-status">
-
-                <span class="material-icons">
-                  {{
+                <button
+                  type="button"
+                  class="data-item"
+                  [class.data-disponivel]="
                     item.disponivel
-                      ? 'check_circle'
-                      : 'cancel'
-                  }}
-                </span>
+                  "
+                  [class.data-indisponivel]="
+                    !item.disponivel
+                  "
+                  [disabled]="
+                    item.escala_criada
+                  "
+                  (click)="
+                    alternarDisponibilidade(
+                      item
+                    )
+                  "
+                >
 
-                <strong>
-                  {{
+                  <div class="data-info">
+
+                    <strong>
+                      {{
+                        formatarData(
+                          item.data
+                        )
+                      }}
+                    </strong>
+
+                    <span>
+                      {{
+                        descricaoData(
+                          item
+                        )
+                      }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="data-status">
+
+                    <span
+                      class="material-icons"
+                    >
+                      {{
+                        item.disponivel
+                          ? 'check_circle'
+                          : 'cancel'
+                      }}
+                    </span>
+
+                    <strong>
+                      {{
+                        item.disponivel
+                          ? 'Disponível'
+                          : 'Indisponível'
+                      }}
+                    </strong>
+
+                  </div>
+
+                </button>
+
+              } @else {
+
+                <div
+                  class="data-item"
+                  [class.data-disponivel]="
                     item.disponivel
-                      ? 'Disponível'
-                      : 'Indisponível'
-                  }}
-                </strong>
+                  "
+                  [class.data-indisponivel]="
+                    !item.disponivel
+                  "
+                >
 
-              </div>
+                  <div class="data-info">
 
-            </button>
+                    <strong>
+                      {{
+                        formatarData(
+                          item.data
+                        )
+                      }}
+                    </strong>
+
+                    <span>
+                      {{
+                        descricaoData(
+                          item
+                        )
+                      }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="data-status">
+
+                    <span
+                      class="material-icons"
+                    >
+                      {{
+                        item.disponivel
+                          ? 'check_circle'
+                          : 'cancel'
+                      }}
+                    </span>
+
+                    <strong>
+                      {{
+                        item.disponivel
+                          ? 'Disponível'
+                          : 'Indisponível'
+                      }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              }
+
+
+              @if (
+                item.salva
+                &&
+                !item.editando
+              ) {
+
+                <button
+                  type="button"
+                  class="editar-disponibilidade"
+                  [disabled]="
+                    item.escala_criada
+                  "
+                  (click)="
+                    editarDisponibilidade(
+                      item
+                    )
+                  "
+                >
+
+                  <span
+                    class="material-icons"
+                  >
+                    edit
+                  </span>
+
+                  Editar disponibilidade
+
+                </button>
+
+              }
+
+
+              @if (
+                item.escala_criada
+              ) {
+
+                <div
+                  class="escala-criada-aviso"
+                >
+
+                  <span
+                    class="material-icons"
+                  >
+                    lock
+                  </span>
+
+                  <p>
+                    Escala para essa data
+                    já criada. Para alterações,
+                    informe a liderança.
+                  </p>
+
+                </div>
+
+              }
+
+            </div>
 
           }
 
         </div>
 
-        <div class="disponibilidade-actions">
 
-          <app-portal-button
-            icon="save"
-            [loading]="salvando"
-            loadingText="Salvando"
-            (buttonClick)="salvar()">
-            Salvar Disponibilidade
-          </app-portal-button>
+        @if (temDatasEmEdicao) {
 
-        </div>
+          <div
+            class="disponibilidade-actions"
+          >
+
+            <app-portal-button
+              icon="save"
+              [loading]="salvando"
+              loadingText="Salvando"
+              (buttonClick)="salvar()"
+            >
+
+              {{
+                possuiAlteracao
+                  ? 'Salvar Alterações'
+                  : 'Salvar Disponibilidade'
+              }}
+
+            </app-portal-button>
+
+          </div>
+
+        }
 
       </section>
 
     }
 
   </section>
+
 </main>
