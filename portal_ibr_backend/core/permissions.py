@@ -9,17 +9,13 @@ PERMISSOES = {
         "gerenciar_datas",
         "criar_escala",
         "editar_escala",
-
+        "alterar_disponibilidade",
         "visualizar_preenchimento",
         "visualizar_disponibilidades",
-
         "gerenciar_integrantes",
-
         "gerenciar_louvores",
         "escolher_qualquer_louvor",
-
         "baixar_pdf",
-
         "visualizar_escala_completa"
 
     ],

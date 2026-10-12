@@ -1,30 +1,50 @@
 <main class="disponibilidades-page">
+
   <section class="disponibilidades-container">
 
+
+    <!-- VOLTAR -->
+
     <div>
+
       <app-portal-button
         variant="text"
         icon="arrow_back"
-        (buttonClick)="voltar()">
+        (buttonClick)="voltar()"
+      >
         Voltar
       </app-portal-button>
+
     </div>
 
-    <header class="disponibilidades-header">
-      <span>Ministério de Louvor</span>
 
-      <h1>Visualizar Disponibilidades</h1>
+    <!-- CABEÇALHO -->
+
+    <header class="disponibilidades-header">
+
+      <span>
+        Ministério de Louvor
+      </span>
+
+      <h1>
+        Visualizar Disponibilidades
+      </h1>
 
       <p>
-        Consulte a disponibilidade dos integrantes
-        em cada data aberta.
+        Consulte a disponibilidade informada pelos
+        integrantes em cada data cadastrada.
       </p>
+
     </header>
+
+
+    <!-- CARREGAMENTO -->
 
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando disponibilidades...">
+        message="Carregando disponibilidades..."
+      >
       </app-portal-loading>
 
     } @else if (
@@ -32,13 +52,19 @@
       datas.length === 0
     ) {
 
+      <!-- SEM DADOS -->
+
       <app-portal-empty-state
         icon="event_busy"
         title="Nenhuma disponibilidade para exibir"
-        message="Não há integrantes ou datas abertas no momento.">
+        message="Não há integrantes ou datas cadastradas no momento."
+      >
       </app-portal-empty-state>
 
     } @else {
+
+
+      <!-- DISPONIBILIDADE LIMITADA -->
 
       @if (
         disponibilidadesLimitadas.length > 0
@@ -47,21 +73,27 @@
         <section class="alerta-limitadas">
 
           <div class="alerta-limitadas-header">
+
             <span class="material-icons">
               warning
             </span>
 
             <div>
+
               <strong>
                 Disponibilidade limitada
               </strong>
 
               <p>
                 Alguns integrantes possuem
-                disponibilidade em poucas datas.
+                disponibilidade em poucas datas
+                neste mês.
               </p>
+
             </div>
+
           </div>
+
 
           <div class="limitadas-lista">
 
@@ -71,21 +103,38 @@
             ) {
 
               <div class="limitada-item">
+
                 <strong>
                   {{ item.nome }}
                 </strong>
 
-                @if (item.datas.length === 0) {
+
+                @if (
+                  item.datas.length === 0
+                ) {
+
                   <span>
                     Nenhuma data disponível
                   </span>
+
                 } @else {
+
                   <span>
+
                     Disponível em
+
                     {{ item.datas.length }}
-                    data(s)
+
+                    {{
+                      item.datas.length === 1
+                        ? 'data'
+                        : 'datas'
+                    }}
+
                   </span>
+
                 }
+
               </div>
 
             }
@@ -96,30 +145,137 @@
 
       }
 
+
+      <!-- DISPONÍVEIS AINDA NÃO ESCALADOS -->
+
+      @if (
+        integrantesNaoEscalados.length > 0
+      ) {
+
+        <section class="nao-escalados">
+
+          <div class="nao-escalados-header">
+
+            <span class="material-icons">
+              person_search
+            </span>
+
+            <div>
+
+              <strong>
+                Integrantes disponíveis
+                que ainda não foram escalados
+              </strong>
+
+              <p>
+                Estes integrantes informaram
+                disponibilidade, mas ainda não
+                foram escalados neste mês.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="nao-escalados-lista">
+
+            @for (
+              item of integrantesNaoEscalados;
+              track item.integrante_id
+            ) {
+
+              <div class="nao-escalado-item">
+
+
+                <div>
+
+                  <strong>
+                    {{ item.nome }}
+                  </strong>
+
+                  <span>
+
+                    Disponível em
+
+                    {{ item.datas.length }}
+
+                    {{
+                      item.datas.length === 1
+                        ? 'data'
+                        : 'datas'
+                    }}
+
+                  </span>
+
+                </div>
+
+
+                <div class="nao-escalado-datas">
+
+                  @for (
+                    data of item.datas;
+                    track data
+                  ) {
+
+                    <span>
+                      {{ formatarData(data) }}
+                    </span>
+
+                  }
+
+                </div>
+
+
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- TABELA DE DISPONIBILIDADES -->
+
       <section class="tabela-card">
 
         <div class="tabela-header">
+
           <div>
-            <h2>Disponibilidade por Data</h2>
+
+            <h2>
+              Disponibilidade por Data
+            </h2>
 
             <p>
               Verde = disponível,
               vermelho = indisponível,
               cinza = não preencheu.
             </p>
+
           </div>
+
         </div>
+
 
         <div class="tabela-wrapper">
 
           <table class="disponibilidades-tabela">
 
+
+            <!-- CABEÇALHO DA TABELA -->
+
             <thead>
+
               <tr>
 
                 <th class="coluna-integrante">
                   Integrante
                 </th>
+
 
                 @for (
                   data of datas;
@@ -127,7 +283,9 @@
                 ) {
 
                   <th>
+
                     <div class="data-cabecalho">
+
                       <strong>
                         {{ formatarData(data.data) }}
                       </strong>
@@ -135,13 +293,19 @@
                       <span>
                         {{ data.descricao }}
                       </span>
+
                     </div>
+
                   </th>
 
                 }
 
               </tr>
+
             </thead>
+
+
+            <!-- CORPO DA TABELA -->
 
             <tbody>
 
@@ -152,11 +316,19 @@
 
                 <tr>
 
+
+                  <!-- INTEGRANTE -->
+
                   <td class="coluna-integrante">
+
                     <strong>
                       {{ linha.nome }}
                     </strong>
+
                   </td>
+
+
+                  <!-- DATAS -->
 
                   @for (
                     data of datas;
@@ -164,6 +336,9 @@
                   ) {
 
                     <td>
+
+
+                      <!-- DISPONÍVEL -->
 
                       @if (
                         obterDisponibilidade(
@@ -173,7 +348,11 @@
                       ) {
 
                         <div
-                          class="status-disponibilidade disponivel">
+                          class="
+                            status-disponibilidade
+                            disponivel
+                          "
+                        >
 
                           <span class="material-icons">
                             check_circle
@@ -185,6 +364,9 @@
 
                         </div>
 
+
+                      <!-- INDISPONÍVEL -->
+
                       } @else if (
                         obterDisponibilidade(
                           linha,
@@ -193,7 +375,11 @@
                       ) {
 
                         <div
-                          class="status-disponibilidade indisponivel">
+                          class="
+                            status-disponibilidade
+                            indisponivel
+                          "
+                        >
 
                           <span class="material-icons">
                             cancel
@@ -205,10 +391,17 @@
 
                         </div>
 
+
+                      <!-- NÃO PREENCHEU -->
+
                       } @else {
 
                         <div
-                          class="status-disponibilidade nao-preencheu">
+                          class="
+                            status-disponibilidade
+                            nao-preencheu
+                          "
+                        >
 
                           <span class="material-icons">
                             remove_circle_outline
@@ -232,6 +425,7 @@
 
             </tbody>
 
+
           </table>
 
         </div>
@@ -241,4 +435,5 @@
     }
 
   </section>
+
 </main>

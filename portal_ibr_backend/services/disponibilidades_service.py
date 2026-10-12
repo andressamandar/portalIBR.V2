@@ -1,20 +1,14 @@
 from datetime import datetime, timezone
-
-from repositories.datas_repository import (
-    DatasRepository
-)
-from repositories.disponibilidades_repository import (
-    DisponibilidadesRepository
-)
-from schemas.disponibilidade_schema import (
-    DisponibilidadeSchema
-)
-from services.notificacoes_service import (
-    NotificacoesService
-)
+from calendar import monthrange
+from zoneinfo import ZoneInfo
+from repositories.datas_repository import (DatasRepository)
+from repositories.disponibilidades_repository import (DisponibilidadesRepository)
+from schemas.disponibilidade_schema import (DisponibilidadeSchema)
+from services.notificacoes_service import ( NotificacoesService)
 from utils.exceptions import AppError
 from utils.logger import logger
 from utils.responses import error, success
+from repositories.escalas_repository import ( EscalasRepository)
 
 
 def _serialize_disponibilidade(
@@ -66,6 +60,39 @@ def _obter_perfil_lideranca(
         return "lideranca_midia"
 
     return None
+
+
+
+def _obter_intervalo_mes_atual():
+
+    fuso_brasilia = ZoneInfo(
+        "America/Sao_Paulo"
+    )
+
+    agora = datetime.now(
+        fuso_brasilia
+    )
+
+    ultimo_dia = monthrange(
+        agora.year,
+        agora.month
+    )[1]
+
+    data_inicio = (
+        f"{agora.year}-"
+        f"{agora.month:02d}-01"
+    )
+
+    data_fim = (
+        f"{agora.year}-"
+        f"{agora.month:02d}-"
+        f"{ultimo_dia:02d}"
+    )
+
+    return (
+        data_inicio,
+        data_fim
+    )
 
 
 def _validar_datas_bloqueadas(
@@ -288,6 +315,8 @@ def salvar_disponibilidade_service(
                 timezone.utc
             )
         )
+        
+        dados["preenchido_pelo_integrante"] = True
 
         (
             DisponibilidadesRepository
@@ -500,7 +529,6 @@ def listar_disponibilidades_service(
             500
         )
 
-
 def listar_disponibilidades_limitadas_service(
     ministerio
 ):
@@ -511,20 +539,26 @@ def listar_disponibilidades_limitadas_service(
                 400
             )
 
-        datas_abertas = (
+        (
+            data_inicio,
+            data_fim
+        ) = _obter_intervalo_mes_atual()
+
+        datas_mes = (
             DisponibilidadesRepository
-            .listar_datas_abertas(
-                ministerio
+            .listar_datas_mes(
+                ministerio,
+                data_inicio,
+                data_fim
             )
         )
 
-        ids_datas_abertas = {
+        ids_datas_mes = {
             str(
                 data["_id"]
             )
-
             for data
-            in datas_abertas
+            in datas_mes
         }
 
         documentos = list(
@@ -553,7 +587,7 @@ def listar_disponibilidades_limitadas_service(
                     item.get(
                         "data_id"
                     )
-                    in ids_datas_abertas
+                    in ids_datas_mes
 
                     and item.get(
                         "disponivel"
@@ -576,6 +610,16 @@ def listar_disponibilidades_limitadas_service(
                         datas_disponiveis
                 })
 
+        resultado.sort(
+            key=lambda item:
+                (
+                    item.get(
+                        "nome"
+                    )
+                    or ""
+                ).casefold()
+        )
+
         return success(
             data=resultado,
             total=len(
@@ -584,9 +628,521 @@ def listar_disponibilidades_limitadas_service(
         )
 
     except Exception as e:
+
         logger.exception(
             "Erro ao listar "
             "disponibilidades limitadas"
+        )
+
+        return error(
+            str(e),
+            500
+        )
+        
+def listar_nao_escalados_mes_service(
+    ministerio
+):
+    try:
+        if not ministerio:
+            return error(
+                "Ministério é obrigatório.",
+                400
+            )
+
+        (
+            data_inicio,
+            data_fim
+        ) = _obter_intervalo_mes_atual()
+
+        datas_mes = (
+            DisponibilidadesRepository
+            .listar_datas_mes(
+                ministerio,
+                data_inicio,
+                data_fim
+            )
+        )
+
+        ids_datas_mes = [
+            str(
+                data["_id"]
+            )
+            for data
+            in datas_mes
+        ]
+
+        if not ids_datas_mes:
+            return success(
+                data=[],
+                total=0
+            )
+
+        documentos = list(
+            DisponibilidadesRepository
+            .listar_por_ministerio(
+                ministerio
+            )
+        )
+
+        escalas = (
+            EscalasRepository
+            .listar_por_datas(
+                ids_datas_mes,
+                ministerio
+            )
+        )
+
+        integrantes_escalados = set()
+
+        for escala in escalas:
+
+            funcoes = escala.get(
+                "funcoes",
+                {}
+            )
+
+            for integrantes in (
+                funcoes.values()
+            ):
+
+                for integrante in integrantes:
+
+                    if isinstance(
+                        integrante,
+                        dict
+                    ):
+                        integrante_id = (
+                            integrante.get(
+                                "id"
+                            )
+                        )
+
+                    else:
+                        integrante_id = (
+                            integrante
+                        )
+
+                    if integrante_id:
+                        integrantes_escalados.add(
+                            str(
+                                integrante_id
+                            )
+                        )
+
+        ids_datas_mes_set = set(
+            ids_datas_mes
+        )
+
+        resultado = []
+
+        for documento in documentos:
+
+            integrante_id = str(
+                documento.get(
+                    "integrante_id",
+                    ""
+                )
+            )
+
+            datas_disponiveis = [
+                item.get(
+                    "data"
+                )
+
+                for item
+                in documento.get(
+                    "disponibilidades",
+                    []
+                )
+
+                if (
+                    item.get(
+                        "data_id"
+                    )
+                    in ids_datas_mes_set
+
+                    and item.get(
+                        "disponivel"
+                    )
+                    is True
+                )
+            ]
+
+            if not datas_disponiveis:
+                continue
+
+            if (
+                integrante_id
+                in integrantes_escalados
+            ):
+                continue
+
+            resultado.append({
+                "integrante_id":
+                    integrante_id,
+
+                "nome":
+                    documento.get(
+                        "integrante_nome"
+                    ),
+
+                "datas":
+                    datas_disponiveis
+            })
+
+        resultado.sort(
+            key=lambda item:
+                (
+                    item.get(
+                        "nome"
+                    )
+                    or ""
+                ).casefold()
+        )
+
+        return success(
+            data=resultado,
+            total=len(
+                resultado
+            )
+        )
+
+    except Exception as e:
+
+        logger.exception(
+            "Erro ao listar integrantes "
+            "não escalados no mês"
+        )
+
+        return error(
+            str(e),
+            500
+        )
+        
+def alterar_disponibilidade_lideranca_service(
+    data,
+    usuario
+):
+    try:
+
+        integrante_id = data.get(
+            "integrante_id"
+        )
+
+        ministerio = data.get(
+            "ministerio"
+        )
+
+        data_id = data.get(
+            "data_id"
+        )
+
+
+        if not integrante_id:
+            raise AppError(
+                "Integrante é obrigatório.",
+                400
+            )
+
+
+        if not ministerio:
+            raise AppError(
+                "Ministério é obrigatório.",
+                400
+            )
+
+
+        if not data_id:
+            raise AppError(
+                "Data é obrigatória.",
+                400
+            )
+
+
+        if (
+            "disponivel"
+            not in data
+            or not isinstance(
+                data.get(
+                    "disponivel"
+                ),
+                bool
+            )
+        ):
+            raise AppError(
+                (
+                    "Informe se o integrante "
+                    "está disponível."
+                ),
+                400
+            )
+
+
+        perfil_esperado = (
+            _obter_perfil_lideranca(
+                ministerio
+            )
+        )
+
+
+        if (
+            not perfil_esperado
+            or usuario.get(
+                "perfil"
+            ) != perfil_esperado
+        ):
+            raise AppError(
+                (
+                    "Você não possui permissão "
+                    "para alterar a disponibilidade "
+                    "deste ministério."
+                ),
+                403
+            )
+
+
+        data_escala = (
+            DatasRepository
+            .buscar_por_id(
+                data_id
+            )
+        )
+
+
+        if not data_escala:
+            raise AppError(
+                "Data não encontrada.",
+                404
+            )
+
+
+        if (
+            data_escala.get(
+                "ministerio"
+            )
+            != ministerio
+        ):
+            raise AppError(
+                (
+                    "A data não pertence "
+                    "ao ministério informado."
+                ),
+                400
+            )
+
+
+        if not data_escala.get(
+            "ativo",
+            True
+        ):
+            raise AppError(
+                "Esta data não está ativa.",
+                400
+            )
+
+
+        integrantes = (
+            EscalasRepository
+            .buscar_integrantes_por_ids(
+                [
+                    integrante_id
+                ]
+            )
+        )
+
+
+        if not integrantes:
+            raise AppError(
+                "Integrante não encontrado.",
+                404
+            )
+
+
+        integrante = integrantes[0]
+
+
+        if not integrante.get(
+            "ativo",
+            True
+        ):
+            raise AppError(
+                "Integrante inativo.",
+                400
+            )
+
+
+        if (
+            ministerio
+            not in integrante.get(
+                "ministerios",
+                []
+            )
+        ):
+            raise AppError(
+                (
+                    "O integrante não pertence "
+                    "a este ministério."
+                ),
+                400
+            )
+
+
+        disponibilidade_anterior = (
+            DisponibilidadesRepository
+            .buscar_por_integrante_e_ministerio(
+                integrante_id=
+                    integrante_id,
+                ministerio=
+                    ministerio
+            )
+        )
+
+
+        disponibilidades = []
+
+        if disponibilidade_anterior:
+
+            disponibilidades = [
+                dict(
+                    item
+                )
+                for item
+                in disponibilidade_anterior.get(
+                    "disponibilidades",
+                    []
+                )
+            ]
+
+
+        encontrou_data = False
+
+
+        for item in disponibilidades:
+
+            if (
+                item.get(
+                    "data_id"
+                )
+                != data_id
+            ):
+                continue
+
+
+            item["data"] = (
+                data_escala.get(
+                    "data"
+                )
+            )
+
+            item["disponivel"] = (
+                data.get(
+                    "disponivel"
+                )
+            )
+
+            encontrou_data = True
+
+            break
+
+
+        if not encontrou_data:
+
+            disponibilidades.append({
+                "data_id":
+                    data_id,
+
+                "data":
+                    data_escala.get(
+                        "data"
+                    ),
+
+                "disponivel":
+                    data.get(
+                        "disponivel"
+                    )
+            })
+
+
+        dados_atualizacao = {
+            "integrante_id":
+                integrante_id,
+
+            "integrante_nome":
+                integrante.get(
+                    "nome"
+                ),
+
+            "ministerio":
+                ministerio,
+
+            "disponibilidades":
+                disponibilidades
+        }
+
+
+     
+        if not disponibilidade_anterior:
+
+            dados_atualizacao[
+                "preenchido_pelo_integrante"
+            ] = False
+
+
+        (
+            DisponibilidadesRepository
+            .salvar_ou_atualizar(
+                integrante_id=
+                    integrante_id,
+
+                ministerio=
+                    ministerio,
+
+                dados=
+                    dados_atualizacao
+            )
+        )
+
+
+        disponibilidade = (
+            DisponibilidadesRepository
+            .buscar_por_integrante_e_ministerio(
+                integrante_id=
+                    integrante_id,
+
+                ministerio=
+                    ministerio
+            )
+        )
+
+
+        return success(
+            data=(
+                _serialize_disponibilidade(
+                    disponibilidade
+                )
+            ),
+            message=(
+                "Disponibilidade alterada "
+                "com sucesso."
+            )
+        )
+
+
+    except AppError as e:
+
+        return error(
+            e.message,
+            e.status
+        )
+
+
+    except Exception as e:
+
+        logger.exception(
+            (
+                "Erro ao alterar "
+                "disponibilidade pela liderança"
+            )
         )
 
         return error(

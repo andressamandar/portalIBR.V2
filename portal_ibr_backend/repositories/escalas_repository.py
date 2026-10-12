@@ -77,3 +77,20 @@ class EscalasRepository:
                 }
             }
         )
+        
+    @staticmethod
+    def listar_por_datas(
+        data_ids,
+        ministerio
+    ):
+        if not data_ids:
+            return []
+
+        return list(
+            db.escalas.find({
+                "ministerio": ministerio,
+                "data_id": {
+                    "$in": data_ids
+                }
+            })
+        )

@@ -1,4 +1,5 @@
 <main class="criar-escala-page">
+
   <section class="criar-escala-container">
 
     <div>
@@ -6,7 +7,8 @@
       <app-portal-button
         variant="text"
         icon="arrow_back"
-        (buttonClick)="voltar()">
+        (buttonClick)="voltar()"
+      >
         Voltar
       </app-portal-button>
 
@@ -34,13 +36,16 @@
     @if (carregando) {
 
       <app-portal-loading
-        message="Carregando dados da escala...">
+        message="Carregando dados da escala..."
+      >
       </app-portal-loading>
 
     } @else {
 
       <section class="criar-escala-card">
 
+
+        <!-- DATA -->
 
         <app-portal-select
           name="data"
@@ -52,17 +57,22 @@
           optionValue="id"
           [required]="true"
           [(ngModel)]="dataSelecionada"
-          (ngModelChange)="selecionarData()">
+          (ngModelChange)="selecionarData()"
+        >
         </app-portal-select>
 
 
         @if (carregandoData) {
 
           <app-portal-loading
-            message="Carregando disponibilidade...">
+            message="Carregando disponibilidade..."
+          >
           </app-portal-loading>
 
         } @else if (dataSelecionada) {
+
+
+          <!-- RESUMO DA DATA -->
 
           <div class="data-resumo">
 
@@ -70,7 +80,8 @@
             @if (escalaExistente) {
 
               <div
-                class="status-escala status-existente">
+                class="status-escala status-existente"
+              >
 
                 <span class="material-icons">
                   event_available
@@ -104,7 +115,8 @@
             } @else {
 
               <div
-                class="status-escala status-nova">
+                class="status-escala status-nova"
+              >
 
                 <span class="material-icons">
                   add_task
@@ -126,6 +138,8 @@
 
             }
 
+
+            <!-- DISPONIBILIDADE -->
 
             <div class="disponibilidade-resumo">
 
@@ -160,10 +174,149 @@
 
               }
 
+
+              <div class="disponibilidade-resumo-actions">
+
+                @if (!alterandoDisponibilidade) {
+
+                  <app-portal-button
+                    icon="edit_calendar"
+                    (buttonClick)="abrirAlteracaoDisponibilidade()"
+                  >
+                    Alterar disponibilidade
+                  </app-portal-button>
+
+                }
+
+              </div>
+
             </div>
 
           </div>
 
+
+          <!-- ALTERAR DISPONIBILIDADE -->
+
+          @if (alterandoDisponibilidade) {
+
+            <section class="alterar-disponibilidade">
+
+              <div class="alterar-disponibilidade-header">
+
+                <span class="material-icons">
+                  edit_calendar
+                </span>
+
+                <div>
+
+                  <h2>
+                    Alterar disponibilidade
+                  </h2>
+
+                  <p>
+                    Altere a disponibilidade de um integrante
+                    para a data selecionada.
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div class="alterar-disponibilidade-campos">
+
+
+                <!-- INTEGRANTE -->
+
+                <app-portal-select
+                  name="integrante-disponibilidade"
+                  label="Integrante"
+                  placeholder="Selecione um integrante"
+                  icon="person"
+                  [options]="integrantesDisponibilidadeOpcoes"
+                  optionLabel="nome"
+                  optionValue="id"
+                  [(ngModel)]="integranteDisponibilidadeSelecionado"
+                  (ngModelChange)="selecionarIntegranteDisponibilidade()"
+                >
+                </app-portal-select>
+
+
+                <!-- CARREGANDO STATUS -->
+
+                @if (
+                  carregandoDisponibilidadeIntegrante
+                ) {
+
+                  <div class="carregando-disponibilidade">
+
+                    <span class="material-icons">
+                      hourglass_top
+                    </span>
+
+                    <span>
+                      Carregando disponibilidade...
+                    </span>
+
+                  </div>
+
+                } @else if (
+                  integranteDisponibilidadeSelecionado
+                ) {
+
+
+                  <!-- STATUS -->
+
+                  <app-portal-select
+                    name="status-disponibilidade"
+                    label="Disponibilidade"
+                    placeholder="Selecione o status"
+                    icon="event_available"
+                    [options]="statusDisponibilidadeOpcoes"
+                    optionLabel="nome"
+                    optionValue="id"
+                    [(ngModel)]="statusDisponibilidadeSelecionado"
+                  >
+                  </app-portal-select>
+
+                }
+
+              </div>
+
+
+              <!-- AÇÕES -->
+
+              <div class="alterar-disponibilidade-actions">
+
+                <app-portal-button
+                  variant="text"
+                  (buttonClick)="fecharAlteracaoDisponibilidade()"
+                >
+                  Cancelar
+                </app-portal-button>
+
+
+                <app-portal-button
+                  icon="save"
+                  [disabled]="
+                    !integranteDisponibilidadeSelecionado ||
+                    !statusDisponibilidadeSelecionado
+                  "
+                  [loading]="salvandoDisponibilidade"
+                  loadingText="Salvando"
+                  (buttonClick)="salvarAlteracaoDisponibilidade()"
+                >
+                  Salvar alteração
+                </app-portal-button>
+
+              </div>
+
+            </section>
+
+          }
+
+
+          <!-- EDITAR ESCALA EXISTENTE -->
 
           @if (
             escalaExistente &&
@@ -174,16 +327,17 @@
 
               <app-portal-button
                 icon="edit"
-                (buttonClick)="editarEscala()">
-
+                (buttonClick)="editarEscala()"
+              >
                 Editar Escala
-
               </app-portal-button>
 
             </div>
 
           }
 
+
+          <!-- MONTAR / EDITAR ESCALA -->
 
           @if (camposEscalaAbertos) {
 
@@ -207,6 +361,8 @@
               </div>
 
 
+              <!-- FUNÇÕES -->
+
               <div class="funcoes-grid">
 
                 @for (
@@ -227,7 +383,8 @@
                       optionValue="id"
                       [multiple]="true"
                       [(ngModel)]="selecoesPorFuncao[funcao]"
-                      (ngModelChange)="verificarDuplicidade(funcao)">
+                      (ngModelChange)="verificarDuplicidade(funcao)"
+                    >
                     </app-portal-select>
 
 
@@ -248,6 +405,8 @@
 
               </div>
 
+
+              <!-- PRÉ-VISUALIZAÇÃO -->
 
               @if (temAlgumaSelecao) {
 
@@ -326,6 +485,8 @@
               }
 
 
+              <!-- SALVAR ESCALA -->
+
               <div class="escala-actions">
 
                 <app-portal-button
@@ -333,14 +494,13 @@
                   [disabled]="!temAlgumaSelecao"
                   [loading]="salvandoEscala"
                   loadingText="Salvando"
-                  (buttonClick)="salvarEscala()">
-
+                  (buttonClick)="salvarEscala()"
+                >
                   {{
                     escalaExistente
                       ? 'Salvar Alterações'
                       : 'Salvar Escala'
                   }}
-
                 </app-portal-button>
 
               </div>
@@ -356,4 +516,5 @@
     }
 
   </section>
+
 </main>

@@ -70,3 +70,21 @@ class DisponibilidadesRepository:
                 "escala_criada": False
             })
         )
+        
+        
+    @staticmethod
+    def listar_datas_mes(
+        ministerio,
+        data_inicio,
+        data_fim
+    ):
+        return list(
+            db.datas_escala.find({
+                "ministerio": ministerio,
+                "ativo": True,
+                "data": {
+                    "$gte": data_inicio,
+                    "$lte": data_fim
+                }
+            }).sort("data", 1)
+        )

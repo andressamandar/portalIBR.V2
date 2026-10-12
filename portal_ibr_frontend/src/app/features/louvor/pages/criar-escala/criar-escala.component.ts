@@ -72,6 +72,19 @@ interface IntegranteFuncaoOption
 }
 
 
+interface StatusDisponibilidadeOption
+  extends PortalSelectOption {
+
+  id:
+    | 'disponivel'
+    | 'indisponivel';
+
+  nome: string;
+
+  disponivel: boolean;
+}
+
+
 @Component({
   selector: 'app-criar-escala',
   standalone: true,
@@ -115,7 +128,29 @@ export class CriarEscalaComponent
   camposEscalaAbertos = false;
 
 
-  datas: DataEscala[] = [];
+  /*
+   * =====================================
+   * ALTERAÇÃO DE DISPONIBILIDADE
+   * =====================================
+   */
+
+  alterandoDisponibilidade = false;
+
+  carregandoDisponibilidadeIntegrante =
+    false;
+
+  salvandoDisponibilidade =
+    false;
+
+
+  /*
+   * =====================================
+   * DATAS
+   * =====================================
+   */
+
+  datas:
+    DataEscala[] = [];
 
 
   datasOpcoes:
@@ -126,8 +161,44 @@ export class CriarEscalaComponent
     DataEscalaOption | null = null;
 
 
+  /*
+   * =====================================
+   * INTEGRANTES
+   * =====================================
+   */
+
   integrantes:
     Integrante[] = [];
+
+
+  integrantesDisponibilidadeOpcoes:
+    IntegranteFuncaoOption[] = [];
+
+
+  integranteDisponibilidadeSelecionado:
+    IntegranteFuncaoOption | null = null;
+
+
+  statusDisponibilidadeSelecionado:
+    StatusDisponibilidadeOption | null = null;
+
+
+  readonly statusDisponibilidadeOpcoes:
+    StatusDisponibilidadeOption[] = [
+
+      {
+        id: 'disponivel',
+        nome: 'Disponível',
+        disponivel: true
+      },
+
+      {
+        id: 'indisponivel',
+        nome: 'Indisponível',
+        disponivel: false
+      }
+
+    ];
 
 
   integrantesDisponiveis:
@@ -138,6 +209,12 @@ export class CriarEscalaComponent
     Integrante[] = [];
 
 
+  /*
+   * =====================================
+   * ESCALAS
+   * =====================================
+   */
+
   escalaExistente:
     Escala | null = null;
 
@@ -146,27 +223,54 @@ export class CriarEscalaComponent
     Escala | null = null;
 
 
-  readonly funcoesEscala: string[] = [
-    'Ministração',
-    'Sonoplastia',
-    'Bateria',
-    'Teclado',
-    'Violão',
-    'Tenor',
-    'Barítono',
-    'Contralto',
-    'Soprano',
-    '2ª Voz',
-    'Baixo',
-    'Guitarra',
-    'Projeção',
-    'Cajon'
-  ];
+  /*
+   * Todas as escalas do Louvor.
+   *
+   * Usado para verificar em quais
+   * outras datas do mesmo mês um
+   * integrante já está escalado.
+   */
+  escalasLouvor:
+    Escala[] = [];
+
+
+  readonly funcoesEscala:
+    string[] = [
+
+      'Ministração',
+      'Sonoplastia',
+      'Bateria',
+      'Teclado',
+      'Violão',
+      'Tenor',
+      'Barítono',
+      'Contralto',
+      'Soprano',
+      '2ª Voz',
+      'Baixo',
+      'Guitarra',
+      'Projeção',
+      'Cajon'
+
+    ];
 
 
   selecoesPorFuncao: {
     [nomeFuncao: string]:
       IntegranteFuncaoOption[];
+  } = {};
+
+
+  /*
+   * Guarda quem já estava selecionado.
+   *
+   * Assim o aviso de frequência aparece
+   * somente quando alguém é adicionado,
+   * e não toda vez que o select muda.
+   */
+  selecoesAnterioresPorFuncao: {
+    [nomeFuncao: string]:
+      string[];
   } = {};
 
 
@@ -176,6 +280,12 @@ export class CriarEscalaComponent
 
   }
 
+
+  /*
+   * =====================================
+   * CARREGAMENTO INICIAL
+   * =====================================
+   */
 
   private carregarDadosIniciais(): void {
 
@@ -193,6 +303,11 @@ export class CriarEscalaComponent
       integrantes:
         this.integrantesService.listar(
           'Louvor'
+        ),
+
+      escalasLouvor:
+        this.escalasService.listar(
+          'Louvor'
         )
 
     }).subscribe({
@@ -205,6 +320,38 @@ export class CriarEscalaComponent
 
         this.integrantes =
           response.integrantes.data;
+
+
+        this.escalasLouvor =
+          response.escalasLouvor.data;
+
+
+        /*
+         * Lista usada no bloco
+         * "Alterar disponibilidade".
+         */
+        this.integrantesDisponibilidadeOpcoes =
+          this.integrantes
+
+            .map(
+              integrante => ({
+
+                id:
+                  integrante._id,
+
+                nome:
+                  integrante.nome
+
+              })
+            )
+
+            .sort(
+              (a, b) =>
+                a.nome.localeCompare(
+                  b.nome,
+                  'pt-BR'
+                )
+            );
 
 
         this.datasOpcoes =
@@ -240,7 +387,10 @@ export class CriarEscalaComponent
 
         const mensagem =
           erro?.error?.message ??
-          'Não foi possível carregar os dados da escala.';
+          (
+            'Não foi possível carregar '
+            + 'os dados da escala.'
+          );
 
 
         this.snackbar.error(
@@ -253,6 +403,12 @@ export class CriarEscalaComponent
 
   }
 
+
+  /*
+   * =====================================
+   * SELEÇÃO DE DATA
+   * =====================================
+   */
 
   selecionarData(): void {
 
@@ -267,8 +423,17 @@ export class CriarEscalaComponent
     }
 
 
+    /*
+     * Se trocar a data enquanto o bloco
+     * de alteração estiver aberto,
+     * fechamos e limpamos a seleção.
+     */
+    this.fecharAlteracaoDisponibilidade();
+
+
     const data =
-      this.dataSelecionada.dataEscala;
+      this.dataSelecionada
+        .dataEscala;
 
 
     this.carregandoData =
@@ -325,11 +490,14 @@ export class CriarEscalaComponent
 
 
         this.escalaOutroMinisterio =
-          response.escalasOutroMinisterio.data.find(
-            escala =>
-              escala.data ===
-              data.data
-          ) ?? null;
+          response
+            .escalasOutroMinisterio
+            .data
+            .find(
+              escala =>
+                escala.data ===
+                data.data
+            ) ?? null;
 
 
         this.integrantesDisponiveis =
@@ -338,10 +506,11 @@ export class CriarEscalaComponent
 
         const idsDisponiveis =
           new Set(
-            this.integrantesDisponiveis.map(
-              integrante =>
-                integrante.integrante_id
-            )
+            this.integrantesDisponiveis
+              .map(
+                integrante =>
+                  integrante.integrante_id
+              )
           );
 
 
@@ -375,7 +544,10 @@ export class CriarEscalaComponent
 
         const mensagem =
           erro?.error?.message ??
-          'Não foi possível carregar os dados da data selecionada.';
+          (
+            'Não foi possível carregar '
+            + 'os dados da data selecionada.'
+          );
 
 
         this.snackbar.error(
@@ -389,9 +561,19 @@ export class CriarEscalaComponent
   }
 
 
+  /*
+   * =====================================
+   * PREPARAR ESCALA
+   * =====================================
+   */
+
   private prepararSelecoes(): void {
 
     this.selecoesPorFuncao =
+      {};
+
+
+    this.selecoesAnterioresPorFuncao =
       {};
 
 
@@ -420,6 +602,22 @@ export class CriarEscalaComponent
           })
         );
 
+
+      /*
+       * Guarda quem já estava na escala.
+       *
+       * Ao abrir uma escala existente,
+       * essas pessoas não devem gerar
+       * aviso imediatamente.
+       */
+      this.selecoesAnterioresPorFuncao[
+        funcao
+      ] =
+        integrantesEscalados.map(
+          integrante =>
+            integrante.id
+        );
+
     }
 
   }
@@ -429,6 +627,12 @@ export class CriarEscalaComponent
     funcao: string
   ): IntegranteFuncaoOption[] {
 
+    /*
+     * Primeiro traz somente quem:
+     *
+     * 1. está disponível;
+     * 2. possui a função.
+     */
     const disponiveis =
       this.integrantesDisponiveisCompletos
 
@@ -452,6 +656,14 @@ export class CriarEscalaComponent
         );
 
 
+    /*
+     * Mantemos integrantes que já
+     * estavam escalados mesmo que a
+     * disponibilidade tenha mudado.
+     *
+     * Assim não removemos automaticamente
+     * alguém de uma escala existente.
+     */
     const selecionados =
       this.selecoesPorFuncao[
         funcao
@@ -522,11 +734,348 @@ export class CriarEscalaComponent
       {};
 
 
+    this.selecoesAnterioresPorFuncao =
+      {};
+
+
     this.camposEscalaAbertos =
+      false;
+
+
+    this.fecharAlteracaoDisponibilidade();
+
+  }
+
+
+  /*
+   * =====================================
+   * ALTERAR DISPONIBILIDADE
+   * =====================================
+   */
+
+  abrirAlteracaoDisponibilidade(): void {
+
+    if (
+      !this.dataSelecionada
+    ) {
+      return;
+    }
+
+
+    this.alterandoDisponibilidade =
+      true;
+
+  }
+
+
+  fecharAlteracaoDisponibilidade(): void {
+
+    this.alterandoDisponibilidade =
+      false;
+
+
+    this.integranteDisponibilidadeSelecionado =
+      null;
+
+
+    this.statusDisponibilidadeSelecionado =
+      null;
+
+
+    this.carregandoDisponibilidadeIntegrante =
       false;
 
   }
 
+
+  selecionarIntegranteDisponibilidade(): void {
+
+    this.statusDisponibilidadeSelecionado =
+      null;
+
+
+    if (
+      !this.integranteDisponibilidadeSelecionado ||
+      !this.dataSelecionada
+    ) {
+      return;
+    }
+
+
+    const integranteId =
+      this.integranteDisponibilidadeSelecionado
+        .id;
+
+
+    const dataId =
+      this.dataSelecionada
+        .dataEscala
+        ._id;
+
+
+    this.carregandoDisponibilidadeIntegrante =
+      true;
+
+
+    this.disponibilidadesService
+      .buscarPorIntegrante(
+        integranteId,
+        'Louvor'
+      )
+      .subscribe({
+
+        next: response => {
+
+          this.carregandoDisponibilidadeIntegrante =
+            false;
+
+
+          /*
+           * Procura somente a disponibilidade
+           * referente à data selecionada.
+           */
+          const disponibilidadeData =
+            response.data
+              ?.disponibilidades
+              .find(
+                item =>
+                  item.data_id ===
+                  dataId
+              );
+
+
+          /*
+           * Se já existe disponibilidade
+           * registrada, mostra o status atual.
+           */
+          if (
+            disponibilidadeData
+          ) {
+
+            this.statusDisponibilidadeSelecionado =
+              this.statusDisponibilidadeOpcoes
+                .find(
+                  opcao =>
+                    opcao.disponivel ===
+                    disponibilidadeData
+                      .disponivel
+                )
+              ?? null;
+
+          }
+
+        },
+
+
+        error: erro => {
+
+          this.carregandoDisponibilidadeIntegrante =
+            false;
+
+
+          const mensagem =
+            erro?.error?.message ??
+            (
+              'Não foi possível carregar '
+              + 'a disponibilidade do integrante.'
+            );
+
+
+          this.snackbar.error(
+            mensagem
+          );
+
+        }
+
+      });
+
+  }
+
+
+  salvarAlteracaoDisponibilidade(): void {
+
+    if (
+      !this.dataSelecionada ||
+      !this.integranteDisponibilidadeSelecionado ||
+      !this.statusDisponibilidadeSelecionado ||
+      this.salvandoDisponibilidade
+    ) {
+      return;
+    }
+
+
+    const integrante =
+      this.integranteDisponibilidadeSelecionado;
+
+
+    const disponivel =
+      this.statusDisponibilidadeSelecionado
+        .disponivel;
+
+
+    this.salvandoDisponibilidade =
+      true;
+
+
+    this.disponibilidadesService
+      .alterarPelaLideranca({
+
+        integrante_id:
+          integrante.id,
+
+        ministerio:
+          'Louvor',
+
+        data_id:
+          this.dataSelecionada
+            .dataEscala
+            ._id,
+
+        disponivel
+
+      })
+      .subscribe({
+
+        next: response => {
+
+          this.salvandoDisponibilidade =
+            false;
+
+
+          /*
+           * Atualiza a lista local
+           * imediatamente.
+           */
+          this.atualizarDisponibilidadeLocal(
+            integrante.id,
+            integrante.nome,
+            disponivel
+          );
+
+
+          this.snackbar.success(
+            response.message ??
+            (
+              'Disponibilidade alterada '
+              + 'com sucesso.'
+            )
+          );
+
+
+          this.fecharAlteracaoDisponibilidade();
+
+        },
+
+
+        error: erro => {
+
+          this.salvandoDisponibilidade =
+            false;
+
+
+          const mensagem =
+            erro?.error?.message ??
+            (
+              'Não foi possível alterar '
+              + 'a disponibilidade.'
+            );
+
+
+          this.snackbar.error(
+            mensagem
+          );
+
+        }
+
+      });
+
+  }
+
+
+  private atualizarDisponibilidadeLocal(
+    integranteId: string,
+    integranteNome: string,
+    disponivel: boolean
+  ): void {
+
+    /*
+     * MARCOU COMO DISPONÍVEL
+     */
+    if (
+      disponivel
+    ) {
+
+      const jaDisponivel =
+        this.integrantesDisponiveis
+          .some(
+            integrante =>
+              integrante.integrante_id ===
+              integranteId
+          );
+
+
+      if (
+        !jaDisponivel
+      ) {
+
+        this.integrantesDisponiveis.push({
+
+          integrante_id:
+            integranteId,
+
+          integrante_nome:
+            integranteNome
+
+        });
+
+      }
+
+    } else {
+
+      /*
+       * MARCOU COMO INDISPONÍVEL
+       */
+      this.integrantesDisponiveis =
+        this.integrantesDisponiveis
+          .filter(
+            integrante =>
+              integrante.integrante_id !==
+              integranteId
+          );
+
+    }
+
+
+    /*
+     * Recria a lista usada nos
+     * selects das funções.
+     */
+    const idsDisponiveis =
+      new Set(
+        this.integrantesDisponiveis
+          .map(
+            integrante =>
+              integrante.integrante_id
+          )
+      );
+
+
+    this.integrantesDisponiveisCompletos =
+      this.integrantes.filter(
+        integrante =>
+          idsDisponiveis.has(
+            integrante._id
+          )
+      );
+
+  }
+
+
+  /*
+   * =====================================
+   * DATAS
+   * =====================================
+   */
 
   private montarNomeData(
     item: DataEscala
@@ -579,6 +1128,254 @@ export class CriarEscalaComponent
   }
 
 
+  /*
+   * =====================================
+   * FREQUÊNCIA NO MESMO MÊS
+   * =====================================
+   */
+
+  private obterDatasEscaladasNoMesmoMes(
+    integranteId: string
+  ): string[] {
+
+    if (
+      !this.dataSelecionada
+    ) {
+      return [];
+    }
+
+
+    const dataAtual =
+      this.dataSelecionada
+        .dataEscala;
+
+
+    const [
+      anoAtual,
+      mesAtual
+    ] =
+      dataAtual.data.split('-');
+
+
+    const datas =
+      this.escalasLouvor
+
+        .filter(
+          escala => {
+
+            /*
+             * Não considera a própria
+             * data que está sendo montada
+             * ou editada.
+             */
+            if (
+              escala.data_id ===
+              dataAtual._id
+            ) {
+              return false;
+            }
+
+
+            const [
+              anoEscala,
+              mesEscala
+            ] =
+              escala.data.split('-');
+
+
+            /*
+             * Considera somente escalas
+             * do mesmo mês e ano.
+             */
+            if (
+              anoEscala !== anoAtual ||
+              mesEscala !== mesAtual
+            ) {
+              return false;
+            }
+
+
+            /*
+             * Verifica se o integrante
+             * aparece em qualquer função
+             * daquela escala.
+             */
+            return Object.values(
+              escala.funcoes
+            ).some(
+              integrantes =>
+                integrantes.some(
+                  integrante =>
+                    integrante.id ===
+                    integranteId
+                )
+            );
+
+          }
+        )
+
+        .map(
+          escala =>
+            escala.data
+        );
+
+
+    /*
+     * Remove datas duplicadas caso
+     * a pessoa esteja em duas funções
+     * na mesma escala.
+     */
+    return [
+      ...new Set(
+        datas
+      )
+    ].sort();
+
+  }
+
+
+  private formatarListaDatas(
+    datas: string[]
+  ): string {
+
+    const formatadas =
+      datas.map(
+        data =>
+          this.formatarData(
+            data
+          )
+      );
+
+
+    if (
+      formatadas.length === 0
+    ) {
+      return '';
+    }
+
+
+    if (
+      formatadas.length === 1
+    ) {
+
+      return formatadas[0];
+
+    }
+
+
+    if (
+      formatadas.length === 2
+    ) {
+
+      return (
+        `${formatadas[0]} e `
+        + `${formatadas[1]}`
+      );
+
+    }
+
+
+    const ultimaData =
+      formatadas[
+        formatadas.length - 1
+      ];
+
+
+    const anteriores =
+      formatadas
+        .slice(
+          0,
+          -1
+        )
+        .join(', ');
+
+
+    return (
+      `${anteriores} e `
+      + `${ultimaData}`
+    );
+
+  }
+
+
+  private obterFuncoesRepetidasNoMesmoDia(
+    integranteId: string,
+    funcaoAtual: string
+  ): string[] {
+
+    return this.funcoesEscala
+      .filter(
+        outraFuncao => {
+
+          if (
+            outraFuncao ===
+            funcaoAtual
+          ) {
+            return false;
+          }
+
+
+          const selecionados =
+            this.selecoesPorFuncao[
+              outraFuncao
+            ] ?? [];
+
+
+          return selecionados.some(
+            integrante =>
+              integrante.id ===
+              integranteId
+          );
+
+        }
+      );
+
+  }
+
+
+  /*
+   * Mantém a lista de escalas do mês
+   * atualizada depois de criar ou editar.
+   */
+  private atualizarEscalaLouvorLocal(
+    escala: Escala
+  ): void {
+
+    const indice =
+      this.escalasLouvor.findIndex(
+        item =>
+          item._id ===
+          escala._id
+      );
+
+
+    if (
+      indice >= 0
+    ) {
+
+      this.escalasLouvor[
+        indice
+      ] =
+        escala;
+
+      return;
+
+    }
+
+
+    this.escalasLouvor.push(
+      escala
+    );
+
+  }
+
+
+  /*
+   * =====================================
+   * EDITAR ESCALA
+   * =====================================
+   */
+
   editarEscala(): void {
 
     if (
@@ -627,7 +1424,6 @@ export class CriarEscalaComponent
     }
 
 
-
     this.datasOpcoes =
       this.datas.map(
         data => ({
@@ -657,6 +1453,12 @@ export class CriarEscalaComponent
   }
 
 
+  /*
+   * =====================================
+   * CONFLITO COM OUTRO MINISTÉRIO
+   * =====================================
+   */
+
   private estaEscaladoNoOutroMinisterio(
     integranteId: string
   ): boolean {
@@ -669,7 +1471,8 @@ export class CriarEscalaComponent
 
 
     return Object.values(
-      this.escalaOutroMinisterio.funcoes
+      this.escalaOutroMinisterio
+        .funcoes
     ).some(
       integrantes =>
         integrantes.some(
@@ -740,7 +1543,10 @@ export class CriarEscalaComponent
       ) {
 
         this.snackbar.warning(
-          `${integrante.nome} já foi escalado(a) para a Mídia neste dia.`
+          (
+            `${integrante.nome} já foi `
+            + 'escalado(a) para a Mídia neste dia.'
+          )
         );
 
       }
@@ -757,6 +1563,12 @@ export class CriarEscalaComponent
   }
 
 
+  /*
+   * =====================================
+   * SALVAR ESCALA
+   * =====================================
+   */
+
   salvarEscala(): void {
 
     if (
@@ -772,12 +1584,16 @@ export class CriarEscalaComponent
     ) {
 
       this.snackbar.warning(
-        'Selecione pelo menos um integrante antes de salvar a escala.'
+        (
+          'Selecione pelo menos um '
+          + 'integrante antes de salvar a escala.'
+        )
       );
 
       return;
 
     }
+
 
     if (
       this.removerConflitosComOutroMinisterio()
@@ -787,7 +1603,8 @@ export class CriarEscalaComponent
 
 
     const data =
-      this.dataSelecionada.dataEscala;
+      this.dataSelecionada
+        .dataEscala;
 
 
     const funcoes: {
@@ -839,6 +1656,9 @@ export class CriarEscalaComponent
       true;
 
 
+    /*
+     * ESCALA EXISTENTE
+     */
     if (
       this.escalaExistente
     ) {
@@ -863,7 +1683,17 @@ export class CriarEscalaComponent
               this.escalaExistente =
                 response.data;
 
+
+              /*
+               * Atualiza a lista usada
+               * pela verificação mensal.
+               */
+              this.atualizarEscalaLouvorLocal(
+                response.data
+              );
+
             }
+
 
             this.marcarDataComoEscalaCriada();
 
@@ -888,7 +1718,10 @@ export class CriarEscalaComponent
 
             const mensagem =
               erro?.error?.message ??
-              'Não foi possível atualizar a escala.';
+              (
+                'Não foi possível atualizar '
+                + 'a escala.'
+              );
 
 
             this.snackbar.error(
@@ -927,8 +1760,16 @@ export class CriarEscalaComponent
             this.escalaExistente =
               response.data;
 
-          }
 
+            /*
+             * Inclui a nova escala
+             * na verificação mensal.
+             */
+            this.atualizarEscalaLouvorLocal(
+              response.data
+            );
+
+          }
 
 
           this.marcarDataComoEscalaCriada();
@@ -957,7 +1798,10 @@ export class CriarEscalaComponent
 
           const mensagem =
             erro?.error?.message ??
-            'Não foi possível criar a escala.';
+            (
+              'Não foi possível criar '
+              + 'a escala.'
+            );
 
 
           this.snackbar.error(
@@ -971,11 +1815,23 @@ export class CriarEscalaComponent
   }
 
 
+  /*
+   * =====================================
+   * DUPLICIDADE E FREQUÊNCIA
+   * =====================================
+   */
+
   verificarDuplicidade(
     funcaoAtual: string
   ): void {
 
- 
+    /*
+     * Primeiro verifica conflito
+     * Louvor x Mídia.
+     *
+     * Este conflito continua bloqueando
+     * a seleção, como já funcionava.
+     */
     const conflitoOutroMinisterio =
       this.removerConflitosComOutroMinisterio(
         funcaoAtual
@@ -985,67 +1841,173 @@ export class CriarEscalaComponent
     if (
       conflitoOutroMinisterio
     ) {
+
+      /*
+       * Como o integrante conflitante
+       * já foi removido da seleção,
+       * atualizamos o estado anterior.
+       */
+      this.selecoesAnterioresPorFuncao[
+        funcaoAtual
+      ] =
+        (
+          this.selecoesPorFuncao[
+            funcaoAtual
+          ] ?? []
+        ).map(
+          integrante =>
+            integrante.id
+        );
+
       return;
+
     }
 
 
- 
     const selecionados =
       this.selecoesPorFuncao[
         funcaoAtual
       ] ?? [];
 
 
+    const idsAnteriores =
+      new Set(
+        this.selecoesAnterioresPorFuncao[
+          funcaoAtual
+        ] ?? []
+      );
+
+
+    /*
+     * Descobre quem acabou de ser
+     * adicionado nesta função.
+     */
+    const novosSelecionados =
+      selecionados.filter(
+        integrante =>
+          !idsAnteriores.has(
+            integrante.id
+          )
+      );
+
+
+    const avisos:
+      string[] = [];
+
+
     for (
       const integrante
-      of selecionados
+      of novosSelecionados
     ) {
 
-      for (
-        const outraFuncao
-        of this.funcoesEscala
+      /*
+       * =================================
+       * OUTRA FUNÇÃO NO MESMO DIA
+       * =================================
+       */
+      const funcoesRepetidas =
+        this.obterFuncoesRepetidasNoMesmoDia(
+          integrante.id,
+          funcaoAtual
+        );
+
+
+      if (
+        funcoesRepetidas.length > 0
       ) {
 
-        if (
-          outraFuncao ===
-          funcaoAtual
-        ) {
-          continue;
-        }
-
-
-        const selecionadosOutraFuncao =
-          this.selecoesPorFuncao[
-            outraFuncao
-          ] ?? [];
-
-
-        const repetido =
-          selecionadosOutraFuncao.some(
-            item =>
-              item.id ===
-              integrante.id
+        const funcoesTexto =
+          funcoesRepetidas.join(
+            ', '
           );
 
 
-        if (
-          repetido
-        ) {
+        avisos.push(
+          (
+            `${integrante.nome} também está `
+            + `escalado(a) para ${funcoesTexto} `
+            + 'neste dia.'
+          )
+        );
 
-          this.snackbar.warning(
-            `${integrante.nome} também está escalado para ${outraFuncao} neste dia.`
+      }
+
+
+      /*
+       * =================================
+       * OUTRAS DATAS NO MESMO MÊS
+       * =================================
+       */
+      const datasMes =
+        this.obterDatasEscaladasNoMesmoMes(
+          integrante.id
+        );
+
+
+      if (
+        datasMes.length > 0
+      ) {
+
+        const datasFormatadas =
+          this.formatarListaDatas(
+            datasMes
           );
 
-          return;
 
-        }
+        avisos.push(
+          (
+            `${integrante.nome} já está `
+            + 'escalado(a) em '
+            + `${datasFormatadas} `
+            + 'neste mês.'
+          )
+        );
 
       }
 
     }
 
+
+    /*
+     * Guarda o estado atual para
+     * a próxima alteração do select.
+     */
+    this.selecoesAnterioresPorFuncao[
+      funcaoAtual
+    ] =
+      selecionados.map(
+        integrante =>
+          integrante.id
+      );
+
+
+    /*
+     * O aviso não bloqueia a escolha.
+     *
+     * Caso tenha conflito de função
+     * e frequência mensal, mostra
+     * os dois juntos.
+     */
+    if (
+      avisos.length > 0
+    ) {
+
+      this.snackbar.warning(
+        avisos.join(
+          ' '
+        )
+      );
+
+    }
+
   }
 
+
+  /*
+   * =====================================
+   * AUXILIARES DA TELA
+   * =====================================
+   */
 
   get temAlgumaSelecao(): boolean {
 
@@ -1073,6 +2035,12 @@ export class CriarEscalaComponent
 
   }
 
+
+  /*
+   * =====================================
+   * VOLTAR
+   * =====================================
+   */
 
   voltar(): void {
 

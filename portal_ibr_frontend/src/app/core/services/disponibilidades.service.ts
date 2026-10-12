@@ -82,6 +82,14 @@ export interface DisponibilidadeLimitada {
   datas: string[];
 }
 
+export interface IntegranteNaoEscalado {
+  integrante_id: string;
+
+  nome: string;
+
+  datas: string[];
+}
+
 
 export interface DatasDisponiveisResponse {
   success: boolean;
@@ -133,6 +141,16 @@ export interface DisponibilidadesLimitadasResponse {
   message?: string;
 }
 
+export interface IntegrantesNaoEscaladosResponse {
+  success: boolean;
+
+  data:
+    IntegranteNaoEscalado[];
+
+  total: number;
+
+  message?: string;
+}
 
 export interface SalvarDisponibilidadeRequest {
   integrante_id: string;
@@ -156,6 +174,17 @@ export interface DisponibilidadesResponse {
   total: number;
 
   message?: string;
+}
+
+export interface AlterarDisponibilidadeLiderancaRequest {
+  integrante_id: string;
+
+  ministerio:
+    MinisterioDisponibilidade;
+
+  data_id: string;
+
+  disponivel: boolean;
 }
 
 
@@ -314,6 +343,41 @@ export class DisponibilidadesService {
         {
           params
         }
+      );
+  }
+
+  listarNaoEscaladosMes(
+  ministerio:
+    MinisterioDisponibilidade
+  ): Observable<IntegrantesNaoEscaladosResponse> {
+
+    const params =
+      new HttpParams()
+        .set(
+          'ministerio',
+          ministerio
+        );
+
+    return this.http
+      .get<IntegrantesNaoEscaladosResponse>(
+        `${this.apiUrl}/nao-escalados-mes`,
+        {
+          params
+        }
+      );
+
+  }
+
+
+  alterarPelaLideranca(
+  dados:
+    AlterarDisponibilidadeLiderancaRequest
+  ): Observable<DisponibilidadeResponse> {
+
+    return this.http
+      .put<DisponibilidadeResponse>(
+        `${this.apiUrl}/lideranca`,
+        dados
       );
   }
 

@@ -8,7 +8,10 @@ from services.disponibilidades_service import (
     listar_disponiveis_por_data_service,
     salvar_disponibilidade_service,
     listar_disponibilidades_limitadas_service,
+    listar_nao_escalados_mes_service,
+    alterar_disponibilidade_lideranca_service
 )
+from middlewares.auth_middleware import (require_permission)
 
 
 disponibilidades_bp = Blueprint(
@@ -143,7 +146,7 @@ def visualizar_preenchimento():
 
     for integrante in integrantes:
 
-        preenchido = (
+        disponibilidade = (
             db.disponibilidades.find_one({
                 "integrante_id": str(
                     integrante["_id"]
@@ -153,18 +156,34 @@ def visualizar_preenchimento():
             })
         )
 
+
+        preencheu = (
+            disponibilidade is not None
+            and disponibilidade.get(
+                "data_preenchimento"
+            ) is not None
+        )
+
+
         resposta.append({
             "nome":
                 integrante["nome"],
+
             "preencheu":
-                preenchido is not None
+                preencheu
         })
+
+
+    resposta.sort(
+        key=lambda item:
+            item["nome"].casefold()
+    )
+
 
     return jsonify({
         "success": True,
         "data": resposta
     })
-
 
 @disponibilidades_bp.route(
     "/limitadas",
@@ -178,5 +197,41 @@ def disponibilidades_limitadas():
                 request.args.get(
                     "ministerio"
                 )
+        )
+    )
+    
+@disponibilidades_bp.route(
+"/nao-escalados-mes",
+methods=["GET"])
+def nao_escalados_mes():
+
+    return (
+        listar_nao_escalados_mes_service(
+            ministerio=
+                request.args.get(
+                    "ministerio"
+                )
+        )
+    )
+    
+
+@disponibilidades_bp.route(
+"/lideranca",
+methods=["PUT"]
+)
+@require_permission(
+    "alterar_disponibilidade"
+)
+def alterar_disponibilidade_lideranca():
+
+    return (
+        alterar_disponibilidade_lideranca_service(
+            data=(
+                request.get_json(
+                    silent=True
+                )
+                or {}
+            ),
+            usuario=request.usuario
         )
     )

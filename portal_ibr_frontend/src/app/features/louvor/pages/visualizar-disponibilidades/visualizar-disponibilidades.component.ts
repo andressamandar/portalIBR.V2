@@ -1,43 +1,13 @@
-import {
-  Component,
-  inject,
-  OnInit
-} from '@angular/core';
-
-import {
-  Router
-} from '@angular/router';
-
-import {
-  forkJoin
-} from 'rxjs';
-
-import {
-  DisponibilidadeIntegrante,
-  DisponibilidadeLimitada,
-  DisponibilidadesService
+import {Component,inject,OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {forkJoin} from 'rxjs';
+import {DisponibilidadeIntegrante, DisponibilidadeLimitada,DisponibilidadesService, IntegranteNaoEscalado
 } from '../../../../core/services/disponibilidades.service';
-
-import {
-  Integrante,
-  IntegrantesService
-} from '../../../../core/services/integrantes.service';
-
-import {
-  PortalSnackbarService
-} from '../../../../core/services/portal-snackbar.service';
-
-import {
-  PortalButtonComponent
-} from '../../../../shared/components/ui/portal-button/portal-button.component';
-
-import {
-  PortalLoadingComponent
-} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
-
-import {
-  PortalEmptyStateComponent
-} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
+import {Integrante,IntegrantesService} from '../../../../core/services/integrantes.service';
+import {PortalSnackbarService} from '../../../../core/services/portal-snackbar.service';
+import {PortalButtonComponent} from '../../../../shared/components/ui/portal-button/portal-button.component';
+import {PortalLoadingComponent} from '../../../../shared/components/ui/portal-loading/portal-loading.component';
+import {PortalEmptyStateComponent} from '../../../../shared/components/ui/portal-empty-state/portal-empty-state.component';
 
 
 interface ColunaData {
@@ -93,6 +63,9 @@ export class VisualizarDisponibilidadesComponent
   disponibilidadesLimitadas:
     DisponibilidadeLimitada[] = [];
 
+  integrantesNaoEscalados:
+    IntegranteNaoEscalado[] = [];
+
 
   ngOnInit(): void {
     this.carregarDados();
@@ -125,7 +98,14 @@ export class VisualizarDisponibilidadesComponent
         this.disponibilidadesService
           .listarLimitadas(
             'Louvor'
+          ),
+
+      naoEscalados:
+        this.disponibilidadesService
+          .listarNaoEscaladosMes(
+            'Louvor'
           )
+
     }).subscribe({
       next: response => {
 
@@ -143,6 +123,9 @@ export class VisualizarDisponibilidadesComponent
 
         this.disponibilidadesLimitadas =
           response.limitadas.data;
+
+        this.integrantesNaoEscalados =
+          response.naoEscalados.data;
 
         this.montarTabela(
           response.integrantes.data,
